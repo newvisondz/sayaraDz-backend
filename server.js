@@ -1,60 +1,38 @@
-const express = require("express")
-const session = require("express-session")
-const FileStore = require('session-file-store')(session);
-const cookieParser = require("cookie-parser");
+const express = require("express");
 const bodyParser = require("body-parser");
-
-var passport = require('passport')
-    , LocalStrategy = require('passport-local').Strategy;
-let app = express()
-
-app.use(express.static("static"))
+const cookieParser = require("cookie-parser");
+const session = require("express-session");
+const auth = require("./src/config/auth") ;
+const app = express();
+const loginRouter = require("./src/routes");
+const FileStore = require("session-file-store")(session);
+app.use(express.static('static'));
 app.use(cookieParser());
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(require('express-session')({
+app.use(bodyParser.urlencoded());
+app.use(session({
+    cookie: {expires: new Date(Date.now()+604800000)},
     secret: 'keyboard cat',
-    resave: false,
-    saveUninitialized: true,
-    store: new FileStore()
+    store: new FileStore(),
 }));
 
-app.use(passport.initialize());
-app.use(passport.session());
+auth(app) ;
 
-let count = 1 ;
-passport.use(new LocalStrategy(
-    function(username, password, done) {
-            console.log("authenticating ...");
-        return done(null, {username, password, id:count++})
-    }
-));
+const PORT = process.env.PORT || 3000;
 
-passport.serializeUser(function(user, done) {
-    done(null, user.id);
+app.use("/login", loginRouter);
+
+app.get("/success",(req, res)=>{
+    console.log(req.user);
+    res.json(req.user) ;
 });
 
-passport.deserializeUser(function(user, done) {
-    done(null, {name: user +" id"});
+
+app.get("/error",(req, res)=>{
+    res.json(req.isAuthenticated()) ;
 });
 
-app.post('/login',
-    (req, res, next)=>{
-        res.cookie("id", count)
-        passport.authenticate('local', { successRedirect: '/h',
-            failureRedirect: '/error.html', session: !false})(req, res, next)
-    }
-);
 
-app.all("/h",(req, res)=>{
-    res.json({
-        user: req.user,
-        auth: req.isAuthenticated()
-    })
-});
-
-const PORT = process.env.PORT || 3000 ;
-
-app.listen(PORT, (err) => {
-    if (err) console.log(err.message)
-    else console.log(`listening on ${PORT}`)
+app.listen(PORT, (err)=>{
+    if(err) throw err;
+    console.log(`listening on port : ${PORT}`);
 });
