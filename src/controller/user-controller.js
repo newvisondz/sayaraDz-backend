@@ -6,10 +6,15 @@ function index(req, res){
 }
 
 function login() {
-    return passport.authenticate("local", {
-        successRedirect: "/user",
-        failureRedirect: "/error"
-    })
+    return [
+
+        passport.authenticate("local", {
+            // successRedirect: "/user",
+            // failureRedirect: "/error",
+            session: false
+        }),
+        (req, res, next)=>{res.json(req.user)},
+    ]
 }
 
 function signUp(req, res, next){

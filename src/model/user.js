@@ -2,6 +2,8 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 const validator = require("validator");
 const bcrypt = require("bcrypt");
+const jsonwebtoken = require("jsonwebtoken");
+const jwtKey = require("../config/constants").jwt_key;
 
 const userSchema = new Schema({
     email: {type: String, trim: true, validate: validator.isEmail},
@@ -33,6 +35,22 @@ userSchema.methods.isValidPasswd = function (password, cb) {
             cb(null, isValid);
         })
         .catch(err=> cb(err))
+};
+
+userSchema.methods.sign = function () {
+    return jsonwebtoken.sign({
+        id: this.id,
+    }, jwtKey)
+};
+
+userSchema.methods.toJSON = function () {
+    return {
+        id: this.id,
+        username: this.username,
+        email: this.email,
+        createdOn: this.createdOn,
+        token: `JWT ${this.sign()}`,
+    }
 };
 
 const User = mongoose.model("User", userSchema);

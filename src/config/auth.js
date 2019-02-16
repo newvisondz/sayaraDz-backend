@@ -1,7 +1,7 @@
 const passport = require("passport");
 const User = require("../model/user");
-const local = require("./Strategies/local-strategy");
-
+const local = require("./strategies/local");
+const jwt = require("./strategies/jwt");
 function passportConfig(app) {
     app.use(passport.initialize());
     app.use(passport.session());
@@ -17,14 +17,15 @@ function passportConfig(app) {
             .select("username email createdOn _id")
             .exec()
             .then((user) => {
-                let {username, id, createdOn, email} = user;
-                done(null, {username, id, createdOn, email});
+               // let {username, id, createdOn, email} = user;
+                done(null, user);
             })
             .catch(err => {
                 done(null, false);
             });
     });
     passport.use(local);
+    passport.use(jwt);
 
 }
 

@@ -10,17 +10,15 @@ app.use(express.static('static'));
 app.use(cookieParser());
 app.use(bodyParser.urlencoded({ extended: false }));
 
-app.use(session({
+/*app.use(session({
     cookie: { expires: new Date(Date.now() + 604800000) },
     secret: 'keyboard cat',
     // store: new FileStore(),
     resave: true,
-}));
+}));*/
 
 auth(app);
-
 const PORT = process.env.PORT || 3000;
-
 app.use("/user", userRouter);
 
 app.get("/error", (req, res) => {

@@ -1,10 +1,10 @@
 const User = require("../../model/user");
-const LocalStrategy = require("passport-local").Strategy;
+const Local = require("passport-local").Strategy;
 const options = {
     usernameField: "username",
     passwordfield: "password"
 };
-const local = new LocalStrategy(options, loginUser);
+const local = new Local(options, loginUser);
 
 function loginUser(username, password, done) {
     const user = {username};
@@ -15,7 +15,7 @@ function loginUser(username, password, done) {
 
             newUser.isValidPasswd(
                 password,
-                validatePasswd(done, {createdOn, id, email})
+                validatePasswd(done, newUser)
             ) ;
         })
         .catch(err => {
