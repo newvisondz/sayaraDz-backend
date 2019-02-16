@@ -1,10 +1,20 @@
 const User = require("../model/user");
 const passport = require("passport");
 
-const signUp = (req, res, next) => {
+function index(req, res){
+    res.json(req.user || {error: "not authentified"})
+}
+
+function login() {
+    return passport.authenticate("local", {
+        successRedirect: "/user",
+        failureRedirect: "/error"
+    })
+}
+
+function signUp(req, res, next){
 
     let user = {username, password, email} = req.body;
-    // console.log(req.body.username);
     user = new User(user);
     user.save()
         .then((newUser) => {
@@ -12,25 +22,20 @@ const signUp = (req, res, next) => {
                 if (err) {
                     return next(err);
                 }
-                let u = {username: newUser.username, password: newUser.password, id: newUser.id};
-                res.json(u);
+                res.redirect("/user");
             });
         })
         .catch((err) => {
-            res.json({message} = err);
-            next(err);
+            if(err.code === 11000){
+                const error = {
+                    error: true,
+                    message: "The user exists"
+                };
+                return res.json(error)
+            }
+            res.json(err);
         })
-};
-
-function login() {
-    return passport.authenticate("local", {
-        successRedirect: "/success",
-        failureRedirect: "/error"
-    })
 }
 
-function index(req, res){
-    res.json( {isaut: req.isAuthenticated(), error: "not logged in"})
-}
 
 module.exports = {signUp, login, index};

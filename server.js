@@ -23,13 +23,8 @@ const PORT = process.env.PORT || 3000;
 
 app.use("/user", userRouter);
 
-app.get("/success", (req, res) => {
-    res.json(Object.assign({ auth: req.isAuthenticated() }, req.user));
-});
-
-
 app.get("/error", (req, res) => {
-    res.json(req.isAuthenticated());
+    res.json({error: "error message"});
 });
 
 app.listen(PORT, (err) => {

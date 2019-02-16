@@ -7,23 +7,26 @@ function passportConfig(app) {
     app.use(passport.session());
 
 
-    passport.serializeUser((user, done)=>{
-        if(!user) return done(null, false) ;
-        return done(null, user._id || user.id)
+    passport.serializeUser((user, done) => {
+        if (!user) return done(null, false);
+        return done(null, user.id)
     });
-    passport.deserializeUser((userId, done)=>{
-        if(!userId) return done(null, false) ;
-        User.findOne({_id: userId})
-            .then(user=>{
-                let u = { username: user.username, id : user.id}
-                done(null, u);
+    passport.deserializeUser((id, done) => {
+
+        User.findById(id)
+            .select("username email createdOn _id")
+            .exec()
+            .then((user) => {
+                let {username, id, createdOn, email} = user;
+                done(null, {username, id, createdOn, email});
             })
             .catch(err => {
-                done(null, false) ;
+                done(null, false);
             });
     });
     passport.use(local);
 
 }
+
 
 module.exports = passportConfig;
