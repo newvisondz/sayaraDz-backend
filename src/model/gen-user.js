@@ -3,7 +3,7 @@ const Schema = mongoose.Schema;
 const validator = require("validator");
 const bcrypt = require("bcrypt");
 const jsonwebtoken = require("jsonwebtoken");
-const jwtKey = require("../config/constants").jwt_key;
+const jwtKey = require("../config/keys").jwt_key;
 
 const userSchema = new Schema({
     email: {type: String, trim: true, validate: validator.isEmail},

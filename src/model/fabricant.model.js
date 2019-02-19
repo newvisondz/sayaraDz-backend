@@ -3,7 +3,7 @@ const Schema = mongoose.Schema;
 const validator = require("validator");
 const bcrypt = require("bcrypt");
 const jsonwebtoken = require("jsonwebtoken");
-const jwtKey = require("../config/constants").jwt_key;
+const jwtKey = require("../config/keys").jwt_key;
 
 const fabricantSchema = new Schema({
     email: {type: String, unique: true, require: true, validate: validator.isEmail, trim: true},
@@ -50,7 +50,7 @@ fabricantSchema.methods.sign = function () {
 fabricantSchema.methods.toJSON = function () {
     return {
         id: this.id,
-        isAdmin: this.isAdmin,
+        isAdmin: this.isAdmin ? 1 : 0,
         token: `bearer ${this.sign()}`,
     }
 };

@@ -1,7 +1,7 @@
 const passport = require("passport");
 const User = require("../model/fabricant.model");
 const local = require("./strategies/local");
-const jwt = require("./strategies/jwt");
+const jwt = require("./strategies/jwt-fabricant");
 function passportConfig(app) {
     app.use(passport.initialize());
     app.use(passport.session());
