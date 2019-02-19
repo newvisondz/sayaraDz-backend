@@ -1,4 +1,4 @@
-const User = require("../../model/fabricant.model");
+const User = require("../../model/fabricant.user.model");
 const Local = require("passport-local").Strategy;
 const options = {
     usernameField: "email",

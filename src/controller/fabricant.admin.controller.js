@@ -1,8 +1,4 @@
-const Fabricant = require("../model/fabricant.model");
-const passport = require("passport");
-const JwtToken = require("../model/jwt.blacklist");
 const authController = require("./auth.controller");
-
 
 function index() {
     return [

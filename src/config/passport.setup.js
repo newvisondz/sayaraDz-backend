@@ -1,5 +1,5 @@
 const passport = require("passport");
-const User = require("../model/fabricant.model");
+const FabricantUser = require("../model/fabricant.user.model");
 const local = require("./strategies/local");
 const jwt = require("./strategies/jwt.fabricant");
 function passportConfig(app) {
@@ -12,7 +12,7 @@ function passportConfig(app) {
     });
     passport.deserializeUser((id, done) => {
 
-        User.findById(id)
+        FabricantUser.findById(id)
             //.select("email createdOn _id")
             .exec()
             .then((user) => {

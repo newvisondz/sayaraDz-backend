@@ -1,5 +1,4 @@
-const Fabricant = require("../model/fabricant.model");
-const passport = require("passport");
+const FabricantUser = require("../model/fabricant.user.model");
 const JwtToken = require("../model/jwt.blacklist");
 const authController = require("./auth.controller");
 
@@ -49,7 +48,7 @@ function logout(req, res) {
 function signUp(req, res, next) {
 
     let user = {password, email, firstName, lastName, address, phone} = req.body;
-    user = new Fabricant(user);
+    user = new FabricantUser(user);
     user.save()
         .then((newUser) => {
             req.login(newUser, function (err) {

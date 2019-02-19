@@ -5,8 +5,8 @@ const bcrypt = require("bcrypt");
 const jsonwebtoken = require("jsonwebtoken");
 const jwtKey = require("../config/keys").jwt_key;
 
-const fabricantSchema = new Schema({
-    email: {type: String, unique: true, require: true, validate: validator.isEmail, trim: true},
+const fabricantUserSchema = new Schema({
+    email: {type: String, index:true, unique: true, require: true, validate: validator.isEmail, trim: true},
     password: {type: String, require: true, minlength:4},
     firstName: {type: String},
     lastName: {type: String},
@@ -16,7 +16,7 @@ const fabricantSchema = new Schema({
     createdOn: {type: Date, default: Date.now}
 });
 
-fabricantSchema.pre("save", function (next) {
+fabricantUserSchema.pre("save", function (next) {
     const user = this;
     if(!user.isModified("password")){
         return next()
@@ -31,7 +31,7 @@ fabricantSchema.pre("save", function (next) {
         })
 });
 
-fabricantSchema.methods.isValidPasswd = function (password, cb) {
+fabricantUserSchema.methods.isValidPasswd = function (password, cb) {
     bcrypt.compare(password, this.password)
         .then(isValid=>{
             cb(null, isValid);
@@ -39,7 +39,7 @@ fabricantSchema.methods.isValidPasswd = function (password, cb) {
         .catch(err=> cb(err))
 };
 
-fabricantSchema.methods.sign = function () {
+fabricantUserSchema.methods.sign = function () {
     return jsonwebtoken.sign({
         id: this.id,
     }, jwtKey, {
@@ -47,7 +47,7 @@ fabricantSchema.methods.sign = function () {
     })
 };
 
-fabricantSchema.methods.toJSON = function () {
+fabricantUserSchema.methods.toJSON = function () {
     return {
         email: this.email,
         id: this.id,
@@ -56,6 +56,6 @@ fabricantSchema.methods.toJSON = function () {
     }
 };
 
-const FabricantModel = mongoose.model("User", fabricantSchema);
+const FabricantUserModel = mongoose.model("User", fabricantUserSchema);
 
-module.exports = FabricantModel;
+module.exports = FabricantUserModel;
