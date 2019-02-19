@@ -14,10 +14,9 @@ function passportConfig(app) {
     passport.deserializeUser((id, done) => {
 
         User.findById(id)
-            .select("username email createdOn _id")
+            //.select("email createdOn _id")
             .exec()
             .then((user) => {
-               // let {username, id, createdOn, email} = user;
                 done(null, user);
             })
             .catch(err => {

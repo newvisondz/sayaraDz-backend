@@ -26,7 +26,8 @@ function jwtFabricantAuth(req, res, next) {
                 msg: "permission denied"
             });
         }
-        res.json(user)
+        req.user = user ;
+        next()
 
     })(req, res, next);
 }

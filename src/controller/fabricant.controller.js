@@ -1,4 +1,4 @@
-const User = require("../model/fabricant.model");
+const Fabricant = require("../model/fabricant.model");
 const passport = require("passport");
 const JwtToken = require("../model/jwt.blacklist");
 const authController = require("./auth.controller");
@@ -6,7 +6,24 @@ const authController = require("./auth.controller");
 function index() {
     return [
         authController.checkBlackList,
-        authController.jwtFabricantAuth
+        authController.jwtFabricantAuth,
+        (req, res) => {
+            const user = req.user.toJSON();
+            delete user.token;
+            res.json(user)
+        }
+    ]
+}
+
+function current() {
+    return [
+        authController.checkBlackList,
+        authController.jwtFabricantAuth,
+        (req, res) => {
+            const user = req.user.toJSON();
+            delete user.token;
+            res.json(user)
+        }
     ]
 }
 
@@ -17,7 +34,7 @@ function login(req, res, next) {
         }
         if (!user) {
             return res.json({
-                error: 1,
+                error: true,
                 msg: "invalid credentials"
             });
         }
@@ -32,7 +49,7 @@ function logout(req, res) {
     token.save()
         .then(() => res.json({logout: true}))
         .catch(err => {
-            if(err.code == 11000){
+            if (err.code == 11000) {
                 return res.json({logout: false, msg: "already logout"})
             }
             res.json({logout: false, msg: err})
@@ -42,7 +59,7 @@ function logout(req, res) {
 function signUp(req, res, next) {
 
     let user = {password, email, firstName, lastName, address, phone} = req.body;
-    user = new User(user);
+    user = new Fabricant(user);
     user.save()
         .then((newUser) => {
             req.login(newUser, function (err) {
@@ -64,4 +81,4 @@ function signUp(req, res, next) {
         })
 }
 
-module.exports = {signUp, login, index, logout};
+module.exports = {signUp, login, index, logout, current};

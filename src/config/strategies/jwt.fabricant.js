@@ -10,11 +10,9 @@ const jwtFabricant = new Jwtstrategy(options, verify );
 
 function verify(payload, done) {
     const id = payload.id ;
-    console.log(payload);
     Fabricant.findById(id)
         .exec()
         .then(user=> {
-
             done(null, user)
         })
         .catch(err=>done(err, false, {message: {error: "server issue"}}))

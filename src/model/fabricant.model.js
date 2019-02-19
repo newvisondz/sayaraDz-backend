@@ -49,9 +49,10 @@ fabricantSchema.methods.sign = function () {
 
 fabricantSchema.methods.toJSON = function () {
     return {
+        email: this.email,
         id: this.id,
         isAdmin: this.isAdmin || false,
-        token: "bearer "+ this.sign()
+        token: "bearer "+ this.sign(),
     }
 };
 
