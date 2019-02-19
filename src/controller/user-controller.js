@@ -14,7 +14,10 @@ function login(req, res, next) {
             return next(err);
         }
         if (!user) {
-            return res.redirect('/login');
+            return res.json({
+                error: 1,
+                msg : "invalid username/password"
+            });
         }
         res.json(user)
     })(req, res, next);
@@ -37,7 +40,7 @@ function signUp(req, res, next) {
             if (err.code === 11000) {
                 const error = {
                     error: true,
-                    message: "The user exists"
+                    message: "username exists"
                 };
                 return res.json(error)
             }
