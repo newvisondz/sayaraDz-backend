@@ -5,19 +5,22 @@ const bcrypt = require("bcrypt");
 const jsonwebtoken = require("jsonwebtoken");
 const jwtKey = require("../config/constants").jwt_key;
 
-const userSchema = new Schema({
-    email: {type: String, trim: true, validate: validator.isEmail},
-    username: {type: String, unique: true, require: true, minlength: 4, trim: true},
+const fabricantSchema = new Schema({
+    email: {type: String, unique: true, require: true, validate: validator.isEmail, trim: true},
     password: {type: String, require: true, minlength:4},
-    born: Date,
+    firstName: {type: String},
+    lastName: {type: String},
+    address: {type: String},
+    phone: {type: String},
+    isAdmin: Boolean,
     createdOn: {type: Date, default: Date.now}
 });
 
-userSchema.pre("save", function (next) {
-   const user = this;
-   if(!user.isModified("password")){
-       return next()
-   }
+fabricantSchema.pre("save", function (next) {
+    const user = this;
+    if(!user.isModified("password")){
+        return next()
+    }
     bcrypt.hash(this.password, 12)
         .then(hash=>{
             this.password = hash;
@@ -28,8 +31,7 @@ userSchema.pre("save", function (next) {
         })
 });
 
-userSchema.methods.isValidPasswd = function (password, cb) {
-    console.log("isvalid", password, this) ;
+fabricantSchema.methods.isValidPasswd = function (password, cb) {
     bcrypt.compare(password, this.password)
         .then(isValid=>{
             cb(null, isValid);
@@ -37,22 +39,22 @@ userSchema.methods.isValidPasswd = function (password, cb) {
         .catch(err=> cb(err))
 };
 
-userSchema.methods.sign = function () {
+fabricantSchema.methods.sign = function () {
     return jsonwebtoken.sign({
         id: this.id,
-    }, jwtKey)
+    }, jwtKey, {
+        expiresIn: "1d",
+    })
 };
 
-userSchema.methods.toJSON = function () {
+fabricantSchema.methods.toJSON = function () {
     return {
         id: this.id,
-        username: this.username,
-        email: this.email,
-        createdOn: this.createdOn,
+        isAdmin: this.isAdmin,
         token: `bearer ${this.sign()}`,
     }
 };
 
-const User = mongoose.model("User", userSchema);
+const FabricantModel = mongoose.model("User", fabricantSchema);
 
-module.exports = User;
+module.exports = FabricantModel;

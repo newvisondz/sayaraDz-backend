@@ -1,5 +1,5 @@
 const passport = require("passport");
-const User = require("../model/user");
+const User = require("../model/fabricant.model");
 const local = require("./strategies/local");
 const jwt = require("./strategies/jwt");
 function passportConfig(app) {
@@ -21,11 +21,11 @@ function passportConfig(app) {
                 done(null, user);
             })
             .catch(err => {
-                done(null, false, {message: {error: "server issue"}});
+                done(null, false);
             });
     });
-    passport.use(local);
-    passport.use(jwt);
+    passport.use("fabricant", local);
+    passport.use("jwt-fabricant", jwt);
 
 }
 

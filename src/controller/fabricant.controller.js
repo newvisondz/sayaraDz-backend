@@ -1,15 +1,15 @@
-const User = require("../model/user");
+const User = require("../model/fabricant.model");
 const passport = require("passport");
 
 function index() {
     return [
-        passport.authenticate("jwt", {session: false}),
+        passport.authenticate("jwt-fabricant", {session: false}),
         (req, res) => res.json(req.user || {error: "not authentified"}),
     ]
 }
 
 function login(req, res, next) {
-    passport.authenticate('local', function (err, user, info) {
+    passport.authenticate('fabricant', function (err, user, info) {
         if (err) {
             return next(err);
         }
@@ -25,7 +25,7 @@ function login(req, res, next) {
 
 function signUp(req, res, next) {
 
-    let user = {username, password, email} = req.body;
+    let user = {password, email, firstName, lastName, address, phone} = req.body;
     user = new User(user);
     user.save()
         .then((newUser) => {
@@ -33,7 +33,7 @@ function signUp(req, res, next) {
                 if (err) {
                     return next(err);
                 }
-                res.redirect("/user");
+                res.json(newUser);
             });
         })
         .catch((err) => {

@@ -1,33 +1,31 @@
-const User = require("../../model/user");
+const User = require("../../model/fabricant.model");
 const Local = require("passport-local").Strategy;
 const options = {
-    usernameField: "username",
+    usernameField: "email",
     passwordfield: "password"
 };
 const local = new Local(options, loginUser);
 
-function loginUser(username, password, done) {
-    const user = {username};
+function loginUser(email, password, done) {
+    const user = {email};
     User.findOne(user)
         .exec()
         .then(newUser => {
-            const {createdOn, id, email} = newUser;
-
             newUser.isValidPasswd(
                 password,
                 validatePasswd(done, newUser)
             ) ;
         })
         .catch(err => {
-            done(null, false, {message:  "server issue"});
+            done(null, false);
         });
 }
 
 function validatePasswd(done, user){
     return (err, isValid)=>{
-        if(err)return done(null, false, {message: "server issue"});
+        if(err)return done(null, false);
         if(isValid) return done(null, user);
-        done(null, false, {message: "not valid passwd"});
+        done(null, false);
     }
 }
 
