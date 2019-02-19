@@ -21,7 +21,9 @@ auth(app);
 const PORT = process.env.PORT || 3000;
 app.use("/user", userRouter);
 
-app.get("/error", (req, res) => {
+app.get("/er\n" +
+    "\n" +
+    "\nror", (req, res) => {
     res.json({error: "error message"});
 });
 
@@ -29,6 +31,3 @@ app.listen(PORT, (err) => {
     if (err) throw err;
     console.log(`listening on port : ${PORT}`);
 });
-
-
-

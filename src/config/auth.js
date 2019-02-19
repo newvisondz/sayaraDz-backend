@@ -21,13 +21,14 @@ function passportConfig(app) {
                 done(null, user);
             })
             .catch(err => {
-                done(null, false);
+                done(null, false, {message: {error: "server issue"}});
             });
     });
     passport.use(local);
     passport.use(jwt);
 
 }
+
 
 
 module.exports = passportConfig;

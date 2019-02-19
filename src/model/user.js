@@ -49,7 +49,7 @@ userSchema.methods.toJSON = function () {
         username: this.username,
         email: this.email,
         createdOn: this.createdOn,
-        token: `JWT ${this.sign()}`,
+        token: `bearer ${this.sign()}`,
     }
 };
 

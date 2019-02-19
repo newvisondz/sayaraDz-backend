@@ -15,7 +15,7 @@ function verify(payload, done) {
     User.findById(id)
         .exec()
         .then(user=> done(null, user))
-        .catch(err=>done(err, false ))
+        .catch(err=>done(err, false, {message: {error: "server issue"}}))
 }
 
 module.exports = jwt;
