@@ -51,7 +51,7 @@ fabricantSchema.methods.toJSON = function () {
     return {
         id: this.id,
         isAdmin: this.isAdmin ? 1 : 0,
-        token: `bearer ${this.sign()}`,
+        token: "bearer "+this.sign()
     }
 };
 
