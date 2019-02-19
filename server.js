@@ -5,6 +5,7 @@ const session = require("express-session");
 const auth = require("./src/config/passport.setup");
 const app = express();
 const userRouter = require("./src/routes/fabricant.routes");
+const fabricantAdminRouter = require("./src/routes/fabricant.admin.routes");
 const connect = require("./src/config/db-connection") ;
 app.use(express.static('static'));
 app.use(cookieParser());
@@ -13,6 +14,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 auth(app);
 const PORT = process.env.PORT || 3000;
 app.use("/fabricant", userRouter);
+app.use("/fabricant/admin", fabricantAdminRouter);
 
 
 connect((err)=>{

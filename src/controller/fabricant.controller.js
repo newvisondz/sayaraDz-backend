@@ -5,8 +5,7 @@ const authController = require("./auth.controller");
 
 function index() {
     return [
-        authController.checkBlackList,
-        authController.jwtFabricantAuth,
+        authController.isFabricant,
         (req, res) => {
             const user = req.user.toJSON();
             delete user.token;
@@ -17,8 +16,7 @@ function index() {
 
 function current() {
     return [
-        authController.checkBlackList,
-        authController.jwtFabricantAuth,
+        authController.isFabricant,
         (req, res) => {
             const user = req.user.toJSON();
             delete user.token;
@@ -27,20 +25,12 @@ function current() {
     ]
 }
 
-function login(req, res, next) {
-    passport.authenticate('fabricant', function (err, user, info) {
-        if (err) {
-            return next(err);
-        }
-        if (!user) {
-            return res.json({
-                error: true,
-                msg: "invalid credentials"
-            });
-        }
-        res.json(user)
+function login() {
+    return [
+        authController.checkFabricantAuth("fabricant", "invalid credentials"),
+        (req, res)=> res.json(req.user)
+    ]
 
-    })(req, res, next);
 }
 
 function logout(req, res) {

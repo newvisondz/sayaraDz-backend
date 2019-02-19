@@ -4,7 +4,6 @@ const local = require("./strategies/local");
 const jwt = require("./strategies/jwt.fabricant");
 function passportConfig(app) {
     app.use(passport.initialize());
-    app.use(passport.session());
 
 
     passport.serializeUser((user, done) => {
@@ -27,7 +26,5 @@ function passportConfig(app) {
     passport.use("jwt-fabricant", jwt);
 
 }
-
-
 
 module.exports = passportConfig;
