@@ -22,8 +22,8 @@ function jwtFabricantAuth(req, res, next) {
         }
         if (!user) {
             return res.json({
-                error: 1,
-                msg: "invalid credentials"
+                error: true,
+                msg: "permission denied"
             });
         }
         res.json(user)

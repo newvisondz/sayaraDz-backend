@@ -1,7 +1,8 @@
 function connect(cb){
-    const mongoose = require("mongoose")
+    const mongoose = require("mongoose");
+    const keys = require("./keys");
     mongoose.Promise = global.Promise;
-    mongoose.connect('mongodb://localhost:27017/gen', {useNewUrlParser: true})
+    mongoose.connect(keys.mongoUrl, {useNewUrlParser: true})
         .then(
             ()=>{
                 console.log("database connected");
