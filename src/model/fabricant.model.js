@@ -50,7 +50,7 @@ fabricantSchema.methods.sign = function () {
 fabricantSchema.methods.toJSON = function () {
     return {
         id: this.id,
-        isAdmin: this.isAdmin ? 1 : 0,
+        isAdmin: this.isAdmin || false,
         token: "bearer "+this.sign()
     }
 };

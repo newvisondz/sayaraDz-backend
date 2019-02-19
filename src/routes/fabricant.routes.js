@@ -8,6 +8,6 @@ router.use(bodyParser.urlencoded({extended: false}));
 router.get("/", constroller.index());
 router.post("/login", constroller.login);
 router.post("/signup", constroller.signUp);
-router.get("/logout", constroller.logout)
+router.delete("/logout", constroller.logout)
 
 module.exports = router;
