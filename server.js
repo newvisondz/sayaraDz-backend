@@ -1,7 +1,6 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
-const session = require("express-session");
 const auth = require("./src/config/passport.setup");
 const app = express();
 const userRouter = require("./src/routes/fabricant.routes");

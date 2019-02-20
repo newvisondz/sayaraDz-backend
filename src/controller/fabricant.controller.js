@@ -29,7 +29,6 @@ function login() {
         authController.checkFabricantAuth("fabricant", "invalid credentials"),
         (req, res)=> res.json(req.user)
     ]
-
 }
 
 function logout(req, res) {

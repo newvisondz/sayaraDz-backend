@@ -30,7 +30,6 @@ function checkFabricantAuth(strategy, msg) {
     }
 }
 
-
 function checkFabricantAdminAuth(req, res, next) {
     passport.authenticate('jwt-fabricant', function (err, user, info) {
         if (err) {
