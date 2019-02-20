@@ -2,7 +2,6 @@ const FabricantUser = require("../../model/fabricant.user.model");
 const Jwtstrategy = require("passport-jwt").Strategy;
 const extractJwt = require("passport-jwt").ExtractJwt;
 const secretOrKey = require("../keys").jwt_key;
-const JwtToken = require("../../model/jwt.blacklist");
 const options = {secretOrKey};
 options.jwtFromRequest = extractJwt.fromAuthHeaderAsBearerToken();
 

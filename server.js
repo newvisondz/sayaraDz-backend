@@ -26,7 +26,18 @@ app.get('/auth/facebook/callback',(req, res, next)=>{
         res.json(user)
 
     })(req, res, next);
-} )
+} );
+
+app.get('/auth/google', passport.authenticate('google'));
+app.get('/auth/google/callback',(req, res, next)=>{
+    passport.authenticate('google', function (err, user, info) {
+        if (err) {
+            return res.json(err);
+        }
+        res.json(user)
+    })(req, res, next);
+} );
+
 
 
 connect((err)=>{
