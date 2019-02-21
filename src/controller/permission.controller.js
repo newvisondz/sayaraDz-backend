@@ -7,7 +7,7 @@ function checkToken(req, res, next) {
         .exec()
         .then((newToken) => {
             if (newToken)
-                res.json({error: true, msg: "you logout"});
+                res.json({error: true, msg: "successful logout"});
             else next()
         })
         .catch(err => {
@@ -15,7 +15,7 @@ function checkToken(req, res, next) {
         })
 }
 
-function checkFabricantAuth(strategy, msg) {
+function checkAuth(strategy, msg) {
     return (req, res, next)=>{
         passport.authenticate(strategy, function (err, user, info) {
             if (err) {
@@ -46,10 +46,14 @@ function checkFabricantAdminAuth(req, res, next) {
     })(req, res, next);
 }
 
+
 const isFabricant = [
-    checkToken, checkFabricantAuth('jwt-fabricant', "permission denied")
+    checkToken, checkAuth('jwt-fabricant', "permission denied")
 ];
 
+const isAdmin = [
+    checkToken, checkAuth('jwt-admin', "permission denied")
+];
 
 const isFabricantAdmin = [
     checkToken, checkFabricantAdminAuth
@@ -57,7 +61,8 @@ const isFabricantAdmin = [
 
 
 module.exports = {
-    checkFabricantAuth,
+    checkFabricantAuth: checkAuth,
     isFabricant,
-    isFabricantAdmin
+    isFabricantAdmin,
+    isAdmin
 };

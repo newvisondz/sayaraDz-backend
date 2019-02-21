@@ -23,7 +23,7 @@ const PORT = process.env.PORT || 3000;
 app.use("/fabricant", userRouter);
 app.use("/fabricant/admin", fabricantAdminRouter);
 app.use("/auth", oauthRouter);
-
+app.get("/admin", )
 
 connect((err)=>{
     if(!err){

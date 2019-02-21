@@ -1,9 +1,6 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 const validator = require("validator");
-const bcrypt = require("bcrypt");
-const jsonwebtoken = require("jsonwebtoken");
-const jwtKey = require("../config/keys").jwt_key;
 const utils = require("./utils.model");
 
 const AdminSchema = new Schema({
@@ -28,6 +25,6 @@ AdminSchema.methods.toJSON = function () {
     }
 };
 
-const AdminModel = mongoose.model("User", AdminSchema);
+const AdminModel = mongoose.model("Admin", AdminSchema);
 
 module.exports = AdminModel;

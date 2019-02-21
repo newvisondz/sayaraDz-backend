@@ -1,9 +1,6 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 const validator = require("validator");
-const bcrypt = require("bcrypt");
-const jsonwebtoken = require("jsonwebtoken");
-const jwtKey = require("../config/keys").jwt_key;
 const utils = require("./utils.model");
 
 const fabricantUserSchema = new Schema({

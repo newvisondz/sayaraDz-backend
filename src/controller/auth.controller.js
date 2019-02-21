@@ -2,7 +2,6 @@ const FabricantUser = require("../model/fabricant.user.model");
 const JwtToken = require("../model/jwt.blacklist");
 const authController = require("./permission.controller");
 
-
 function login() {
     return [
         authController.checkFabricantAuth("fabricant", "invalid credentials"),

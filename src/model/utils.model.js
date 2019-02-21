@@ -1,6 +1,8 @@
 const jsonwebtoken = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const keys = require("../config/keys");
+
+
 function sign() {
     return jsonwebtoken.sign({
         id: this.id,
