@@ -7,6 +7,4 @@ router.use(bodyParser.urlencoded({extended: false}));
 
 router.get("/", controller.index());
 
-
-
 module.exports = router;

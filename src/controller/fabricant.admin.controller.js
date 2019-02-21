@@ -1,4 +1,4 @@
-const authController = require("./auth.controller");
+const authController = require("./permission.controller");
 
 function index() {
     return [

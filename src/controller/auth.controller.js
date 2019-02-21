@@ -1,64 +1,27 @@
-const passport = require("passport");
+const FabricantUser = require("../model/fabricant.user.model");
 const JwtToken = require("../model/jwt.blacklist");
+const authController = require("./permission.controller");
 
-function checkToken(req, res, next) {
-    const token = req.headers.authorization;
-    JwtToken.findOne({token})
-        .exec()
-        .then((newToken) => {
-            if (newToken)
-                res.json({error: true, msg: "you logout"});
-            else next()
-        })
+
+function login() {
+    return [
+        authController.checkFabricantAuth("fabricant", "invalid credentials"),
+        (req, res)=> res.json(req.user)
+    ]
+}
+
+function logout(req, res) {
+
+    const token = new JwtToken({token: req.headers.authorization});
+    token.save()
+        .then(() => res.json({logout: true}))
         .catch(err => {
-            throw err
+            if (err.code == 11000) {
+                return res.json({logout: false, msg: "already logout"})
+            }
+            res.json({logout: false, msg: err})
         })
 }
 
-function checkFabricantAuth(strategy, msg) {
-    return (req, res, next)=>{
-        passport.authenticate(strategy, function (err, user, info) {
-            if (err) {
-                return next(err);
-            }
-            if (!user) {
-                return res.json({error: true, msg});
-            }
-            req.user = user;
-            next()
-        })(req, res, next);
-    }
-}
 
-function checkFabricantAdminAuth(req, res, next) {
-    passport.authenticate('jwt-fabricant', function (err, user, info) {
-        if (err) {
-            return next(err);
-        }
-        if (!user || !user.isAdmin) {
-            return res.json({
-                error: true,
-                msg: "permission denied"
-            });
-        }
-        req.user = user;
-        next()
-
-    })(req, res, next);
-}
-
-const isFabricant = [
-    checkToken, checkFabricantAuth('jwt-fabricant', "permission denied")
-];
-
-
-const isFabricantAdmin = [
-    checkToken, checkFabricantAdminAuth
-];
-
-
-module.exports = {
-    checkFabricantAuth,
-    isFabricant,
-    isFabricantAdmin
-};
+module.exports = {login, logout};
