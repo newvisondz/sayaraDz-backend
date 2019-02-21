@@ -6,32 +6,28 @@ const jsonwebtoken = require("jsonwebtoken");
 const jwtKey = require("../config/keys").jwt_key;
 const utils = require("./utils.model");
 
-const fabricantUserSchema = new Schema({
+const AdminSchema = new Schema({
     email: {type: String, index:true, unique: true, require: true, validate: validator.isEmail, trim: true},
     password: {type: String, require: true, minlength:4},
-    firstName: {type: String},
-    lastName: {type: String},
-    address: {type: String},
-    phone: {type: String},
-    isAdmin: Boolean,
     createdOn: {type: Date, default: Date.now}
 });
 
-fabricantUserSchema.pre("save", utils.preSaveUser);
+AdminSchema.pre("save", utils.preSaveUser);
 
-fabricantUserSchema.methods.isValidPasswd = utils.isValidPasswd ;
+AdminSchema.methods.isValidPasswd = utils.isValidPasswd ;
 
-fabricantUserSchema.methods.sign = utils.sign ;
+AdminSchema.methods.sign = utils.sign ;
 
-fabricantUserSchema.methods.toJSON = function () {
+
+//for testing admins
+AdminSchema.methods.toJSON = function () {
     return {
         email: this.email,
         id: this.id,
-        isAdmin: this.isAdmin || false,
         token: "bearer "+ this.sign(),
     }
 };
 
-const FabricantUserModel = mongoose.model("User", fabricantUserSchema);
+const AdminModel = mongoose.model("User", AdminSchema);
 
-module.exports = FabricantUserModel;
+module.exports = AdminModel;

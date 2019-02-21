@@ -14,7 +14,7 @@ function verify(payload, done) {
         .then(user=> {
             done(null, user)
         })
-        .catch(err=>done(err, false, {message: {error: "server issue"}}))
+        .catch(err=>done(err, false))
 }
 
 module.exports = jwtFabricant;
