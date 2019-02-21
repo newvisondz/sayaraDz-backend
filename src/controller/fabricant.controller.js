@@ -1,8 +1,8 @@
-const authController = require("./permission.controller");
+const permissionController = require("./permission.controller");
 
 function index() {
     return [
-        authController.isFabricant,
+        permissionController.isFabricant,
         (req, res) => {
             const user = req.user.toJSON();
             delete user.token;
@@ -13,7 +13,7 @@ function index() {
 
 function current() {
     return [
-        authController.isFabricant,
+        permissionController.isFabricant,
         (req, res) => {
             const user = req.user.toJSON();
             delete user.token;

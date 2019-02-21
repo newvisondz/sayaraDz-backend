@@ -2,9 +2,9 @@ const FabricantUser = require("../model/fabricant.user.model");
 const JwtToken = require("../model/jwt.blacklist");
 const authController = require("./permission.controller");
 
-function login() {
+function login(strategy) {
     return [
-        authController.checkFabricantAuth("fabricant", "invalid credentials"),
+        authController.checkFabricantAuth(strategy, "invalid credentials"),
         (req, res)=> res.json(req.user)
     ]
 }
@@ -23,4 +23,4 @@ function logout(req, res) {
 }
 
 
-module.exports = {login, logout};
+module.exports = { login, logout};

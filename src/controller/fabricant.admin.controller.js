@@ -1,10 +1,10 @@
-const authController = require("./permission.controller");
+const permissionController = require("./permission.controller");
 
 function index() {
     return [
-        authController.isFabricantAdmin,
+        permissionController.isFabricantAdmin,
         (req, res)=>res.json(req.user)
     ]
 }
 
-module.exports = {index}
+module.exports = {index};

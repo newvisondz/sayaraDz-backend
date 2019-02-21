@@ -8,7 +8,7 @@ router.use(bodyParser.urlencoded({extended: false}));
 
 router.get("/", controller.index());
 
-router.post("/login", authController.login());
+router.post("/login", authController.login("fabricant"));
 
 router.delete("/logout", authController.logout);
 
