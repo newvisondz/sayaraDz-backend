@@ -10,6 +10,7 @@ const passport = require("passport");
 const userRouter = require("./src/routes/fabricant.routes");
 const fabricantAdminRouter = require("./src/routes/fabricant.admin.routes");
 const oauthRouter = require("./src/routes/oauth.routes");
+const adminRouter = require("./src/routes/admin.routes");
 
 app.use(express.static('static'));
 app.use(cookieParser());
@@ -23,7 +24,7 @@ const PORT = process.env.PORT || 3000;
 app.use("/fabricant", userRouter);
 app.use("/fabricant/admin", fabricantAdminRouter);
 app.use("/auth", oauthRouter);
-app.get("/admin", )
+app.use("/admin", adminRouter);
 
 connect((err)=>{
     if(!err){

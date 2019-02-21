@@ -1,14 +1,12 @@
 const express = require("express");
 const router = express.Router();
-const controller = require("../controller/fabricant.controller");
+const controller = require("../controller/admin.controller");
 const authController = require("../controller/auth.controller");
-const bodyParser = require('body-parser');
 
-router.use(bodyParser.urlencoded({extended: false}));
 
 router.get("/", controller.index());
 
-router.post("/login", authController.login("local-fabricant"));
+router.post("/login", authController.login("local-admin"));
 
 router.delete("/logout", authController.logout);
 

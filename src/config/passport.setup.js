@@ -11,7 +11,8 @@ function passportConfig(app) {
 
     app.use(passport.initialize());
 
-    passport.use("fabricant", local);
+    passport.use("local-fabricant", local(FabricantUser));
+    passport.use("local-admin", local(Admin));
     passport.use("jwt-fabricant", jwt(FabricantUser));
     passport.use("jwt-admin", jwt(Admin));
     passport.use("facebook", facebook);
