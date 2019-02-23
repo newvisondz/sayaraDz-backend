@@ -16,6 +16,5 @@ module.exports = (Model) => {
             .catch(err => done(err, false))
     };
     const jwt = new Jwtstrategy(options, verify);
-
     return jwt;
 };
