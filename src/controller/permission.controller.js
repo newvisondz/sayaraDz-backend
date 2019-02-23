@@ -7,7 +7,7 @@ function checkToken(req, res, next) {
         .exec()
         .then((newToken) => {
             if (newToken)
-                res.json({error: true, msg: "successful logout"});
+                res.json({error: true, msg: "you logout"});
             else next()
         })
         .catch(err => {
@@ -46,7 +46,10 @@ function checkFabricantAdminAuth(req, res, next) {
     })(req, res, next);
 }
 
-
+function generateToken(req, res, next){
+    req.user.token = req.user.sign();
+    next();
+}
 const isFabricant = [
     checkToken, checkAuth('jwt-fabricant', "permission denied")
 ];
@@ -61,8 +64,9 @@ const isFabricantAdmin = [
 
 
 module.exports = {
-    checkFabricantAuth: checkAuth,
+    checkAuth,
     isFabricant,
     isFabricantAdmin,
-    isAdmin
+    isAdmin,
+    generateToken
 };

@@ -4,9 +4,7 @@ function index() {
     return [
         permissionController.isAdmin,
         (req, res) => {
-            const user = req.user.toJSON();
-            delete user.token;
-            res.json(user)
+            res.json(req.user)
         }
     ]
 }
@@ -16,9 +14,7 @@ function current() {
     return [
         permissionController.isAdmin,
         (req, res) => {
-            const user = req.user.toJSON();
-            delete user.token;
-            res.json(user)
+            res.json(req.user)
         }
     ]
 }

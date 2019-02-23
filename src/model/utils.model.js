@@ -4,8 +4,9 @@ const keys = require("../config/keys");
 
 
 function sign() {
-    return jsonwebtoken.sign({
+    return "bearer "+ jsonwebtoken.sign({
         id: this.id,
+
     }, keys.jwt_key, {
         expiresIn: "1d",
     })
@@ -19,7 +20,7 @@ function isValidPasswd(password, cb) {
         .catch(err=> cb(err))
 }
 
-function preSaveUser(){
+function preSaveUser(next){
     const user = this;
     if(!user.isModified("password")){
         return next()
@@ -34,4 +35,19 @@ function preSaveUser(){
         })
 }
 
-module.exports = {sign, isValidPasswd, preSaveUser};
+function getFabQueryObject(query){
+    let {email, password, firstName, lastName, address, phone, isAdmin, createdOn} = query;
+    const q = {email, password, firstName, lastName, address, phone, isAdmin, createdOn};
+    for(let prop in q) if(!q[prop]) delete q[prop];
+
+    return q
+}
+function getAdminQueryObject(query){
+    let {email, password, createdOn} = query;
+    const q = {email, password, createdOn};
+    for(let prop in q) if(!q[prop]) delete q[prop];
+
+    return q;
+}
+
+module.exports = {sign, isValidPasswd, preSaveUser, getAdminQueryObject, getFabQueryObject};

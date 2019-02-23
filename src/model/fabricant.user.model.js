@@ -25,9 +25,11 @@ fabricantUserSchema.methods.toJSON = function () {
         email: this.email,
         id: this.id,
         isAdmin: this.isAdmin || false,
-        token: "bearer "+ this.sign(),
+        token: this.token
     }
 };
+
+fabricantUserSchema.statics.getQueryObject = utils.getFabQueryObject;
 
 const FabricantUserModel = mongoose.model("User", fabricantUserSchema);
 

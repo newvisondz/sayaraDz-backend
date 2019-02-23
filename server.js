@@ -5,7 +5,7 @@ const auth = require("./src/config/passport.setup");
 const app = express();
 const connect = require("./src/config/db-connection") ;
 const passport = require("passport");
-
+const Admin = require("./src/model/admin.model");
 //routers
 const userRouter = require("./src/routes/fabricant.routes");
 const fabricantAdminRouter = require("./src/routes/fabricant.admin.routes");
@@ -35,3 +35,5 @@ connect((err)=>{
     }
     else throw err;
 });
+
+require("./src/model/automobiliste.model");

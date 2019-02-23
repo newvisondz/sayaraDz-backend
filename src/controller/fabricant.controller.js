@@ -1,23 +1,25 @@
 const permissionController = require("./permission.controller");
+const Fabricant = require("../model/fabricant.user.model");
 
 function index() {
     return [
-        permissionController.isFabricant,
+        permissionController.isFabricantAdmin,
         (req, res) => {
-            const user = req.user.toJSON();
-            delete user.token;
-            res.json(user)
+
+            const query = Fabricant.getQueryObject(req.query);
+            Fabricant.find(query)
+                .limit(req.query.limit)
+                .sort("createdOn")
+                .then(fabricants=> res.json(fabricants))
+                .catch(err=> res.json(err))
         }
     ]
 }
-
 function current() {
     return [
         permissionController.isFabricant,
         (req, res) => {
-            const user = req.user.toJSON();
-            delete user.token;
-            res.json(user)
+            res.json(req.user)
         }
     ]
 }

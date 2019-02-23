@@ -1,11 +1,14 @@
 const FabricantUser = require("../model/fabricant.user.model");
 const JwtToken = require("../model/jwt.blacklist");
-const authController = require("./permission.controller");
+const permissionController = require("./permission.controller");
 
 function login(strategy) {
     return [
-        authController.checkFabricantAuth(strategy, "invalid credentials"),
-        (req, res)=> res.json(req.user)
+        permissionController.checkAuth(strategy, "invalid credentials"),
+        permissionController.generateToken,
+        (req, res)=> {
+            res.json(req.user)
+        }
     ]
 }
 

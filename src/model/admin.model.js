@@ -21,10 +21,12 @@ AdminSchema.methods.toJSON = function () {
     return {
         email: this.email,
         id: this.id,
-        token: "bearer "+ this.sign(),
+        token: this.token
     }
 };
 
 const AdminModel = mongoose.model("Admin", AdminSchema);
+
+AdminSchema.statics.getQueryObject = utils.getAdminQueryObject;
 
 module.exports = AdminModel;
