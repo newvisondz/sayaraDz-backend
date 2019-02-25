@@ -11,7 +11,7 @@ const userRouter = require("./src/routes/fabricant.routes");
 const fabricantAdminRouter = require("./src/routes/fabricant.admin.routes");
 const oauthRouter = require("./src/routes/oauth.routes");
 const adminRouter = require("./src/routes/admin.routes");
-
+const fabricantRouter = require("./src/routes/fabricant.m.routes");
 
 const cors = require("cors");
 
@@ -31,8 +31,10 @@ app.use("/fabricant", userRouter);
 app.use("/fabricant/admin", fabricantAdminRouter);
 app.use("/auth", oauthRouter);
 app.use("/admin", adminRouter);
+app.use("/fabricant/model", fabricantRouter) ;
 
 connect((err)=>{
+
     if(!err){
         app.listen(PORT, (err) => {
             if (err) throw err;
