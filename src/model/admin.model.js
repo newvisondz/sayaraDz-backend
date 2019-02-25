@@ -15,7 +15,7 @@ AdminSchema.methods.isValidPasswd = utils.isValidPasswd ;
 
 AdminSchema.methods.sign = utils.sign ;
 
-
+AdminSchema.virtual("type").get(()=>utils.USER_TYPE.ADMIN) ;
 //for testing admins
 AdminSchema.methods.toJSON = function () {
     return {
@@ -25,8 +25,12 @@ AdminSchema.methods.toJSON = function () {
     }
 };
 
+AdminSchema.statics.getQueryObject = utils.getAdminQueryObject;
+
+AdminSchema.statics.type = ()=>utils.USER_TYPE.ADMIN;
+
 const AdminModel = mongoose.model("Admin", AdminSchema);
 
-AdminSchema.statics.getQueryObject = utils.getAdminQueryObject;
+
 
 module.exports = AdminModel;

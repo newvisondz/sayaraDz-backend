@@ -2,11 +2,17 @@ const jsonwebtoken = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const keys = require("../config/keys");
 
+const USER_TYPE = {
+    ADMIN: "ADMIN",
+    AUTOMOBILISTE: "AUTOMOBILISTE",
+    FABRICANT: "FABRICANT"
+};
 
 function sign() {
+    console.log(this.type, " >>>>")
     return "bearer "+ jsonwebtoken.sign({
         id: this.id,
-
+        type: this.type
     }, keys.jwt_key, {
         expiresIn: "1d",
     })
@@ -50,4 +56,4 @@ function getAdminQueryObject(query){
     return q;
 }
 
-module.exports = {sign, isValidPasswd, preSaveUser, getAdminQueryObject, getFabQueryObject};
+module.exports = {USER_TYPE, sign, isValidPasswd, preSaveUser, getAdminQueryObject, getFabQueryObject};

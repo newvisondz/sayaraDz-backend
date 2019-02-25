@@ -18,7 +18,6 @@ function callback(accessToken, refreshToken, profile, done){
                 autom.save()
                     .then(newAutomate=>done(null, newAutomate))
                     .catch(err=> done(err));
-
             } else {
                 const autom = new Automobiliste({
                     email: profile.emails[0].value,
@@ -39,7 +38,6 @@ function callback(accessToken, refreshToken, profile, done){
         })
         .catch(err => done(err));
 
-
-};
+}
 
 module.exports = callback ;

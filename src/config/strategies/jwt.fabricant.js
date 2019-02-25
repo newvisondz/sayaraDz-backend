@@ -7,7 +7,13 @@ options.jwtFromRequest = extractJwt.fromAuthHeaderAsBearerToken();
 
 module.exports = (Model) => {
     verify = (payload, done) => {
+
         const id = payload.id;
+        const type = payload.type;
+        console.log(Model.type(), "  -------------")
+        if(type != Model.type())
+            return done(null, false);
+
         Model.findById(id)
             .exec()
             .then(user => {

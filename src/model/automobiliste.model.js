@@ -5,7 +5,7 @@ const utils = require("./utils.model");
 
 const providers = ["google", "facebook"];
 
-const AutoMobiliste = new Schema({
+const AutoMobilisteSchema = new Schema({
     email: {type: String, index:true, unique: true, validate: validator.isEmail, trim: true},
     password: {type: String, minlength:4},
     providers: [
@@ -18,14 +18,16 @@ const AutoMobiliste = new Schema({
     createdOn: {type: Date, default: Date.now}
 });
 
-AutoMobiliste.pre("save", utils.preSaveUser);
+AutoMobilisteSchema.pre("save", utils.preSaveUser);
 
-AutoMobiliste.methods.isValidPasswd = utils.isValidPasswd ;
+AutoMobilisteSchema.methods.isValidPasswd = utils.isValidPasswd ;
 
-AutoMobiliste.methods.sign = utils.sign ;
+AutoMobilisteSchema.methods.sign = utils.sign ;
+
+AutoMobilisteSchema.virtual("type").get(()=>utils.USER_TYPE.AUTOMOBILISTE) ;
 
 
-AutoMobiliste.methods.toJSON = function () {
+AutoMobilisteSchema.methods.toJSON = function () {
     return {
         email: this.email,
         id: this.id,
@@ -33,8 +35,9 @@ AutoMobiliste.methods.toJSON = function () {
     }
 };
 
-const Automobiliste = mongoose.model("Automobiliste", AutoMobiliste);
+const Automobiliste = mongoose.model("Automobiliste", AutoMobilisteSchema);
 
-AutoMobiliste.statics.getQueryObject = utils.getAdminQueryObject;
+AutoMobilisteSchema.statics.getQueryObject = utils.getAdminQueryObject;
+AutoMobilisteSchema.statics.type = ()=>utils.USER_TYPE.AUTOMOBILISTE;
 
 module.exports = Automobiliste;

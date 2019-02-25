@@ -28,8 +28,10 @@ fabricantUserSchema.methods.toJSON = function () {
         token: this.token
     }
 };
+fabricantUserSchema.virtual("type").get(()=>utils.USER_TYPE.FABRICANT) ;
 
 fabricantUserSchema.statics.getQueryObject = utils.getFabQueryObject;
+fabricantUserSchema.statics.type = ()=>utils.USER_TYPE.FABRICANT;
 
 const FabricantUserModel = mongoose.model("User", fabricantUserSchema);
 
