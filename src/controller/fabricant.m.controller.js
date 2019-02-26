@@ -29,9 +29,10 @@ function listAll(req, res, next) {
     const query = Fabricant.getQueryObject(req.query);
     const perpage = parseInt(req.query.perpage);
     const page = parseInt(req.query.page);
-
+    let  skip = (page - 1) * perpage ;
+    skip = skip<0 ? 0: skip ;
     Fabricant.find(query)
-        .skip((page - 1) * perpage)
+        .skip(skip )
         .limit(perpage)
         .select(req.query.select)
         .sort(req.query.sort)
