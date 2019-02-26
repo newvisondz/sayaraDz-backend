@@ -27,11 +27,14 @@ function deleteOne() {
 
 function listAll(req, res, next) {
     const query = Fabricant.getQueryObject(req.query);
+    const perpage = parseInt(req.query.perpage);
+    const page = parseInt(req.query.page);
     Fabricant.find(query)
-        .limit(parseInt(req.query.limit))
+        .skip((page - 1) * perpage)
+        .limit(perpage)
         .select(req.query.select)
         .sort(req.query.sort)
-        .then(fabricants => res.json(fabricants))
+        .then(fabricants => res.json({fabricants}))
         .catch(err => res.json(err))
 }
 
