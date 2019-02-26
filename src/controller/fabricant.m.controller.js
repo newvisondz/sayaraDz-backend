@@ -56,7 +56,6 @@ function createFabricant(req, res, next) {
             res.json(err);
             next(err);
         })
-
 }
 
 async function deleteFabricant(req, res, next){
