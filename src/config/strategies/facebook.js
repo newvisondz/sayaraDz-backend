@@ -5,9 +5,9 @@ const callback = require("./oauth.callback");
 const fbStrategy = new FacebookStrategy({
     clientID: keys.fb_app_id,
     clientSecret: keys.fb_app_secret,
-    callbackURL: 'http://localhost:3000/auth/facebook/callback',
+    callbackURL: 'https://sayara-dz.herokuapp.com/auth/facebook/callback',
     profileFields: ['id', 'displayName', 'email',
         'first_name', 'last_name', 'middle_name', 'gender', 'link']
-},callback);
+}, callback);
 
 module.exports = fbStrategy;

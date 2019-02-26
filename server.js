@@ -39,9 +39,9 @@ connect((err)=>{
         app.listen(PORT, (err) => {
             if (err) throw err;
             console.log(`listening on port : ${PORT}`);
+            console.log(`mode: ${process.env.NODE_ENV}`);
         });
     }
     else throw err;
 });
 
-require("./src/model/automobiliste.model");

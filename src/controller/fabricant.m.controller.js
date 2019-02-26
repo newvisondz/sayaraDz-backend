@@ -29,6 +29,7 @@ function listAll(req, res, next) {
     const query = Fabricant.getQueryObject(req.query);
     const perpage = parseInt(req.query.perpage);
     const page = parseInt(req.query.page);
+
     Fabricant.find(query)
         .skip((page - 1) * perpage)
         .limit(perpage)
