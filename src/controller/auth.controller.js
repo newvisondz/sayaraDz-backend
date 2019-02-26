@@ -13,13 +13,17 @@ function login(strategy) {
 }
 
 function logout(req, res) {
-
-    const token = new JwtToken({token: req.headers.authorization});
+    let token =  req.headers.authorization;
+    if(!token)return res.json({
+        error: true,
+        msg: "token validation failed: token is required."
+    });
+    token = new JwtToken({token});
     token.save()
         .then(() => res.json({logout: true}))
         .catch(err => {
             if (err.code == 11000) {
-                return res.json({logout: false, msg: "already logout"})
+                return res.json({logout: true})
             }
             res.json({logout: false, msg: err})
         })
