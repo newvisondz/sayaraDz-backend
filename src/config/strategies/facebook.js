@@ -1,4 +1,4 @@
-const FacebookStrategy = require('passport-facebook').Strategy;
+const FacebookStrategy = require('passport-facebook-token').Strategy;
 const keys = require("../keys");
 const callback = require("./oauth.callback");
 
