@@ -2,7 +2,6 @@ const Automobiliste = require("../../model/automobiliste.model");
 
 
 function callback(accessToken, refreshToken, profile, done){
-
     Automobiliste.findOne({email: profile.emails[0].value})
         .exec()
         .then(autom => {
