@@ -17,7 +17,7 @@ const cors = require("cors");
 
 app.use(cors());
 
-app.use(express.static('static'));
+app.use(express.static('public'));
 app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
