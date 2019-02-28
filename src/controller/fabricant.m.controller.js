@@ -58,12 +58,15 @@ function createFabricant(req, res, next) {
                 if (files.logo) {
                     let ext = files.logo.name.split(".").pop();
                     const logoPath = `public/images/${newFab.id}.${ext}`;
-                    fs.copy(files.logo.path, `/${logoPath}`)
+                    fs.copy(files.logo.path, `./${logoPath}`)
                         .then(() => {
-                            newFab.logo = logoPath;
+                            newFab.logo = `/${logoPath}`;
                             res.json(newFab);
                         })
-                        .catch(err => res.json(err));
+                        .catch(err => {
+                            newFab.error = err;
+                            res.json(newFab);
+                        });
                     return
                 }
                 res.json(newFab);

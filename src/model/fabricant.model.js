@@ -19,6 +19,7 @@ fabricantSchema.methods.toJSON = function () {
         id: this.id,
         marque: this.marque,
         logo: this.logo,
+        error: this.error,
         createdOn: this.createdOn
     }
 };
