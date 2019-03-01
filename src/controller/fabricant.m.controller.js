@@ -7,7 +7,7 @@ const formidable = require("formidable");
 
 function index() {
     return [
-        permissionController.isAdmin,
+        //permissionController.isAdmin,
         listAll
     ]
 }
