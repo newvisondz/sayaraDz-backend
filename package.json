@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "nodemon app.js",
-    "test": "mocha"
+    "test": "mocha --reporter mochawesome --reporter-options reportDir=./test/report"
   },
   "author": "",
   "license": "ISC",
@@ -39,5 +39,9 @@
     "session-file-store": "^1.2.0",
     "superagent": "^4.1.0",
     "validator": "^10.11.0"
+  },
+  "devDependencies": {
+    "mochawesome": "^3.1.1",
+    "mongodb-memory-server": "^3.1.2"
   }
 }
