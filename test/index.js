@@ -5,7 +5,7 @@ const {
 const server = require("../server")
 const axios = require("axios")
 
-let token ;
+let token;
 describe("SayaraDZ", () => {
     before((done) => {
         axios
@@ -40,8 +40,22 @@ describe("SayaraDZ", () => {
                         done(err)
                     })
             })
+            it("should logout", (done) => {
+                axios
+                    .delete("http://localhost:3000/admin/logout", {
+                        headers:{
+                            Authorization: token
+                        }
+                    })
+                    .then(response=>{
+                        const logout = response.data.logout
+                        expect(logout).to.be.true
+                        done()
+                    })
+            })
         })
        
+
     })
     after(() => {})
 })
