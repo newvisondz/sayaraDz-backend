@@ -1,61 +1,11 @@
-const {
-    assert,
-    expect
-} = require("chai")
+const {assert,expect} = require("chai")
 const server = require("../server")
 const axios = require("axios")
+const testAdmin = require("./admin")
 
-let token;
 describe("SayaraDZ", () => {
-    before((done) => {
-        axios
-            .post("http://localhost:3000/admin/login", {
-                email: "akram@esi.dz",
-                password: "root"
-            })
-            .then(response => {
-                token = response.data.token
-                done()
-            })
-    })
-
     describe("Admin", () => {
-        describe("Authentication", () => {
-            it("should return a token", (done) => {
-                axios
-                    .post("http://localhost:3000/admin/login", {
-                        email: "akram@esi.dz",
-                        password: "root"
-                    })
-                    .then(response => {
-                        const {
-                            error,
-                            token
-                        } = response.data
-                        expect(error).to.be.undefined
-                        expect(token).not.be.undefined
-                        done()
-                    })
-                    .catch((err, response) => {
-                        done(err)
-                    })
-            })
-            it("should logout", (done) => {
-                axios
-                    .delete("http://localhost:3000/admin/logout", {
-                        headers:{
-                            Authorization: token
-                        }
-                    })
-                    .then(response=>{
-                        const logout = response.data.logout
-                        expect(logout).to.be.true
-                        done()
-                    })
-            })
-        })
-       
-
+        testAdmin.authenticate()
     })
     after(() => {})
 })
