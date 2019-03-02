@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "nodemon server.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha"
   },
   "author": "",
   "license": "ISC",
@@ -13,9 +13,11 @@
     "@passport-next/passport": "^2.1.0",
     "@passport-next/passport-facebook": "^3.1.1",
     "@passport-next/passport-google-oauth2": "^1.0.0",
+    "assert": "^1.4.1",
     "bcrypt": "^3.0.4",
     "bluebird": "^3.5.3",
     "body-parser": "^1.18.3",
+    "chai": "^4.2.0",
     "cookie-parser": "^1.4.3",
     "cors": "^2.8.5",
     "express": "^4.16.4",
@@ -23,6 +25,7 @@
     "formidable": "^1.2.1",
     "fs-extra": "^7.0.1",
     "jsonwebtoken": "^8.4.0",
+    "mocha": "^6.0.2",
     "mongoose": "^5.4.11",
     "nodemon": "^1.18.10",
     "passport": "^0.4.0",
