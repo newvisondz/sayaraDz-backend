@@ -30,8 +30,8 @@ app.use("/fabricant/model", fabricantRouter) ;
 const connect = (PORT)=>{
     app.listen(PORT, (err) => {
         if (err) throw err;
-        console.log(`listening on port : ${PORT}`);
-        console.log(`mode: ${process.env.NODE_ENV}`);
+        // console.log(`listening on port : ${PORT}`);
+        // console.log(`mode: ${process.env.NODE_ENV}`);
     });
 }
 

@@ -1,9 +1,47 @@
-const assert = require("assert")
-const chai = require("chai")
+const {
+    assert,
+    expect
+} = require("chai")
+const server = require("../server")
+const axios = require("axios")
 
-describe("SayaraDZ test", ()=>{
-
-    before(()=>{
-        
+let token ;
+describe("SayaraDZ", () => {
+    before((done) => {
+        axios
+            .post("http://localhost:3000/admin/login", {
+                email: "akram@esi.dz",
+                password: "root"
+            })
+            .then(response => {
+                token = response.data.token
+                done()
+            })
     })
+
+    describe("Admin", () => {
+        describe("Authentication", () => {
+            it("should return a token", (done) => {
+                axios
+                    .post("http://localhost:3000/admin/login", {
+                        email: "akram@esi.dz",
+                        password: "root"
+                    })
+                    .then(response => {
+                        const {
+                            error,
+                            token
+                        } = response.data
+                        expect(error).to.be.undefined
+                        expect(token).not.be.undefined
+                        done()
+                    })
+                    .catch((err, response) => {
+                        done(err)
+                    })
+            })
+        })
+       
+    })
+    after(() => {})
 })
