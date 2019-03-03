@@ -43,40 +43,59 @@ function listAll(req, res, next) {
 }
 
 function createFabricant(req, res, next) {
-    let form = formidable.IncomingForm();
-    form.maxFileSize = 20 * 1024 ** 2;
-    form.keepExtensions = true;
-
-    form.parse(req, (err, fields, files) => {
-        if (!fields.marque) return res.json({
+    const fab = {
+        marque: req.body.marque
+    };
+    if (!fab.marque)
+        return res.json({
             error: true,
             msg: "empty marque field"
         });
-        const fab = {marque: fields.marque};
-        new Fabricant(fab).save()
-            .then(newFab => {
-                if (files.logo) {
-                    let ext = files.logo.name.split(".").pop();
-                    const logoPath = `public/images/${newFab.id}.${ext}`;
-                    fs.copy(files.logo.path, `./${logoPath}`)
-                        .then(() => {
-                            newFab.logo = `/${logoPath}`;
-                            res.json(newFab);
-                        })
-                        .catch(err => {
-                            newFab.error = err;
-                            res.json(newFab);
-                        });
-                    return
-                }
-                res.json(newFab);
-            })
-            .catch(err => {
-                res.json(err);
-                next(err);
-            });
-    });
+
+    new Fabricant(fab).save()
+        .then(newFab=> res.json(newFab))
+        .catch(err=> {
+            res.json(err);
+            next(err);
+        })
 }
+
+
+// function createFabricant(req, res, next) {
+//     let form = formidable.IncomingForm();
+//     form.maxFileSize = 20 * 1024 ** 2;
+//     form.keepExtensions = true;
+
+//     form.parse(req, (err, fields, files) => {
+//         if (!fields.marque) return res.json({
+//             error: true,
+//             msg: "empty marque field"
+//         });
+//         const fab = {marque: fields.marque};
+//         new Fabricant(fab).save()
+//             .then(newFab => {
+//                 if (files.logo) {
+//                     let ext = files.logo.name.split(".").pop();
+//                     const logoPath = `public/images/${newFab.id}.${ext}`;
+//                     fs.copy(files.logo.path, `./${logoPath}`)
+//                         .then(() => {
+//                             newFab.logo = `/${logoPath}`;
+//                             res.json(newFab);
+//                         })
+//                         .catch(err => {
+//                             newFab.error = err;
+//                             res.json(newFab);
+//                         });
+//                     return
+//                 }
+//                 res.json(newFab);
+//             })
+//             .catch(err => {
+//                 res.json(err);
+//                 next(err);
+//             });
+//     });
+// }
 
 async function deleteFabricant(req, res, next) {
     const isValid = ObjectId.isValid(req.params.id);

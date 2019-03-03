@@ -39,6 +39,25 @@ module.exports = {
                     done(err)
                 })
         })
+        it("should return error with invalid credentials", (done) => {
+            axios
+                .post("http://localhost:3000/admin/login", {
+                    email: "gmial",
+                    password: "root"
+                })
+                .then(response => {
+                    const {
+                        error,
+                        msg
+                    } = response.data
+                    expect(error).to.be.exist
+                    expect(msg).to.equal("invalid credentials")
+                    done()
+                })
+                .catch((err, response) => {
+                    done(err)
+                })
+        })
         it("should logout", (done) => {
             axios
                 .delete("http://localhost:3000/admin/logout", {
