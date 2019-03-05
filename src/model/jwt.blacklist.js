@@ -17,5 +17,5 @@ const tokenSchema = new Schema({
       expires: "99d",
    }
 })
-
-module.exports = mongoose.model("token", tokenSchema);
+const TokenModel = mongoose.model("token", tokenSchema);
+module.exports = TokenModel

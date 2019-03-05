@@ -6,7 +6,14 @@ const options = {
 };
 
 module.exports = (Model) => {
-
+    let validatePasswd = (done, user) => {
+        return (err, isValid) => {
+            console.log({isValid})
+            if (err) return done(null, false)
+            if (isValid) return done(null, user)
+            done(null, false)
+        }
+    }
     let loginUser = async (email, password, done) => {
         console.log(email, password)
         let user = {
@@ -14,21 +21,17 @@ module.exports = (Model) => {
         }
         try {
             newUser = await Model.findOne(user)
+
             newUser.isValidPasswd(
                 password,
                 validatePasswd(done, newUser)
             )
         } catch (err) {
+            console.log(err)
             done(null, false);
         }
     }
 
-    let validatePasswd = (done, user) => {
-        return (err, isValid) => {
-            if (err) return done(null, false)
-            if (isValid) return done(null, user)
-            done(null, false)
-        }
-    }
+
     return new Local(options, loginUser)
 }

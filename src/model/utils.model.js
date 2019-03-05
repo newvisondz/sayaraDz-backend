@@ -8,22 +8,27 @@ const USER_TYPE = {
     FABRICANT: "FABRICANT"
 }
 
-const sign = () => "bearer " + jsonwebtoken.sign({
-    id: this.id,
-    type: this.type
-}, keys.jwt_key, {
-    expiresIn: "99d",
-})
+function sign() {
+    return "bearer " + jsonwebtoken.sign({
+        id: this.id,
+        type: this.type
+    }, keys.jwt_key, {
+        expiresIn: "1d",
+    })
+}
 
-const isValidPasswd = (password, cb) => {
+function isValidPasswd(password, cb) {
     bcrypt.compare(password, this.password)
         .then(isValid => {
+            console.log({
+                isValid
+            })
             cb(null, isValid)
         })
         .catch(err => cb(err))
 }
 
-const preSaveUser = (next) => {
+function preSaveUser(next){
     const user = this
     if (!user.isModified("password")) {
         return next()

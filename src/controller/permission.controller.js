@@ -18,18 +18,18 @@ const checkFabricantAdminAuth = (req, res, next) => passport.authenticate(
         next()
     })(req, res, next);
 
-const checkToken = (req, res, next) => {
+const checkToken = async (req, res, next) => {
     const token = req.headers.authorization;
     try {
-        newToken = JwtToken.findOne({
+        newToken = await JwtToken.findOne({
             token
         })
-        if (newToken)
+        if (newToken) {
             res.json({
                 error: true,
-                msg: "successful logout"
+                msg: "you logout"
             });
-        else next()
+        } else next()
     } catch (error) {
         next(error)
     }
@@ -56,7 +56,6 @@ exports.generateToken = (req, res, next) => {
     next();
 }
 exports.isFabricant = [
-    checkToken, checkAuth('jwt-fabricant', "permission denied")
 ];
 
 exports.isAdmin = [
