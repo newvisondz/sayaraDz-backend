@@ -24,5 +24,5 @@ fabricantSchema.methods.toJSON = function () {
     }
 };
 const FabricantModel = mongoose.model("fabricant", fabricantSchema);
-// FabricantModel.create({marque: "Toyota"})
+
 module.exports = FabricantModel;

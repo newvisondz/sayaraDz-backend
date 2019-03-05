@@ -7,7 +7,7 @@ const jwt = require("./strategies/jwt.fabricant");
 const facebook = require("./strategies/facebook");
 const google = require("./strategies/google");
 
-function passportConfig(app) {
+module.exports = (app) => {
 
     app.use(passport.initialize());
 
@@ -19,5 +19,3 @@ function passportConfig(app) {
     passport.use("google", google);
 
 }
-
-module.exports = passportConfig;
