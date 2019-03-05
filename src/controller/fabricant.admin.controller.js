@@ -3,6 +3,7 @@ const FabricantUser = require("../model/fabricant.user.model").Model
 const ObjectId = require("mongoose").Types.ObjectId;
 
 exports.index = () => [
+    permissionController.isAdmin,
     async (req, res) => {
         if (!req.query.fabricant) return res.json({
             error: 1,
@@ -28,6 +29,7 @@ exports.index = () => [
 ]
 
 exports.update = () => [
+    permissionController.isAdmin,
     async (req, res) => {
         const query = FabricantUser.getQueryObject(req.query)
         const {
@@ -44,6 +46,7 @@ exports.update = () => [
 ]
 
 exports.delete = () => [
+    permissionController.isAdmin,
     async (req, res) => {
         const _id = req.params.id
         if (!handleIdParams(_id, res)) return
