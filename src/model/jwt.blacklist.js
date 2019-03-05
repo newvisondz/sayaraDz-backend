@@ -6,14 +6,16 @@ const tokenSchema = new Schema({
    token: {
       type: String,
       required: true,
-      expires: "1d",
       unique: true,
-      validate: (value)=>{
+      validate: (value) => {
          return validator.isJWT(value.substr(7))
       }
+   },
+   createdOn: {
+      type: Date,
+      default: Date.now,
+      expires: "99d",
    }
-});
+})
 
-const TokenModel = mongoose.model("token", tokenSchema);
-
-module.exports = TokenModel;
+exports.TokenModel = mongoose.model("token", tokenSchema);
