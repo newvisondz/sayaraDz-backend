@@ -52,7 +52,8 @@ const getFabQueryObject = (query) => {
         address,
         phone,
         isAdmin,
-        createdOn
+        createdOn,
+        fabricant
     } = query
     const q = {
         email,
@@ -62,7 +63,8 @@ const getFabQueryObject = (query) => {
         address,
         phone,
         isAdmin,
-        createdOn
+        createdOn,
+        fabricant
     }
     for (let prop in q)
         if (!q[prop]) delete q[prop]

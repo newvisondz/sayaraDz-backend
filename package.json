@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "nodemon app.js",
+    "dev": "nodemon app.js",
     "test": "mocha --timeout=5000 --reporter mochawesome --reporter-options reportDir=./test/report"
   },
   "author": "",

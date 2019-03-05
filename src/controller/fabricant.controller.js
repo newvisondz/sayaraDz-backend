@@ -1,6 +1,6 @@
 const express = require("express");
 const permissionController = require("./permission.controller");
-const Fabricant = require("../model/fabricant.model");
+const Fabricant = require("../model/fabricant.model").FabricantModel;
 const ObjectId = require("mongoose").Types.ObjectId;
 const fs = require("fs-extra");
 const formidable = require("formidable");
