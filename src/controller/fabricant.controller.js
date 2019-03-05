@@ -1,27 +1,113 @@
+const express = require("express");
 const permissionController = require("./permission.controller");
-const Fabricant = require("../model/fabricant.user.model");
+const Fabricant = require("../model/fabricant.model");
+const ObjectId = require("mongoose").Types.ObjectId;
+const fs = require("fs-extra");
+const formidable = require("formidable");
 
-function index() {
-    return [
-        permissionController.isFabricantAdmin,
-        (req, res) => {
+exports.index = () => [
+    permissionController.isAdmin,
+    listAll
+]
 
-            const query = Fabricant.getQueryObject(req.query);
-            Fabricant.find(query)
-                .limit(req.query.limit)
-                .sort("createdOn")
-                .then(fabricants=> res.json(fabricants))
-                .catch(err=> res.json(err))
-        }
-    ]
+exports.create = () => [
+    permissionController.isAdmin,
+    createFabricant
+]
+
+exports.deleteOne = () => [
+    permissionController.isAdmin,
+    deleteFabricant
+]
+
+const listAll = async (req, res, next) => {
+    const query = Fabricant.getQueryObject(req.query)
+    const perpage = parseInt(req.query.perpage)
+    const page = parseInt(req.query.page)
+    let skip = (page - 1) * perpage
+    skip = skip < 0 ? 0 : skip
+    try {
+        const fabricants = await Fabricant.find(query)
+            .skip(skip)
+            .limit(perpage)
+            .select(req.query.select)
+            .sort(req.query.sort)
+            .exec()
+        res.json({
+            fabricants
+        })
+    } catch (error) {
+        res.json(error)
+    }
 }
-function current() {
-    return [
-        permissionController.isFabricant,
-        (req, res) => {
-            res.json(req.user)
-        }
-    ]
+
+const createFabricant = async (req, res, next) => {
+    const fab = {
+        marque: req.body.marque
+    };
+    if (!fab.marque)
+        return res.json({
+            error: true,
+            msg: "empty marque field"
+        });
+    try {
+        const fabricant = await new Fabricant(fab).save()
+        res.json(newFab)
+    } catch (error) {
+        res.json(err);
+    }
 }
 
-module.exports = {index, current};
+
+// function createFabricant(req, res, next) {
+//     let form = formidable.IncomingForm();
+//     form.maxFileSize = 20 * 1024 ** 2;
+//     form.keepExtensions = true;
+
+//     form.parse(req, (err, fields, files) => {
+//         if (!fields.marque) return res.json({
+//             error: true,
+//             msg: "empty marque field"
+//         });
+//         const fab = {marque: fields.marque};
+//         new Fabricant(fab).save()
+//             .then(newFab => {
+//                 if (files.logo) {
+//                     let ext = files.logo.name.split(".").pop();
+//                     const logoPath = `public/images/${newFab.id}.${ext}`;
+//                     fs.copy(files.logo.path, `./${logoPath}`)
+//                         .then(() => {
+//                             newFab.logo = `/${logoPath}`;
+//                             res.json(newFab);
+//                         })
+//                         .catch(err => {
+//                             newFab.error = err;
+//                             res.json(newFab);
+//                         });
+//                     return
+//                 }
+//                 res.json(newFab);
+//             })
+//             .catch(err => {
+//                 res.json(err);
+//                 next(err);
+//             });
+//     });
+// }
+
+const deleteFabricant = async (req, res, next) => {
+    const isValid = ObjectId.isValid(req.params.id);
+    if (!isValid) return res.json({
+        error: true,
+        msg: "bad fabricant id"
+    });
+    const fab = {
+        _id: req.params.id
+    };
+    try {
+        const result = await Fabricant.deleteOne(fab);
+        res.json(result)
+    } catch (error) {
+        res.json(error)
+    }
+}

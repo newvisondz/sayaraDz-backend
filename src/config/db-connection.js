@@ -1,19 +1,18 @@
 
-function connect(cb){
+module.exports = (cb) => {
     const mongoose = require("mongoose");
     const keys = require("./keys");
     mongoose.Promise = global.Promise;
-    mongoose.connect(keys.mongoUrl, {useNewUrlParser: true})
+    mongoose.connect(keys.mongoUrl, {
+            useNewUrlParser: true
+        })
         .then(
-            ()=>{
+            () => {
                 console.log("database connected");
-                if(cb) cb(false)
+                if (cb) cb(false)
             },
-            (err)=> {
-                if(cb) cb(err)
+            (err) => {
+                if (cb) cb(err)
             }
         )
 }
-
-
-module.exports = connect;

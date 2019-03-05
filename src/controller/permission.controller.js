@@ -1,37 +1,10 @@
 const passport = require("passport");
 const JwtToken = require("../model/jwt.blacklist");
 
-function checkToken(req, res, next) {
-    const token = req.headers.authorization;
-    JwtToken.findOne({token})
-        .exec()
-        .then((newToken) => {
-            if (newToken)
-                res.json({error: true, msg: "you logout"});
-            else next()
-        })
-        .catch(err => {
-            throw err
-        })
-}
 
-function checkAuth(strategy, msg) {
-    return (req, res, next)=>{
-        passport.authenticate(strategy, function (err, user, info) {
-            if (err) {
-                return next(err);
-            }
-            if (!user) {
-                return res.json({error: true, msg});
-            }
-            req.user = user;
-            next()
-        })(req, res, next);
-    }
-}
-
-function checkFabricantAdminAuth(req, res, next) {
-    passport.authenticate('jwt-fabricant', function (err, user, info) {
+const checkFabricantAdminAuth = (req, res, next) => passport.authenticate(
+    'jwt-fabricant',
+    (err, user, info) => {
         if (err) {
             return next(err);
         }
@@ -44,29 +17,54 @@ function checkFabricantAdminAuth(req, res, next) {
         req.user = user;
         next()
     })(req, res, next);
+
+const checkToken = (req, res, next) => {
+    const token = req.headers.authorization;
+    try {
+        newToken = JwtToken.findOne({
+            token
+        })
+        if (newToken)
+            res.json({
+                error: true,
+                msg: "successful logout"
+            });
+        else next()
+    } catch (error) {
+        next(error)
+    }
 }
 
-function generateToken(req, res, next){
+const checkAuth = (strategy, msg) =>
+    (req, res, next) => passport.authenticate(strategy, (err, user, info) => {
+        if (err) {
+            return next(err);
+        }
+        if (!user) {
+            return res.json({
+                error: true,
+                msg
+            });
+        }
+        req.user = user;
+        next()
+    })(req, res, next);
+
+
+exports.generateToken = (req, res, next) => {
     req.user.token = req.user.sign();
     next();
 }
-const isFabricant = [
+exports.isFabricant = [
     checkToken, checkAuth('jwt-fabricant', "permission denied")
 ];
 
-const isAdmin = [
+exports.isAdmin = [
     checkToken, checkAuth('jwt-admin', "permission denied")
 ];
 
-const isFabricantAdmin = [
+exports.isFabricantAdmin = [
     checkToken, checkFabricantAdminAuth
 ];
 
-
-module.exports = {
-    checkAuth,
-    isFabricant,
-    isFabricantAdmin,
-    isAdmin,
-    generateToken
-};
+exports.checkAuth = checkAuth
