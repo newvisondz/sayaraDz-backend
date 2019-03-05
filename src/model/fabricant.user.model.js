@@ -4,21 +4,48 @@ const validator = require("validator");
 const utils = require("./utils.model");
 
 const fabricantUserSchema = new Schema({
-    email: {type: String, index:true, unique: true, require: true, validate: validator.isEmail, trim: true},
-    password: {type: String, require: true, minlength:4},
-    firstName: {type: String},
-    lastName: {type: String},
-    address: {type: String},
-    phone: {type: String},
+    email: {
+        type: String,
+        index: true,
+        unique: true,
+        require: true,
+        validate: validator.isEmail,
+        trim: true
+    },
+    password: {
+        type: String,
+        require: true,
+        minlength: 4
+    },
+    firstName: {
+        type: String
+    },
+    lastName: {
+        type: String
+    },
+    address: {
+        type: String
+    },
+    phone: {
+        type: String
+    },
     isAdmin: Boolean,
-    createdOn: {type: Date, default: Date.now}
+    fabricant: {
+        type: Schema.Types.ObjectId,
+        ref: "Fabricant",
+        required: true
+    },
+    createdOn: {
+        type: Date,
+        default: Date.now
+    }
 });
 
 fabricantUserSchema.pre("save", utils.preSaveUser);
 
-fabricantUserSchema.methods.isValidPasswd = utils.isValidPasswd ;
+fabricantUserSchema.methods.isValidPasswd = utils.isValidPasswd;
 
-fabricantUserSchema.methods.sign = utils.sign ;
+fabricantUserSchema.methods.sign = utils.sign;
 
 fabricantUserSchema.methods.toJSON = function () {
     return {
@@ -28,11 +55,14 @@ fabricantUserSchema.methods.toJSON = function () {
         token: this.token
     }
 };
-fabricantUserSchema.virtual("type").get(()=>utils.USER_TYPE.FABRICANT) ;
+fabricantUserSchema.virtual("type").get(() => utils.USER_TYPE.FABRICANT);
 
 fabricantUserSchema.statics.getQueryObject = utils.getFabQueryObject;
-fabricantUserSchema.statics.type = ()=>utils.USER_TYPE.FABRICANT;
+fabricantUserSchema.statics.type = () => utils.USER_TYPE.FABRICANT;
 
-const FabricantUserModel = mongoose.model("User", fabricantUserSchema);
+const FabricantUserModel = mongoose.model("User-Fabricant", fabricantUserSchema);
 
-module.exports = FabricantUserModel;
+module.exports = {
+    Model: FabricantUserModel,
+    Schema: fabricantUserSchema
+};

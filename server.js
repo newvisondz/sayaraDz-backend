@@ -23,11 +23,11 @@ app.use(bodyParser.urlencoded({
 auth(app);
 
 //define principle routes
-app.use("/fabricant", userRouter);
+app.use("/fabricant/user", userRouter);
 app.use("/fabricant/admin", fabricantAdminRouter);
 app.use("/auth", oauthRouter);
 app.use("/admin", adminRouter);
-app.use("/fabricant/model", fabricantRouter);
+app.use("/fabricant", fabricantRouter);
 
 exports.connect = (PORT) =>
     app.listen(PORT, (err) => {
@@ -40,3 +40,7 @@ exports.connect = (PORT) =>
             mode: process.env.NODE_ENV || "development"
         })
     })
+
+
+
+ require("./src/model/fabricant.user.model").Model
