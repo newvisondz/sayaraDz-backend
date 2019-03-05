@@ -33,8 +33,7 @@ exports.update = () => [
         const {
             _id
         } = req.params
-
-        if (handleIdParams(_id, res)) return
+        if (!handleIdParams(_id, res)) return
         const result = await FabricantUser.updateOne({
             _id
         }, {
@@ -47,7 +46,7 @@ exports.update = () => [
 exports.delete = () => [
     async (req, res) => {
         const _id = req.params.id
-        if (handleIdParams(_id, res)) return
+        if (!handleIdParams(_id, res)) return
         try {
             const result = await FabricantUser.deleteOne({
                 _id
