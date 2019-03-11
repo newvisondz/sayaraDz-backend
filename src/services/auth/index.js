@@ -1,10 +1,10 @@
 const FabricantUser = require("../../api/manufacturer-user/model");
 const JwtToken = require("../../api/auth/jwt.model");
-const permissionController = require("../acl");
+const {checkAuth, generateToken} = require("../acl");
 
 exports.login = (strategy) => [
-    permissionController.checkAuth(strategy, "invalid credentials"),
-    permissionController.generateToken,
+    checkAuth(strategy, "invalid credentials"),
+    generateToken,
     (req, res) => {
         res.json(req.user)
     }

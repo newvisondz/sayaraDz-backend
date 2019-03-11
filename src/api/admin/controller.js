@@ -1,14 +1,14 @@
-const permissionController = require("../../services/acl")
+const {isAdmin} = require("../../services/acl")
 
 exports.index = () => [
-    permissionController.isAdmin,
+    isAdmin,
     (req, res) => {
         res.json(req.user)
     }
 ]
 
 exports.current = () => [
-    permissionController.isAdmin,
+    isAdmin,
     (req, res) => {
         res.json(req.user)
     }

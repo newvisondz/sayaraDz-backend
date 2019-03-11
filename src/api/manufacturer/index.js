@@ -1,8 +1,8 @@
 const express = require("express");
 const router = express.Router();
-const controller = require("./controller");
+const {index, create, deleteOne} = require("./controller");
 
-router.get("/", controller.index());
-router.post("/", controller.create());
-router.delete("/:id", controller.deleteOne());
+router.get("/", index());
+router.post("/", create());
+router.delete("/:id", deleteOne());
 module.exports = router;

@@ -1,6 +1,7 @@
+const mongoose = require("mongoose");
+const keys = require("../../config");
+
 module.exports = (cb) => {
-    const mongoose = require("mongoose");
-    const keys = require("../../config");
     mongoose.set('useNewUrlParser', true);
     mongoose.set('useFindAndModify', false);
     mongoose.set('useCreateIndex', true);

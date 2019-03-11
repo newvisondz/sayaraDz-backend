@@ -4,12 +4,7 @@ const cookieParser = require("cookie-parser");
 const auth = require("./src/services/passport");
 const app = express();
 
-//routers
-const userRouter = require("./src/api/manufacturer-user");
-const fabricantAdminRouter = require("./src/api/manufacturer-admin");
-const oauthRouter = require("./src/api/auth");
-const adminRouter = require("./src/api/admin");
-const fabricantRouter = require("./src/api/manufacturer");
+const router = require("./src/api")
 const cors = require("cors");
 
 app.use(cors());
@@ -23,11 +18,7 @@ app.use(bodyParser.urlencoded({
 auth(app);
 
 //define principle routes
-app.use("/fabricant/user", userRouter);
-app.use("/fabricant/admin", fabricantAdminRouter);
-app.use("/auth", oauthRouter);
-app.use("/admin", adminRouter);
-app.use("/fabricant", fabricantRouter);
+app.use("/",router) 
 
 exports.connect = (PORT) =>
     app.listen(PORT, (err) => {

@@ -1,22 +1,22 @@
 const express = require("express");
-const permissionController = require("../../services/acl");
+const {isAdmin} = require("../../services/acl");
 const Fabricant = require("./model").FabricantModel;
 const ObjectId = require("mongoose").Types.ObjectId;
 const fs = require("fs-extra");
 const formidable = require("formidable");
 
 exports.index = () => [
-    permissionController.isAdmin,
+    isAdmin,
     listAll
 ]
 
 exports.create = () => [
-    permissionController.isAdmin,
+    isAdmin,
     createFabricant
 ]
 
 exports.deleteOne = () => [
-    permissionController.isAdmin,
+    isAdmin,
     deleteFabricant
 ]
 

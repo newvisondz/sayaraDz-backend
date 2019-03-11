@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 const validator = require("validator");
-const utils = require("../utils");
+const {preSaveUser, isValidPasswd, sign, USER_TYPE, getAdminQueryObject} = require("../utils");
 
 const AdminSchema = new Schema({
     email: {type: String, index:true, unique: true, require: true, validate: validator.isEmail, trim: true},
@@ -9,13 +9,13 @@ const AdminSchema = new Schema({
     createdOn: {type: Date, default: Date.now}
 });
 
-AdminSchema.pre("save", utils.preSaveUser);
+AdminSchema.pre("save", preSaveUser);
 
-AdminSchema.methods.isValidPasswd = utils.isValidPasswd ;
+AdminSchema.methods.isValidPasswd = isValidPasswd ;
 
-AdminSchema.methods.sign = utils.sign ;
+AdminSchema.methods.sign = sign ;
 
-AdminSchema.virtual("type").get(()=>utils.USER_TYPE.ADMIN) ;
+AdminSchema.virtual("type").get(()=>USER_TYPE.ADMIN) ;
 //for testing admins
 AdminSchema.methods.toJSON = function () {
     return {
@@ -25,9 +25,9 @@ AdminSchema.methods.toJSON = function () {
     }
 };
 
-AdminSchema.statics.getQueryObject = utils.getAdminQueryObject;
+AdminSchema.statics.getQueryObject = getAdminQueryObject;
 
-AdminSchema.statics.type = ()=>utils.USER_TYPE.ADMIN;
+AdminSchema.statics.type = ()=>USER_TYPE.ADMIN;
 
 const AdminModel = mongoose.model("Admin", AdminSchema);
 
