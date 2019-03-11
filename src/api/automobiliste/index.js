@@ -39,7 +39,7 @@ AutoMobilisteSchema.methods.isValidPasswd = utils.isValidPasswd;
 
 AutoMobilisteSchema.methods.sign = utils.sign;
 
-AutoMobilisteSchema.virtual("type").get(() => utils.USER_TYPE.AUTOMOBILISTE);
+//AutoMobilisteSchema.virtual("type").get(() => utils.USER_TYPE.AUTOMOBILISTE);
 
 
 AutoMobilisteSchema.methods.toJSON = function () {
@@ -50,9 +50,11 @@ AutoMobilisteSchema.methods.toJSON = function () {
     }
 };
 
-const Automobiliste = mongoose.model("Automobiliste", AutoMobilisteSchema);
 
 AutoMobilisteSchema.statics.getQueryObject = utils.getAdminQueryObject;
 AutoMobilisteSchema.statics.type = () => utils.USER_TYPE.AUTOMOBILISTE;
 
+const Automobiliste = mongoose.model("Automobiliste", AutoMobilisteSchema);
+
+console.log({type: Automobiliste.type()})
 module.exports = Automobiliste;

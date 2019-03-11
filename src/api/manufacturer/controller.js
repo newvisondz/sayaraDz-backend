@@ -1,6 +1,6 @@
 const express = require("express");
 const {isAdmin, isAutomobiliste, authenticated} = require("../../services/acl");
-const Fabricant = require("./model").FabricantModel;
+const Fabricant = require("./model");
 const ObjectId = require("mongoose").Types.ObjectId;
 const fs = require("fs-extra");
 const formidable = require("formidable");
@@ -56,9 +56,9 @@ const createFabricant = async (req, res, next) => {
         });
     try {
         const fabricant = await new Fabricant(fab).save()
-        res.json(newFab)
+        res.json(fabricant)
     } catch (error) {
-        res.json(err);
+        res.json(error);
     }
 }
 

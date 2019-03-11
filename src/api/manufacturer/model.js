@@ -39,4 +39,4 @@ fabricantSchema.methods.toJSON = function () {
 }
 const FabricantModel = mongoose.model("fabricant", fabricantSchema);
 
-module.exports = {FabricantModel};
+module.exports = FabricantModel;

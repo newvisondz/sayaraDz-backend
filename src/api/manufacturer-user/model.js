@@ -62,7 +62,4 @@ fabricantUserSchema.statics.type = () => utils.USER_TYPE.FABRICANT;
 
 const FabricantUserModel = mongoose.model("User-Fabricant", fabricantUserSchema);
 
-module.exports = {
-    Model: FabricantUserModel,
-    Schema: fabricantUserSchema
-};
+module.exports = FabricantUserModel

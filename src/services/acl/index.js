@@ -36,7 +36,7 @@ const checkAuth = (strategy) =>
         if (err) {
             return next(err);
         }
-        req.user = user;
+        if(user) req.user = user;
         next()
     })(req, res, next);
 
@@ -61,9 +61,7 @@ exports.isAutomobiliste = [
 ]
 exports.checkAuth = checkAuth
 
-exports.authenticated = ({
-    user
-}, res, next) => {
+exports.authenticated = ({user}, res, next) => {
     if (user) next()
     else res.json({
         error: true,
