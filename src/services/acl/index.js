@@ -3,18 +3,14 @@ const JwtToken = require("../../api/auth/jwt.model");
 
 
 const checkFabricantAdminAuth = (req, res, next) => passport.authenticate(
-    'jwt-fabricant',
+    'jwt-manufacturer',
     (err, user, info) => {
         if (err) {
             return next(err);
         }
-        if (!user || !user.isAdmin) {
-            return res.json({
-                error: true,
-                msg: "permission denied"
-            });
+        if (user && user.isAdmin) {
+            req.user = user;
         }
-        req.user = user;
         next()
     })(req, res, next);
 
@@ -27,7 +23,7 @@ const checkToken = async (req, res, next) => {
         if (newToken) {
             res.json({
                 error: true,
-                msg: "you logout"
+                msg: "already logout"
             });
         } else next()
     } catch (error) {
@@ -35,35 +31,42 @@ const checkToken = async (req, res, next) => {
     }
 }
 
-const checkAuth = (strategy, msg) =>
+const checkAuth = (strategy) =>
     (req, res, next) => passport.authenticate(strategy, (err, user, info) => {
         if (err) {
             return next(err);
         }
-        if (!user) {
-            return res.json({
-                error: true,
-                msg
-            });
-        }
         req.user = user;
         next()
     })(req, res, next);
-
 
 exports.generateToken = (req, res, next) => {
     req.user.token = req.user.sign();
     next();
 }
 exports.isFabricant = [
+    checkToken, checkAuth("jwt-manufacturer")
 ];
 
 exports.isAdmin = [
-    checkToken, checkAuth('jwt-admin', "permission denied")
+    checkToken, checkAuth('jwt-admin')
 ];
 
 exports.isFabricantAdmin = [
     checkToken, checkFabricantAdminAuth
 ];
 
+exports.isAutomobiliste = [
+    checkToken, checkAuth("jwt-automobiliste")
+]
 exports.checkAuth = checkAuth
+
+exports.authenticated = ({
+    user
+}, res, next) => {
+    if (user) next()
+    else res.json({
+        error: true,
+        msg: "permission denied"
+    })
+}

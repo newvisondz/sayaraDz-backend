@@ -1,9 +1,10 @@
-const {isAdmin} = require("../../services/acl");
+const {isAdmin, authentified, authenticated} = require("../../services/acl");
 const FabricantUser = require("../manufacturer-user/model").Model
 const ObjectId = require("mongoose").Types.ObjectId;
 
 exports.index = () => [
     isAdmin,
+    authenticated,
     async (req, res) => {
         if (!req.query.fabricant) return res.json({
             error: 1,
@@ -30,6 +31,7 @@ exports.index = () => [
 
 exports.update = () => [
     isAdmin,
+    authenticated,
     async (req, res) => {
         const query = FabricantUser.getQueryObject(req.query)
         const {
@@ -47,6 +49,7 @@ exports.update = () => [
 
 exports.deleteOne = () => [
     isAdmin,
+    authenticated,
     async (req, res) => {
         const _id = req.params.id
         if (!handleIdParams(_id, res)) return

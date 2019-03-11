@@ -1,5 +1,5 @@
 const express = require("express");
-const {isAdmin} = require("../../services/acl");
+const {isAdmin, isAutomobiliste, authenticated} = require("../../services/acl");
 const Fabricant = require("./model").FabricantModel;
 const ObjectId = require("mongoose").Types.ObjectId;
 const fs = require("fs-extra");
@@ -7,16 +7,20 @@ const formidable = require("formidable");
 
 exports.index = () => [
     isAdmin,
+    isAutomobiliste,
+    authenticated,
     listAll
 ]
 
 exports.create = () => [
     isAdmin,
+    authenticated,
     createFabricant
 ]
 
 exports.deleteOne = () => [
     isAdmin,
+    authenticated,
     deleteFabricant
 ]
 

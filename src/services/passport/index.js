@@ -1,5 +1,5 @@
 const passport = require("passport");
-const FabricantUser = require("../../api/manufacturer-user/model");
+const ManufacturerUser = require("../../api/manufacturer-user/model");
 const Admin = require("../../api/admin/model");
 
 const local = require("./strategies/local");
@@ -11,9 +11,9 @@ module.exports = (app) => {
 
     app.use(passport.initialize());
 
-    passport.use("local-fabricant", local(FabricantUser));
+    passport.use("local-manufacturer", local(ManufacturerUser));
     passport.use("local-admin", local(Admin));
-    passport.use("jwt-fabricant", jwt(FabricantUser));
+    passport.use("jwt-manufacturer", jwt(ManufacturerUser));
     passport.use("jwt-admin", jwt(Admin));
     passport.use("facebook", facebook);
     passport.use("google", google);
