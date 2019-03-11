@@ -3,7 +3,7 @@ const ManufacturerUser = require("../../api/manufacturer-user/model");
 const Admin = require("../../api/admin/model");
 const Automobiliste = require("../../api/automobiliste")
 const local = require("./strategies/local");
-const jwt = require("./strategies/jwt.fabricant");
+const jwt = require("./strategies/jwt");
 const facebook = require("./strategies/facebook");
 const google = require("./strategies/google");
 module.exports = (app) => {

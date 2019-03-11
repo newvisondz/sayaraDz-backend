@@ -3,7 +3,7 @@ const Schema = mongoose.Schema;
 const validator = require("validator");
 const utils = require("../utils");
 
-const fabricantUserSchema = new Schema({
+const ManufacturerUserSchema = new Schema({
     email: {
         type: String,
         index: true,
@@ -30,7 +30,7 @@ const fabricantUserSchema = new Schema({
         type: String
     },
     isAdmin: Boolean,
-    fabricant: {
+    manufacturer: {
         type: Schema.Types.ObjectId,
         ref: "Fabricant",
         required: true
@@ -41,13 +41,13 @@ const fabricantUserSchema = new Schema({
     }
 });
 
-fabricantUserSchema.pre("save", utils.preSaveUser);
+ManufacturerUserSchema.pre("save", utils.preSaveUser);
 
-fabricantUserSchema.methods.isValidPasswd = utils.isValidPasswd;
+ManufacturerUserSchema.methods.isValidPasswd = utils.isValidPasswd;
 
-fabricantUserSchema.methods.sign = utils.sign;
+ManufacturerUserSchema.methods.sign = utils.sign;
 
-fabricantUserSchema.methods.toJSON = function () {
+ManufacturerUserSchema.methods.toJSON = function () {
     return {
         email: this.email,
         id: this.id,
@@ -55,11 +55,11 @@ fabricantUserSchema.methods.toJSON = function () {
         token: this.token
     }
 };
-fabricantUserSchema.virtual("type").get(() => utils.USER_TYPE.FABRICANT);
+ManufacturerUserSchema.virtual("type").get(() => utils.USER_TYPE.FABRICANT);
 
-fabricantUserSchema.statics.getQueryObject = utils.getFabQueryObject;
-fabricantUserSchema.statics.type = () => utils.USER_TYPE.FABRICANT;
+ManufacturerUserSchema.statics.getQueryObject = utils.getFabQueryObject;
+ManufacturerUserSchema.statics.type = () => utils.USER_TYPE.FABRICANT;
 
-const FabricantUserModel = mongoose.model("User-Fabricant", fabricantUserSchema);
+const ManufacturerUser = mongoose.model("Manufacturer-user", ManufacturerUserSchema);
 
-module.exports = FabricantUserModel
+module.exports = ManufacturerUser

@@ -1,5 +1,5 @@
 const {isAdmin, authentified, authenticated} = require("../../services/acl");
-const FabricantUser = require("../manufacturer-user/model").Model
+const ManufacturerUser = require("../manufacturer-user/model").Model
 const ObjectId = require("mongoose").Types.ObjectId;
 
 exports.index = () => [
@@ -8,15 +8,15 @@ exports.index = () => [
     async (req, res) => {
         if (!req.query.fabricant) return res.json({
             error: 1,
-            msg: "fabricant required"
+            msg: "manufacturer required"
         })
 
-        const query = FabricantUser.getQueryObject(req.query)
+        const query = ManufacturerUser.getQueryObject(req.query)
         console.log({
             query
         })
         try {
-            const admins = await FabricantUser.find({
+            const admins = await ManufacturerUser.find({
                 fabricant: query.fabricant,
                 isAdmin: true
             })
@@ -33,12 +33,12 @@ exports.update = () => [
     isAdmin,
     authenticated,
     async (req, res) => {
-        const query = FabricantUser.getQueryObject(req.query)
+        const query = ManufacturerUser.getQueryObject(req.query)
         const {
             _id
         } = req.params
         if (!handleIdParams(_id, res)) return
-        const result = await FabricantUser.updateOne({
+        const result = await ManufacturerUser.updateOne({
             _id
         }, {
             ...query
@@ -54,7 +54,7 @@ exports.deleteOne = () => [
         const _id = req.params.id
         if (!handleIdParams(_id, res)) return
         try {
-            const result = await FabricantUser.deleteOne({
+            const result = await ManufacturerUser.deleteOne({
                 _id
             });
 
@@ -70,7 +70,7 @@ function handleIdParams(_id, res) {
     if (!isValid) {
         res.json({
             error: true,
-            msg: "bad fabricant admin id"
+            msg: "bad manufacturer admin id"
         });
     }
     return isValid

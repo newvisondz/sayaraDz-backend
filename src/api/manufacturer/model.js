@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 const validator = require("validator");
 
-const fabricantSchema = new Schema({
+const ManufacturerSchema = new Schema({
     marque: {
         type: String,
         required: true,
@@ -14,7 +14,7 @@ const fabricantSchema = new Schema({
         default: Date.now
     }
 })
-fabricantSchema.statics.getQueryObject = (query) => {
+ManufacturerSchema.statics.getQueryObject = (query) => {
     let {
         marque,
         createdOn
@@ -28,7 +28,7 @@ fabricantSchema.statics.getQueryObject = (query) => {
 
     return q
 }
-fabricantSchema.methods.toJSON = function () {
+ManufacturerSchema.methods.toJSON = function () {
     return {
         id: this.id,
         marque: this.marque,
@@ -37,6 +37,6 @@ fabricantSchema.methods.toJSON = function () {
         createdOn: this.createdOn
     }
 }
-const FabricantModel = mongoose.model("fabricant", fabricantSchema);
+const ManufacturerModel = mongoose.model("fabricant", ManufacturerSchema);
 
-module.exports = FabricantModel;
+module.exports = ManufacturerModel;
