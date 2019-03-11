@@ -55,8 +55,8 @@ const createManufacturer = async (req, res, next) => {
             msg: "empty marque field"
         });
     try {
-        const Manufacturer = await new Manufacturer(fab).save()
-        res.json(Manufacturer)
+        const manufacturer = await new Manufacturer(fab).save()
+        res.json(manufacturer)
     } catch (error) {
         res.json(error);
     }
