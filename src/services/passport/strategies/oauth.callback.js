@@ -1,4 +1,4 @@
-const Automobiliste = require("../../model/automobiliste.model");
+const Automobiliste = require("../../../api/automobiliste");
 
 module.exports = async (accessToken, refreshToken, profile, done) => {
     try {

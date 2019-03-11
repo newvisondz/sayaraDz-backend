@@ -1,5 +1,5 @@
 const FacebookStrategy = require('@passport-next/passport-facebook').Strategy;
-const keys = require("../keys");
+const keys = require("../../../config");
 const callback = require("./oauth.callback");
 
 module.exports = new FacebookStrategy({

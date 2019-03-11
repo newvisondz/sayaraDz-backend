@@ -1,6 +1,6 @@
 const jsonwebtoken = require("jsonwebtoken")
 const bcrypt = require("bcrypt")
-const keys = require("../config/keys")
+const keys = require("../../config")
 
 const USER_TYPE = {
     ADMIN: "ADMIN",

@@ -1,6 +1,6 @@
-const FabricantUser = require("../model/fabricant.user.model");
-const JwtToken = require("../model/jwt.blacklist");
-const permissionController = require("./permission.controller");
+const FabricantUser = require("../../api/manufacturer-user/model");
+const JwtToken = require("../../api/auth/jwt.model");
+const permissionController = require("../acl");
 
 exports.login = (strategy) => [
     permissionController.checkAuth(strategy, "invalid credentials"),

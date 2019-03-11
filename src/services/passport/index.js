@@ -1,6 +1,6 @@
 const passport = require("passport");
-const FabricantUser = require("../model/fabricant.user.model");
-const Admin = require("../model/admin.model");
+const FabricantUser = require("../../api/manufacturer-user/model");
+const Admin = require("../../api/admin/model");
 
 const local = require("./strategies/local");
 const jwt = require("./strategies/jwt.fabricant");

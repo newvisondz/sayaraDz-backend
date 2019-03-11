@@ -1,5 +1,5 @@
 const server = require("./server")
-const connect = require("./src/config/db-connection");
+const connect = require("./src/services/database");
 
 connect((err) => {
     if (!err) {

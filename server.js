@@ -1,15 +1,15 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
-const auth = require("./src/config/passport.setup");
+const auth = require("./src/services/passport");
 const app = express();
 
 //routers
-const userRouter = require("./src/routes/fabricant.user.routes");
-const fabricantAdminRouter = require("./src/routes/fabricant.admin.routes");
-const oauthRouter = require("./src/routes/oauth.routes");
-const adminRouter = require("./src/routes/admin.routes");
-const fabricantRouter = require("./src/routes/fabricant.routes");
+const userRouter = require("./src/api/manufacturer-user");
+const fabricantAdminRouter = require("./src/api/manufacturer-admin");
+const oauthRouter = require("./src/api/auth");
+const adminRouter = require("./src/api/admin");
+const fabricantRouter = require("./src/api/manufacturer");
 const cors = require("cors");
 
 app.use(cors());
@@ -43,4 +43,4 @@ exports.connect = (PORT) =>
 
 
 
- require("./src/model/fabricant.user.model").Model
+    

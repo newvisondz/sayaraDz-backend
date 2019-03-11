@@ -1,5 +1,5 @@
-const permissionController = require("./permission.controller");
-const FabricantUser = require("../model/fabricant.user.model").Model
+const permissionController = require("../../services/acl");
+const FabricantUser = require("../manufacturer-user/model").Model
 const ObjectId = require("mongoose").Types.ObjectId;
 
 exports.index = () => [

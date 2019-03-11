@@ -1,4 +1,4 @@
-const permissionController = require("./permission.controller")
+const permissionController = require("../../services/acl")
 
 exports.index = () => [
     permissionController.isAdmin,
