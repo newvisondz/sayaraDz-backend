@@ -1,13 +1,27 @@
 const JwtToken = require('../../api/auth/jwt.model')
-const { checkAuth, generateToken } = require('../acl')
+const { checkAuth } = require('../acl')
 
 exports.login = (strategy) => [
   checkAuth(strategy, 'invalid credentials'),
+  (req, res, next) => {
+    if (req.user) next()
+    else {
+      res.status(404).json({
+        error: 1,
+        msg: 'invalid credentials'
+      })
+    }
+  },
   generateToken,
   (req, res) => {
     res.json(req.user)
   }
 ]
+
+const generateToken = (req, res, next) => {
+  req.user.token = req.user.sign()
+  next()
+}
 
 exports.logout = (req, res) => {
   let token = req.headers.authorization

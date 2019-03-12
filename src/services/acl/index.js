@@ -39,10 +39,6 @@ const checkAuth = (strategy) =>
     next()
   })(req, res, next)
 
-exports.generateToken = (req, res, next) => {
-  req.user.token = req.user.sign()
-  next()
-}
 exports.isFabricant = [
   checkToken, checkAuth('jwt-manufacturer')
 ]
