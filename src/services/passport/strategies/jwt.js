@@ -10,12 +10,12 @@ module.exports = (Model) => {
   let verify = async (payload, done) => {
     const id = payload.id
     const type = payload.type
-    if (type != Model.type()) { return done(null, false) }
+    if (type !== Model.type()) { return done(null, false) }
     try {
       let user = await Model.findById(id)
       done(null, user)
     } catch (error) {
-      done(err, false)
+      done(error, false)
     }
   }
   const jwt = new Jwtstrategy(options, verify)

@@ -1,29 +1,33 @@
-const { isAdmin, authentified, authenticated } = require('../../services/acl')
-const ManufacturerUser = require('../manufacturer-user/model').Model
+const {
+  isAdmin,
+  authenticated
+} = require('../../services/acl')
+const ManufacturerUser = require('../manufacturer-user/model')
 const ObjectId = require('mongoose').Types.ObjectId
+const Validation = require('../../services/validation')
 
-exports.index = () => [
+const validate = new Validation(ManufacturerUser.schema)
+exports.index = [
   isAdmin,
   authenticated,
-  async (req, res) => {
-    if (!req.query.fabricant) {
-      return res.json({
-        error: 1,
-        msg: 'manufacturer required'
-      })
-    }
-
-    const query = ManufacturerUser.getQueryObject(req.query)
-    console.log({
-      query
-    })
+  validate.filter.bind(validate),
+  async ({ query, options: { select, limit, skip, sort } }, res) => {
     try {
-      const admins = await ManufacturerUser.find({
-        fabricant: query.fabricant,
+      const filter = {
+        ...query,
         isAdmin: true
-      })
+      }
+      const admins = await ManufacturerUser
+        .find(filter)
+        .select(select)
+        .skip(skip)
+        .limit(limit)
+        .sort(sort)
+        .exec()
+      const count = await ManufacturerUser.countDocuments(filter)
       res.json({
-        admins
+        admins,
+        count
       })
     } catch (error) {
       res.json(error)
@@ -31,25 +35,26 @@ exports.index = () => [
   }
 ]
 
-exports.update = () => [
+exports.update = [
   isAdmin,
   authenticated,
-  async (req, res) => {
-    const query = ManufacturerUser.getQueryObject(req.query)
+  validate.sanitizeBody.bind(validate),
+  async ({
+    params,
+    body
+  }, res) => {
     const {
-      _id
-    } = req.params
-    if (!handleIdParams(_id, res)) return
+      id
+    } = params
+    if (!handleIdParams(id, res)) return
     const result = await ManufacturerUser.updateOne({
-      _id
-    }, {
-      ...query
-    })
+      _id: id
+    }, body)
     res.json(result)
   }
 ]
 
-exports.deleteOne = () => [
+exports.deleteOne = [
   isAdmin,
   authenticated,
   async (req, res) => {
@@ -59,7 +64,6 @@ exports.deleteOne = () => [
       const result = await ManufacturerUser.deleteOne({
         _id
       })
-
       res.json(result)
     } catch (error) {
       res.json(error)
@@ -77,3 +81,13 @@ function handleIdParams (_id, res) {
   }
   return isValid
 }
+
+// new ManufacturerUser({
+//   email: 'akram@esi.dz',
+//   password: 'root',
+//   isAdmin: false,
+//   manufacturer: '5c744a029e7aaf23b87381ad'
+// })
+//   .save()
+//   .then(console.log)
+//   .catch(console.log)

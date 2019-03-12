@@ -16,7 +16,7 @@ const checkFabricantAdminAuth = (req, res, next) => passport.authenticate(
 const checkToken = async (req, res, next) => {
   const token = req.headers.authorization
   try {
-    newToken = await JwtToken.findOne({
+    let newToken = await JwtToken.findOne({
       token
     })
     if (newToken) {

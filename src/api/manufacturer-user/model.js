@@ -8,13 +8,13 @@ const ManufacturerUserSchema = new Schema({
     type: String,
     index: true,
     unique: true,
-    require: true,
+    required: true,
     validate: validator.isEmail,
     trim: true
   },
   password: {
     type: String,
-    require: true,
+    required: true,
     minlength: 4
   },
   firstName: {

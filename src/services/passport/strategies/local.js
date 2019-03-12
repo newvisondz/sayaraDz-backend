@@ -20,7 +20,7 @@ module.exports = (Model) => {
       email
     }
     try {
-      newUser = await Model.findOne(user)
+      let newUser = await Model.findOne(user)
 
       newUser.isValidPasswd(
         password,

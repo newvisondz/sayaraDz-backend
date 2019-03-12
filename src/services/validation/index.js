@@ -4,7 +4,6 @@ module.exports = class Validation {
     if (!schema) throw new Error('not valid schema')
     this.schema = schema
     this.requiredPaths = schema.requiredPaths()
-    this.sanitize.bind(this)
   }
 
   requiredPaths ({ body }, res, next) {
@@ -18,12 +17,28 @@ module.exports = class Validation {
       next()
     }
   }
-  sanitize ({ body }, res, next) {
-    let bodyObj = {}
+  sanitizeBody (req, res, next) {
+    let body = {}
     this.schema.eachPath((path, type) => {
-      if (body[path] !== undefined)bodyObj[path] = body[path]
+      if (req.body[path] !== undefined)body[path] = req.body[path]
     })
-    res.body = bodyObj
+    req.body = body
+    next()
+  }
+
+  filter (req, res, next) {
+    let newQuery = {}
+    this.schema.eachPath((path) => {
+      if (req.query[path] !== undefined)newQuery[path] = req.query[path]
+    })
+    const { select, page, perpage, sort } = req.query
+    req.options = {
+      select,
+      sort,
+      limit: parseInt(perpage),
+      skip: (parseInt(page) - 1) * parseInt(perpage)
+    }
+    req.query = newQuery
     next()
   }
 }

@@ -23,7 +23,9 @@ ManufacturerSchema.statics.getQueryObject = (query) => {
     createdAt,
     updatedAt
   }
-  for (let prop in q) { if (!q[prop]) delete q[prop] }
+  for (let prop in q) {
+    if (!q[prop]) delete q[prop]
+  }
 
   return q
 }

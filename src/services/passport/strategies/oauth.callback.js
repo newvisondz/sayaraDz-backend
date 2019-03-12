@@ -2,12 +2,12 @@ const Automobiliste = require('../../../api/automobiliste')
 
 module.exports = async (accessToken, refreshToken, profile, done) => {
   try {
-    autom = await Automobiliste.findOne({
+    let autom = await Automobiliste.findOne({
       email: profile.emails[0].value
     })
     if (autom) {
       for (let a of autom.providers) {
-        if (a.name == 'facebook') return done(null, autom)
+        if (a.name === 'facebook') return done(null, autom)
       }
       autom.providers.push({
         name: profile.provider,

@@ -1,4 +1,3 @@
-const FabricantUser = require('../../api/manufacturer-user/model')
 const JwtToken = require('../../api/auth/jwt.model')
 const { checkAuth, generateToken } = require('../acl')
 
@@ -28,7 +27,7 @@ exports.logout = (req, res) => {
     })
   } catch (error) {
     let logout
-    if (err.code == 11000) {
+    if (error.code == 11000) {
       logout = true
     }
     res.json({

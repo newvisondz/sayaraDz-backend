@@ -52,7 +52,4 @@ AutoMobilisteSchema.statics.type = () => utils.USER_TYPE.AUTOMOBILISTE
 
 const Automobiliste = mongoose.model('Automobiliste', AutoMobilisteSchema)
 
-console.log({
-  type: Automobiliste.type()
-})
 module.exports = Automobiliste
