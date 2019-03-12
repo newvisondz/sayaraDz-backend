@@ -49,7 +49,7 @@ ManufacturerUserSchema.methods.toJSON = function () {
   return {
     email: this.email,
     id: this.id,
-    // isAdmin: this.isAdmin || false,
+    isAdmin: this.isAdmin || false,
     token: this.token
   }
 }
