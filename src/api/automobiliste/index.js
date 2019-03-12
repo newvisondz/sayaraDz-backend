@@ -27,10 +27,8 @@ const AutoMobilisteSchema = new Schema({
             validate: () => {}
         }
     }],
-    createdOn: {
-        type: Date,
-        default: Date.now
-    }
+}, {
+    timestamps: true
 });
 
 AutoMobilisteSchema.pre("save", utils.preSaveUser);
@@ -56,5 +54,7 @@ AutoMobilisteSchema.statics.type = () => utils.USER_TYPE.AUTOMOBILISTE;
 
 const Automobiliste = mongoose.model("Automobiliste", AutoMobilisteSchema);
 
-console.log({type: Automobiliste.type()})
+console.log({
+    type: Automobiliste.type()
+})
 module.exports = Automobiliste;

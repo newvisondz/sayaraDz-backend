@@ -9,19 +9,19 @@ const ManufacturerSchema = new Schema({
         unique: true,
         validate: validator.isAlphanumeric
     },
-    createdOn: {
-        type: Date,
-        default: Date.now
-    }
+}, {
+    timestamps: true
 })
 ManufacturerSchema.statics.getQueryObject = (query) => {
     let {
         marque,
-        createdOn
+        createdAt,
+        updatedAt
     } = query;
     const q = {
         marque,
-        createdOn
+        createdAt,
+        updatedAt
     };
     for (let prop in q)
         if (!q[prop]) delete q[prop];
@@ -34,7 +34,8 @@ ManufacturerSchema.methods.toJSON = function () {
         marque: this.marque,
         logo: this.logo,
         error: this.error,
-        createdOn: this.createdOn
+        createdAt: this.createdAt,
+        updatedAt: this.updatedAt
     }
 }
 const ManufacturerModel = mongoose.model("fabricant", ManufacturerSchema);

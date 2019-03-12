@@ -10,12 +10,9 @@ const tokenSchema = new Schema({
       validate: (value) => {
          return validator.isJWT(value.substr(7))
       }
-   },
-   createdOn: {
-      type: Date,
-      default: Date.now,
-      expires: "99d",
    }
+}, {
+   timestamps: true
 })
 const TokenModel = mongoose.model("token", tokenSchema);
 module.exports = TokenModel

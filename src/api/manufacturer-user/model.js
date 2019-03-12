@@ -35,10 +35,8 @@ const ManufacturerUserSchema = new Schema({
         ref: "Fabricant",
         required: true
     },
-    createdOn: {
-        type: Date,
-        default: Date.now
-    }
+}, {
+    timestamps: true
 });
 
 ManufacturerUserSchema.pre("save", utils.preSaveUser);

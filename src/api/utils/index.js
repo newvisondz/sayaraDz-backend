@@ -28,7 +28,7 @@ function isValidPasswd(password, cb) {
         .catch(err => cb(err))
 }
 
-function preSaveUser(next){
+function preSaveUser(next) {
     const user = this
     if (!user.isModified("password")) {
         return next()
@@ -52,7 +52,8 @@ const getFabQueryObject = (query) => {
         address,
         phone,
         isAdmin,
-        createdOn,
+        createdAt,
+        updatedAt,
         manufacturer
     } = query
     const q = {
@@ -63,7 +64,8 @@ const getFabQueryObject = (query) => {
         address,
         phone,
         isAdmin,
-        createdOn,
+        createdAt,
+        updatedAt,
         manufacturer
     }
     for (let prop in q)
@@ -76,12 +78,14 @@ const getAdminQueryObject = (query) => {
     let {
         email,
         password,
-        createdOn
+        createdAt,
+        updatedAt
     } = query
     const q = {
         email,
         password,
-        createdOn
+        createdAt,
+        updatedAt
     }
     for (let prop in q)
         if (!q[prop]) delete q[prop]
