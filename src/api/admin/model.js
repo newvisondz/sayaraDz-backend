@@ -1,55 +1,53 @@
-const mongoose = require("mongoose");
-const Schema = mongoose.Schema;
-const validator = require("validator");
+const mongoose = require('mongoose')
+const Schema = mongoose.Schema
+const validator = require('validator')
 const {
-    preSaveUser,
-    isValidPasswd,
-    sign,
-    USER_TYPE,
-    getAdminQueryObject
-} = require("../utils");
+  preSaveUser,
+  isValidPasswd,
+  sign,
+  USER_TYPE,
+  getAdminQueryObject
+} = require('../utils')
 
 const AdminSchema = new Schema({
-    email: {
-        type: String,
-        index: true,
+  email: {
+    type: String,
+    index: true,
 
-        unique: true,
-        require: true,
-        validate: validator.isEmail,
-        trim: true
-    },
-    password: {
-        type: String,
-        require: true,
-        minlength: 4
-    },
+    unique: true,
+    require: true,
+    validate: validator.isEmail,
+    trim: true
+  },
+  password: {
+    type: String,
+    require: true,
+    minlength: 4
+  }
 }, {
-    timestamps: true
-});
+  timestamps: true
+})
 
-AdminSchema.pre("save", preSaveUser);
+AdminSchema.pre('save', preSaveUser)
 
-AdminSchema.methods.isValidPasswd = isValidPasswd;
+AdminSchema.methods.isValidPasswd = isValidPasswd
 
-AdminSchema.methods.sign = sign;
+AdminSchema.methods.sign = sign
 
-AdminSchema.virtual("type").get(() => USER_TYPE.ADMIN);
-//for testing admins
+AdminSchema.virtual('type').get(() => USER_TYPE.ADMIN)
+// for testing admins
 AdminSchema.methods.toJSON = function () {
-    return {
-        email: this.email,
-        id: this.id,
-        token: this.token
-    }
-};
+  return {
+    email: this.email,
+    id: this.id,
+    token: this.token
+  }
+}
 
-AdminSchema.statics.getQueryObject = getAdminQueryObject;
+AdminSchema.statics.getQueryObject = getAdminQueryObject
 
-AdminSchema.statics.type = () => USER_TYPE.ADMIN;
+AdminSchema.statics.type = () => USER_TYPE.ADMIN
 
-const AdminModel = mongoose.model("Admin", AdminSchema);
+const AdminModel = mongoose.model('Admin', AdminSchema)
 
-
-
-module.exports = AdminModel;
+module.exports = AdminModel

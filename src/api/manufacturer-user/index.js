@@ -1,9 +1,9 @@
-const express = require("express");
-const router = express.Router();
-const {login, logout} = require("../../services/auth");
+const express = require('express')
+const router = express.Router()
+const { login, logout } = require('../../services/auth')
 
-router.post("/login", login("local-manufacturer"));
+router.post('/login', login('local-manufacturer'))
 
-router.delete("/logout", logout);
+router.delete('/logout', logout)
 
-module.exports = router;
+module.exports = router
