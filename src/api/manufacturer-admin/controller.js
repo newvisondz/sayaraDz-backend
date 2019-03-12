@@ -1,7 +1,4 @@
-const {
-  isAdmin,
-  authenticated
-} = require('../../services/acl')
+const { isAdmin, authenticated, isFabricantAdmin } = require('../../services/acl')
 const ManufacturerUser = require('../manufacturer-user/model')
 const ObjectId = require('mongoose').Types.ObjectId
 const Validation = require('../../services/validation')
@@ -11,7 +8,7 @@ exports.index = [
   isAdmin,
   authenticated,
   validate.filter.bind(validate),
-  async ({ query, options: { select, limit, skip, sort } }, res) => {
+  async ({ query, options: { limit, skip, sort } }, res) => {
     try {
       const filter = {
         ...query,
@@ -19,7 +16,6 @@ exports.index = [
       }
       const admins = await ManufacturerUser
         .find(filter)
-        .select(select)
         .skip(skip)
         .limit(limit)
         .sort(sort)
@@ -35,21 +31,37 @@ exports.index = [
   }
 ]
 
+exports.create = [
+  isAdmin,
+  isFabricantAdmin,
+  authenticated,
+  validate.requirePaths.bind(validate),
+  async ({ body }, res) => {
+    try {
+      const admin = await new ManufacturerUser({
+        ...body,
+        isAdmin: true
+      }).save()
+      res.json(admin)
+    } catch (error) {
+      if (error.code == 11000) {
+        return res.json({
+          error: 1,
+          msg: 'duplicated manufacturer admin'
+        })
+      }
+      res.json(error)
+    }
+  }
+]
+
 exports.update = [
   isAdmin,
   authenticated,
-  validate.sanitizeBody.bind(validate),
-  async ({
-    params,
-    body
-  }, res) => {
-    const {
-      id
-    } = params
+  async ({ params, body }, res) => {
+    const { id } = params
     if (!handleIdParams(id, res)) return
-    const result = await ManufacturerUser.updateOne({
-      _id: id
-    }, body)
+    const result = await ManufacturerUser.updateOne({ _id: id }, body)
     res.json(result)
   }
 ]
@@ -61,9 +73,7 @@ exports.deleteOne = [
     const _id = req.params.id
     if (!handleIdParams(_id, res)) return
     try {
-      const result = await ManufacturerUser.deleteOne({
-        _id
-      })
+      const result = await ManufacturerUser.deleteOne({ _id })
       res.json(result)
     } catch (error) {
       res.json(error)
@@ -76,14 +86,15 @@ function handleIdParams (_id, res) {
   if (!isValid) {
     res.json({
       error: true,
-      msg: 'bad manufacturer admin id'
+      msg: 'bad ID'
     })
   }
   return isValid
 }
 
 // new ManufacturerUser({
-//   email: 'akram@esi.dz',
+//   email: 'akram@gmail.dz',
+//   school: 'esi',
 //   password: 'root',
 //   isAdmin: false,
 //   manufacturer: '5c744a029e7aaf23b87381ad'

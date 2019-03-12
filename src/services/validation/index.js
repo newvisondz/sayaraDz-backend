@@ -6,7 +6,7 @@ module.exports = class Validation {
     this.requiredPaths = schema.requiredPaths()
   }
 
-  requiredPaths ({ body }, res, next) {
+  requirePaths ({ body }, res, next) {
     for (let path of this.requiredPaths) {
       if (!body[path]) {
         return res.status(404).json({
@@ -14,23 +14,17 @@ module.exports = class Validation {
           msg: `${path} is required`
         })
       }
-      next()
     }
+    next()
   }
   sanitizeBody (req, res, next) {
-    let body = {}
-    this.schema.eachPath((path, type) => {
-      if (req.body[path] !== undefined)body[path] = req.body[path]
-    })
-    req.body = body
+    let newBody = this.sanitize(req.body)
+    req.body = newBody
     next()
   }
 
   filter (req, res, next) {
-    let newQuery = {}
-    this.schema.eachPath((path) => {
-      if (req.query[path] !== undefined)newQuery[path] = req.query[path]
-    })
+    let newQuery = this.sanitize(req.query)
     const { select, page, perpage, sort } = req.query
     req.options = {
       select,
@@ -40,5 +34,12 @@ module.exports = class Validation {
     }
     req.query = newQuery
     next()
+  }
+  sanitize (param) {
+    let newParam = {}
+    this.schema.eachPath((path, type) => {
+      if (param[path] !== undefined)newParam[path] = param[path]
+    })
+    return newParam
   }
 }
