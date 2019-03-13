@@ -26,7 +26,24 @@ const AutoMobilisteSchema = new Schema({
       type: String,
       validate: () => {}
     }
-  }]
+  }],
+  firstName: {
+    type: String,
+    trim: true
+  },
+  lastName: {
+    type: String,
+    trim: true
+  },
+  address: {
+    type: String,
+    trim: true
+  },
+  phone: {
+    type: String,
+    trim: true,
+    validate: validator.isMobilePhone
+  }
 }, {
   timestamps: true
 })
@@ -37,17 +54,17 @@ AutoMobilisteSchema.methods.isValidPasswd = utils.isValidPasswd
 
 AutoMobilisteSchema.methods.sign = utils.sign
 
-// AutoMobilisteSchema.virtual("type").get(() => utils.USER_TYPE.AUTOMOBILISTE);
+AutoMobilisteSchema.virtual('type').get(() => utils.USER_TYPE.AUTOMOBILISTE)
 
 AutoMobilisteSchema.methods.toJSON = function () {
-  return {
-    email: this.email,
-    id: this.id,
-    token: this.token
+  const { email, id, token, providers, firstName, lastName } = this
+  let prs = []
+  for (let p of providers) {
+    prs.push({ id: p.id, name: p.name })
   }
+  return { email, id, token, firstName, lastName, providers: prs }
 }
 
-AutoMobilisteSchema.statics.getQueryObject = utils.getAdminQueryObject
 AutoMobilisteSchema.statics.type = () => utils.USER_TYPE.AUTOMOBILISTE
 
 const Automobiliste = mongoose.model('Automobiliste', AutoMobilisteSchema)
