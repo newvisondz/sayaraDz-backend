@@ -38,67 +38,12 @@ function preSaveUser (next) {
       this.password = hash
       next()
     })
-    .catch(err => {
-      next(err)
-    })
-}
-
-const getFabQueryObject = (query) => {
-  let {
-    email,
-    password,
-    firstName,
-    lastName,
-    address,
-    phone,
-    isAdmin,
-    createdAt,
-    updatedAt,
-    manufacturer
-  } = query
-  const q = {
-    email,
-    password,
-    firstName,
-    lastName,
-    address,
-    phone,
-    isAdmin,
-    createdAt,
-    updatedAt,
-    manufacturer
-  }
-  for (let prop in q) {
-    if (!q[prop]) delete q[prop]
-  }
-
-  return q
-}
-
-const getAdminQueryObject = (query) => {
-  let {
-    email,
-    password,
-    createdAt,
-    updatedAt
-  } = query
-  const q = {
-    email,
-    password,
-    createdAt,
-    updatedAt
-  }
-  for (let prop in q) {
-    if (!q[prop]) delete q[prop]
-  }
-  return q
+    .catch(next)
 }
 
 module.exports = {
   USER_TYPE,
   sign,
   isValidPasswd,
-  preSaveUser,
-  getAdminQueryObject,
-  getFabQueryObject
+  preSaveUser
 }
