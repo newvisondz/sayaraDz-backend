@@ -55,7 +55,6 @@ ManufacturerUserSchema.methods.toJSON = function () {
 }
 ManufacturerUserSchema.virtual('type').get(() => utils.USER_TYPE.FABRICANT)
 
-ManufacturerUserSchema.statics.getQueryObject = utils.getFabQueryObject
 ManufacturerUserSchema.statics.type = () => utils.USER_TYPE.FABRICANT
 
 const ManufacturerUser = mongoose.model('Manufacturer-user', ManufacturerUserSchema)

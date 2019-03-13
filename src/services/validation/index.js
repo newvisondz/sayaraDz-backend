@@ -17,11 +17,6 @@ module.exports = class Validation {
     }
     next()
   }
-  sanitizeBody (req, res, next) {
-    let newBody = this.sanitize(req.body)
-    req.body = newBody
-    next()
-  }
 
   filter (req, res, next) {
     let newQuery = this.sanitize(req.query)

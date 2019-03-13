@@ -5,9 +5,7 @@ const {
   preSaveUser,
   isValidPasswd,
   sign,
-  USER_TYPE,
-  getAdminQueryObject
-} = require('../utils')
+  USER_TYPE } = require('../utils')
 
 const AdminSchema = new Schema({
   email: {
@@ -43,8 +41,6 @@ AdminSchema.methods.toJSON = function () {
     token: this.token
   }
 }
-
-AdminSchema.statics.getQueryObject = getAdminQueryObject
 
 AdminSchema.statics.type = () => USER_TYPE.ADMIN
 

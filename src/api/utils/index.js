@@ -13,7 +13,7 @@ function sign () {
     id: this.id,
     type: this.type
   }, keys.jwt_key, {
-    expiresIn: '1d'
+    expiresIn: '99d'
   })
 }
 

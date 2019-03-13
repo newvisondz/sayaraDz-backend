@@ -21,18 +21,6 @@ exports.update = [
   },
   crud.update
 ]
-
-Automobiliste.findById('5c7184d3f99c9f6b358482a2')
-  .then(user => console.log(user.sign()))
-
-// Automobiliste
-//   .save({
-//     email: 'akram@esi.dz',
-//     password: 'root',
-//     providers: [
-//       {
-//         name: 'facebook',
-//         id: 'akram19996'
-//       }
-//     ]
-//   })
+// generate automobiliste token
+// Automobiliste.findById('5c7184d3f99c9f6b358482a2')
+//   .then(user => console.log(user.sign()))

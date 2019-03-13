@@ -1,4 +1,4 @@
-const Automobiliste = require('../../../api/automobiliste')
+const Automobiliste = require('../../../api/automobiliste/model')
 
 module.exports = async (accessToken, refreshToken, profile, done) => {
   try {
@@ -7,7 +7,7 @@ module.exports = async (accessToken, refreshToken, profile, done) => {
     })
     if (autom) {
       for (let a of autom.providers) {
-        if (a.name === 'facebook') return done(null, autom)
+        if (a.name === profile.provider) return done(null, autom)
       }
       autom.providers.push({
         name: profile.provider,
@@ -19,7 +19,7 @@ module.exports = async (accessToken, refreshToken, profile, done) => {
       const autom = new Automobiliste({
         email: profile.emails[0].value,
         providers: [{
-          name: 'facebook',
+          name: profile.provider,
           id: profile.id
         }]
       })

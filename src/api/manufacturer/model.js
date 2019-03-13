@@ -12,23 +12,7 @@ const ManufacturerSchema = new Schema({
 }, {
   timestamps: true
 })
-ManufacturerSchema.statics.getQueryObject = (query) => {
-  let {
-    marque,
-    createdAt,
-    updatedAt
-  } = query
-  const q = {
-    marque,
-    createdAt,
-    updatedAt
-  }
-  for (let prop in q) {
-    if (!q[prop]) delete q[prop]
-  }
 
-  return q
-}
 ManufacturerSchema.methods.toJSON = function () {
   return {
     id: this.id,

@@ -60,7 +60,6 @@ module.exports = (Model, name, filter) => ({
         _id: id,
         ...filter
       }
-      // Object.assign(body, additionalsOpts)
       const result = await Model.updateOne(newFilter, body)
       res.json(result)
       next()
