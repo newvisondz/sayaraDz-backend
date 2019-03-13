@@ -53,6 +53,8 @@ module.exports = (Model, name, filter) => ({
   update: async ({ params, body }, res, next) => {
     const { id } = params
     if (!handleIdParams(id, res)) return
+    delete body.id
+    delete body._id
     try {
       const newFilter = {
         _id: id,
