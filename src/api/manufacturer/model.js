@@ -8,6 +8,9 @@ const ManufacturerSchema = new Schema({
     required: true,
     unique: true,
     validate: validator.isAlphanumeric
+  },
+  logo: {
+    type: String
   }
 }, {
   timestamps: true
@@ -18,7 +21,6 @@ ManufacturerSchema.methods.toJSON = function () {
     id: this.id,
     marque: this.marque,
     logo: this.logo,
-    error: this.error,
     createdAt: this.createdAt,
     updatedAt: this.updatedAt
   }

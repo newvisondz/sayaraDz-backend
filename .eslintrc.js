@@ -13,6 +13,7 @@ module.exports = {
     'ecmaVersion': 2018
   },
   'rules': {
-    eqeqeq: "off"
+    eqeqeq: "off",
+    curly: "multi"
   }
 }

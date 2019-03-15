@@ -11,3 +11,4 @@ module.exports = new FacebookStrategy({
     'first_name', 'last_name', 'middle_name', 'gender', 'link'
   ]
 }, callback)
+// https://www.facebook.com/dialog/oauth?client_id=320960728554804&redirect_uri=https://sayara-dz.herokuapp.com/auth/facebook/callback&scope=email
