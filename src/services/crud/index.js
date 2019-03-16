@@ -37,8 +37,13 @@ module.exports = (Model, name, filter) => ({
     } catch (error) {
       if (error.code == 11000) {
         return res.json({
-          error: 1,
-          msg: 'duplicate ' + name
+          errors: {
+            duplicated: {
+              code: 11000,
+              errmsg: error.errmsg,
+              kind: 'duplicated'
+            }
+          }
         })
       }
       res.json(error)
@@ -56,12 +61,23 @@ module.exports = (Model, name, filter) => ({
         _id: id,
         ...filter
       }
-      const result = await Model.updateOne(newFilter, body)
+      const result = await Model.updateOne(newFilter, body, {runValidators: true})
       res.json(result)
       next()
     } catch (error) {
+      if (error.code == 11000) {
+        return res.json({
+          errors: {
+            duplicated: {
+              code: 11000,
+              errmsg: error.errmsg,
+              kind: 'duplicated'
+            }
+          }
+        })
+      }
       res.json(error)
-      next(error)
+      //next(error)
     }
     next()
   },
@@ -80,3 +96,4 @@ module.exports = (Model, name, filter) => ({
   }
 
 })
+

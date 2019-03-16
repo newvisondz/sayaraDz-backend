@@ -1,6 +1,8 @@
 const express = require('express')
 const router = express.Router()
-const { readAdmins, readUsers, read, create, deleteOne, update, createWithLogo } = require('./controller')
+const { read, create, deleteOne, update, createWithLogo } = require('./controller')
+const {readof: readAdmins} = require("../manufacturer-admin/controller")
+const {readof: readUsers} = require("../manufacturer-user/controller")
 var querymen = require('querymen');
 
 router.get('/', read)

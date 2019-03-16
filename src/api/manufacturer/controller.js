@@ -19,7 +19,7 @@ exports.read = [
 exports.create = [
   isAdmin,
   authenticated,
-  validate.requirePaths.bind(validate),
+  //validate.requirePaths.bind(validate),
   crud.create
 ]
 
@@ -74,10 +74,3 @@ exports.createWithLogo = [
 ]
 
 
-exports.readAdmins = [
-  require("../manufacturer-admin/controller").readof
-]
-
-exports.readUsers = [
-  require("../manufacturer-user/controller").readof
-]
