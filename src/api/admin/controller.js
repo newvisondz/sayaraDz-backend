@@ -6,10 +6,3 @@ exports.index = () => [
     res.json(req.user)
   }
 ]
-
-exports.current = () => [
-  isAdmin,
-  (req, res) => {
-    res.json(req.user)
-  }
-]

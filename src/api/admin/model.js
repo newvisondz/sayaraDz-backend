@@ -11,7 +11,6 @@ const AdminSchema = new Schema({
   email: {
     type: String,
     index: true,
-
     unique: true,
     require: true,
     validate: validator.isEmail,

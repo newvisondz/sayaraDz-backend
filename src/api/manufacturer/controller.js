@@ -1,5 +1,5 @@
 const query = require('querymen').middleware
-const { isAdmin, isAutomobiliste, authenticated } = require('../../services/acl')
+const { isAdmin, isAutomobiliste, authenticated, isFabricantAdmin } = require('../../services/acl')
 const Manufacturer = require('./model')
 const fs = require('fs-extra')
 const formidable = require('formidable')
@@ -23,6 +23,7 @@ exports.create = [
 
 exports.update = [
   isAdmin,
+  isFabricantAdmin,
   authenticated,
   crud.update
 ]
