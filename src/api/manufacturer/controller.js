@@ -1,4 +1,4 @@
-// const express = require('express')
+const query = require("querymen").middleware
 const { isAdmin, isAutomobiliste, authenticated } = require('../../services/acl')
 const Manufacturer = require('./model')
 const fs = require('fs-extra')
@@ -6,12 +6,13 @@ const formidable = require('formidable')
 const Validation = require('../../services/validation')
 const validate = new Validation(Manufacturer.schema)
 const crud = require('../../services/crud')(Manufacturer, 'fabricant')
+const {timestamps} = require('../../services/validation')
 
 exports.read = [
   isAdmin,
   isAutomobiliste,
   authenticated,
-  validate.filter.bind(validate),
+  query({...timestamps}),
   crud.read
 ]
 
@@ -70,4 +71,13 @@ exports.createWithLogo = [
       }
     })
   }
+]
+
+
+exports.readAdmins = [
+  require("../manufacturer-admin/controller").readof
+]
+
+exports.readUsers = [
+  require("../manufacturer-user/controller").readof
 ]

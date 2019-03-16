@@ -13,14 +13,10 @@ function handleIdParams (_id, res) {
 
 module.exports = (Model, name, filter) => ({
 
-  read: async ({ query, options: { limit, skip, sort } }, res, next) => {
+  read: async ({querymen: {query, select, cursor}}, res, next) => {
     try {
-      const result = await Model
-        .find(query)
-        .skip(skip)
-        .limit(limit)
-        .sort(sort)
-        .exec()
+      const result = await Model.find(query, select, cursor)
+
       const count = await Model.countDocuments(query)
       res.json({
         [name + 's']: result,

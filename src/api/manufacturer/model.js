@@ -2,7 +2,7 @@ const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 const validator = require('validator')
 
-const ManufacturerSchema = new Schema({
+const schema = new Schema({
   marque: {
     type: String,
     required: true,
@@ -16,7 +16,7 @@ const ManufacturerSchema = new Schema({
   timestamps: true
 })
 
-ManufacturerSchema.methods.toJSON = function () {
+schema.methods.toJSON = function () {
   return {
     id: this.id,
     marque: this.marque,
@@ -25,6 +25,8 @@ ManufacturerSchema.methods.toJSON = function () {
     updatedAt: this.updatedAt
   }
 }
-const ManufacturerModel = mongoose.model('fabricant', ManufacturerSchema)
 
-module.exports = ManufacturerModel
+schema.plugin(require('mongoose-keywords'), {paths: ['marque']});
+
+const model = mongoose.model('fabricant', schema)
+module.exports = model

@@ -49,12 +49,12 @@ ManufacturerUserSchema.methods.toJSON = function () {
   return {
     email: this.email,
     id: this.id,
+    manufacturer: this.manufacturer,
     isAdmin: this.isAdmin || false,
     token: this.token
   }
 }
 ManufacturerUserSchema.virtual('type').get(() => utils.USER_TYPE.FABRICANT)
-
 ManufacturerUserSchema.statics.type = () => utils.USER_TYPE.FABRICANT
 
 const ManufacturerUser = mongoose.model('Manufacturer-user', ManufacturerUserSchema)

@@ -1,5 +1,4 @@
-
-module.exports = class Validation {
+class Validation {
   constructor (schema) {
     if (!schema) throw new Error('not valid schema')
     this.schema = schema
@@ -36,5 +35,20 @@ module.exports = class Validation {
       if (param[path] !== undefined)newParam[path] = param[path]
     })
     return newParam
+  } 
+}
+
+Validation.timestamps = {
+  after: {
+    type: Date,
+    paths: ['createdAt'],
+    operator: '$gte',
+  },
+  before: {
+    type: Date,
+    paths: ['createdAt'],
+    operator: '$lte'
   }
 }
+
+module.exports = Validation
