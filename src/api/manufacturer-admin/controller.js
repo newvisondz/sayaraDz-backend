@@ -55,6 +55,6 @@ function bodyAdmin (req, res, next) {
   next()
 }
 function queryAdmin (req, res, next) {
-  req.query.isAdmin = true
+  req.querymen.query.isAdmin = true
   next()
 }

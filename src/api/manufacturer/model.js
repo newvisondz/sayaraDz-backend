@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 const validator = require('validator')
-
+const ManufacturerUser = require("../manufacturer-user/model")
 const schema = new Schema({
   marque: {
     type: String,
@@ -25,6 +25,9 @@ schema.methods.toJSON = function () {
     updatedAt: this.updatedAt
   }
 }
+schema.pre("deleteOne",async (next) => {
+  const res = await ManufacturerUser.deleteMany({manufacturer: this.id})
+})
 
 schema.plugin(require('mongoose-keywords'), {paths: ['marque']});
 

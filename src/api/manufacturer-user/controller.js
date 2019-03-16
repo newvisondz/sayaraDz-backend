@@ -5,7 +5,6 @@ const crud = require('../../services/crud')(ManufacturerUser, 'manufacturer_user
 const query = require("querymen").middleware
 const body = require("bodymen").middleware
 const {timestamps} = require('../../services/validation')
-const validate = new Validation(ManufacturerUser.schema)
 
 exports.read = [
   isFabricantAdmin,
@@ -53,6 +52,6 @@ function bodyAdmin (req, res, next) {
   next()
 }
 function queryAdmin (req, res, next) {
-  req.query.isAdmin = false
+  req.querymen.query.isAdmin = false
   next()
 }
