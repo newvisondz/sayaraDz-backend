@@ -1,5 +1,6 @@
 const passport = require('passport')
 const JwtToken = require('../../api/auth/jwt.model')
+const http = require('../http')
 
 const checkFabricantAdminAuth = (req, res, next) => passport.authenticate(
   'jwt-manufacturer',
@@ -59,7 +60,7 @@ exports.checkAuth = checkAuth
 exports.authenticated = ({ user }, res, next) => {
   if (user) next()
   else {
-    res.json({
+    http.unauthorized(res, {
       error: true,
       msg: 'permission denied'
     })

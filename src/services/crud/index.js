@@ -1,9 +1,10 @@
 const ObjectId = require('mongoose').Types.ObjectId
+const http = require('../http')
 
 function handleIdParams (_id, res) {
   const isValid = ObjectId.isValid(_id)
   if (!isValid) {
-    res.json({
+    http.badRequest(res, {
       error: true,
       msg: 'bad ID'
     })
@@ -13,7 +14,7 @@ function handleIdParams (_id, res) {
 
 module.exports = (Model, name, filter) => ({
 
-  read: async ({querymen: {query, select, cursor}}, res, next) => {
+  read: async ({ querymen: { query, select, cursor } }, res, next) => {
     try {
       const result = await Model.find(query, select, cursor)
 
@@ -36,7 +37,7 @@ module.exports = (Model, name, filter) => ({
       next()
     } catch (error) {
       if (error.code == 11000) {
-        return res.json({
+        return http.badRequest(res, {
           errors: {
             duplicated: {
               code: 11000,
@@ -61,7 +62,7 @@ module.exports = (Model, name, filter) => ({
         _id: id,
         ...filter
       }
-      const result = await Model.updateOne(newFilter, body, {runValidators: true})
+      const result = await Model.updateOne(newFilter, body, { runValidators: true })
       res.json(result)
       next()
     } catch (error) {
@@ -77,7 +78,7 @@ module.exports = (Model, name, filter) => ({
         })
       }
       res.json(error)
-      //next(error)
+      // next(error)
     }
     next()
   },
@@ -96,4 +97,3 @@ module.exports = (Model, name, filter) => ({
   }
 
 })
-

@@ -1,15 +1,15 @@
 const { isAdmin, authenticated, isFabricantAdmin } = require('../../services/acl')
 const ManufacturerUser = require('../manufacturer-user/model')
 const Validation = require('../../services/validation')
-const query = require("querymen").middleware
-const {timestamps} = require('../../services/validation')
+const query = require('querymen').middleware
+const { timestamps } = require('../../services/validation')
 const crud = require('../../services/crud')(ManufacturerUser, 'manufacturer_amdin', { isAdmin: true })
 const validate = new Validation(ManufacturerUser.schema)
 
 exports.read = [
   isAdmin,
   authenticated,
-  query({...timestamps}),
+  query({ ...timestamps }),
   queryAdmin,
   crud.read
 ]
@@ -17,8 +17,8 @@ exports.read = [
 exports.readof = [
   isAdmin,
   authenticated,
-  query({...timestamps}),
-  (req, res, next)=>{
+  query({ ...timestamps }),
+  (req, res, next) => {
     req.querymen.query.manufacturer = req.params.id
     console.log(req.querymen)
     next()

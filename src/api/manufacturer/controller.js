@@ -1,25 +1,23 @@
-const query = require("querymen").middleware
+const query = require('querymen').middleware
 const { isAdmin, isAutomobiliste, authenticated } = require('../../services/acl')
 const Manufacturer = require('./model')
 const fs = require('fs-extra')
 const formidable = require('formidable')
-const Validation = require('../../services/validation')
-const validate = new Validation(Manufacturer.schema)
 const crud = require('../../services/crud')(Manufacturer, 'fabricant')
-const {timestamps} = require('../../services/validation')
+const { timestamps } = require('../../services/validation')
 
 exports.read = [
   isAdmin,
   isAutomobiliste,
   authenticated,
-  query({...timestamps}),
+  query({ ...timestamps }),
   crud.read
 ]
 
 exports.create = [
   isAdmin,
   authenticated,
-  //validate.requirePaths.bind(validate),
+  // validate.requirePaths.bind(validate),
   crud.create
 ]
 
@@ -42,15 +40,16 @@ exports.createWithLogo = [
     let form = formidable.IncomingForm()
     form.maxFileSize = 20 * 1024 ** 2
     form.keepExtensions = true
-  
+
     form.parse(req, async (err, fields, files) => {
       if (err) res.json(err)
-      if (!fields.marque)  
+      if (!fields.marque) {
         return res.json({
           error: true,
           msg: 'field marque is required'
         })
-      
+      }
+
       const fab = { marque: fields.marque }
       try {
         let newFab = await new Manufacturer(fab).save()
@@ -65,12 +64,10 @@ exports.createWithLogo = [
       } catch (error) {
         res.json({
           error: 1,
-          msg: "duplicate manufacturer name"
+          msg: 'duplicate manufacturer name'
         })
         next(error)
       }
     })
   }
 ]
-
-

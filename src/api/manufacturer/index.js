@@ -1,9 +1,9 @@
 const express = require('express')
 const router = express.Router()
 const { read, create, deleteOne, update, createWithLogo } = require('./controller')
-const {readof: readAdmins} = require("../manufacturer-admin/controller")
-const {readof: readUsers} = require("../manufacturer-user/controller")
-var querymen = require('querymen');
+const { readof: readAdmins } = require('../manufacturer-admin/controller')
+const { readof: readUsers } = require('../manufacturer-user/controller')
+var querymen = require('querymen')
 
 router.get('/', read)
 router.get('/:id/admins', readAdmins)

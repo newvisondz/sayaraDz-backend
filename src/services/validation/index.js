@@ -35,14 +35,14 @@ class Validation {
       if (param[path] !== undefined)newParam[path] = param[path]
     })
     return newParam
-  } 
+  }
 }
 
 Validation.timestamps = {
   after: {
     type: Date,
     paths: ['createdAt'],
-    operator: '$gte',
+    operator: '$gte'
   },
   before: {
     type: Date,
