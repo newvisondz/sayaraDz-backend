@@ -17,7 +17,6 @@ exports.read = [
 exports.create = [
   isAdmin,
   authenticated,
-  // validate.requirePaths.bind(validate),
   crud.create
 ]
 
@@ -38,7 +37,6 @@ exports.createWithLogo = [
   isAdmin,
   authenticated,
   (req, res, next) => {
-    console.log('create wiwithwithwithth logo')
     let form = formidable.IncomingForm()
     form.maxFileSize = 20 * 1024 ** 2
     form.keepExtensions = true
@@ -56,7 +54,6 @@ exports.createWithLogo = [
       try {
         let newFab = await new Manufacturer(fab).save()
         if (files.logo) {
-          console.log({ lodoProvided: files.logo })
           let ext = files.logo.name.split('.').pop()
           const logoPath = `public/images/${newFab.id}.${ext}`
           await fs.copy(files.logo.path, logoPath)
@@ -69,7 +66,6 @@ exports.createWithLogo = [
           error: 1,
           msg: 'duplicate manufacturer name'
         })
-        console.log(error)
         next(error)
       }
     })

@@ -1,16 +1,4 @@
-const ObjectId = require('mongoose').Types.ObjectId
 const http = require('../http')
-
-function handleIdParams (_id, res) {
-  const isValid = ObjectId.isValid(_id)
-  if (!isValid) {
-    http.badRequest(res, {
-      error: true,
-      msg: 'bad ID'
-    })
-  }
-  return isValid
-}
 
 module.exports = (Model, name, filter) => ({
 
@@ -54,7 +42,6 @@ module.exports = (Model, name, filter) => ({
 
   update: async ({ params, body }, res, next) => {
     const { id } = params
-    if (!handleIdParams(id, res)) return
     delete body.id
     delete body._id
     try {
@@ -85,7 +72,6 @@ module.exports = (Model, name, filter) => ({
 
   deleteOne: async ({ params, body }, res, next) => {
     const _id = params.id
-    if (!handleIdParams(_id, res)) return
     try {
       const result = await Model.deleteOne({ _id, ...body })
       res.json(result)

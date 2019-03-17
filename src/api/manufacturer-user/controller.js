@@ -63,7 +63,8 @@ async function readUsers ({ params, querymen: { query, select, cursor } }, res, 
         msg: 'Manufacturer not found'
       })
     }
-    manufacturer.admins = await ManufacturerUser.find(query, select, cursor)
+    manufacturer[(query.isAdmin ? 'admins' : 'users')] = await ManufacturerUser.find(query, select, cursor)
+    console.log()
     const count = await ManufacturerUser.countDocuments(query)
     res.json({
       manufacturer,
