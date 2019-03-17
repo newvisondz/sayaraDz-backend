@@ -4,8 +4,8 @@ module.exports = (Model, name, filter) => ({
 
   read: async ({ querymen: { query, select, cursor } }, res, next) => {
     try {
+      delete query.password
       const result = await Model.find(query, select, cursor)
-
       const count = await Model.countDocuments(query)
       res.json({
         [name + 's']: result,
@@ -20,6 +20,7 @@ module.exports = (Model, name, filter) => ({
 
   create: async ({ body }, res, next) => {
     try {
+      delete body._id
       const newModel = await new Model(body).save()
       res.json(newModel)
       next()
@@ -65,7 +66,7 @@ module.exports = (Model, name, filter) => ({
         })
       }
       res.json(error)
-      // next(error)
+      next(error)
     }
     next()
   },

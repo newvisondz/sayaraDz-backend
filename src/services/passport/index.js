@@ -1,5 +1,5 @@
 const passport = require('passport')
-const ManufacturerUser = require('../../api/manufacturer-user/model')
+const ManufacturerUser = require('../../api/manufacturer/user/model')
 const Admin = require('../../api/admin/model')
 const Automobiliste = require('../../api/automobiliste/model')
 const local = require('./strategies/local')

@@ -21,9 +21,9 @@ const checkToken = async (req, res, next) => {
       token
     })
     if (newToken) {
-      res.json({
+      http.unauthorized(res, {
         error: true,
-        msg: 'already logout'
+        msg: 'permission denied'
       })
     } else next()
   } catch (error) {

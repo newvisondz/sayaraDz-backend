@@ -15,19 +15,16 @@ module.exports = (Model) => {
     }
   }
   let loginUser = async (email, password, done) => {
-    console.log(email, password)
     let user = {
       email
     }
     try {
       let newUser = await Model.findOne(user)
-
       newUser.isValidPasswd(
         password,
         validatePasswd(done, newUser)
       )
     } catch (err) {
-      console.log(err)
       done(null, false)
     }
   }

@@ -1,12 +1,10 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 const { isAlphanumeric, blacklist } = require('validator')
-const ManufacturerUser = require('../manufacturer-user/model')
+const ManufacturerUser = require('./user/model')
 const schema = new Schema({
   _id: {
-    type: String,
-    index: true,
-    unique: true
+    type: String
   },
   marque: {
     type: String,
@@ -16,7 +14,8 @@ const schema = new Schema({
     validate: (value) => isAlphanumeric(blacklist(value, ' '))
   },
   logo: {
-    type: String
+    type: String,
+    default: '/public/images/logo.png'
   }
 }, {
   timestamps: true

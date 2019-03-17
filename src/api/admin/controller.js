@@ -1,7 +1,8 @@
-const { isAdmin } = require('../../services/acl')
+const { isAdmin, authenticated } = require('../../services/acl')
 
-exports.index = () => [
+exports.index = [
   isAdmin,
+  authenticated,
   (req, res) => {
     res.json(req.user)
   }

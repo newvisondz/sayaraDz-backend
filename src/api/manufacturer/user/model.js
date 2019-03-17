@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 const validator = require('validator')
-const utils = require('../utils')
+const utils = require('../../utils')
 
 const ManufacturerUserSchema = new Schema({
   email: {
@@ -31,7 +31,7 @@ const ManufacturerUserSchema = new Schema({
   },
   isAdmin: Boolean,
   manufacturer: {
-    type: Schema.Types.ObjectId,
+    type: String,
     ref: 'Fabricant',
     required: true
   }
