@@ -22,7 +22,8 @@ schema.methods.toJSON = function () {
     marque: this.marque,
     logo: this.logo,
     createdAt: this.createdAt,
-    updatedAt: this.updatedAt
+    updatedAt: this.updatedAt,
+    admins: this.admins
   }
 }
 schema.pre('deleteOne', async (next) => {

@@ -38,7 +38,7 @@ exports.createWithLogo = [
   isAdmin,
   authenticated,
   (req, res, next) => {
-    console.log('create with logo')
+    console.log('create wiwithwithwithth logo')
     let form = formidable.IncomingForm()
     form.maxFileSize = 20 * 1024 ** 2
     form.keepExtensions = true

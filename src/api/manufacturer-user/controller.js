@@ -3,6 +3,8 @@ const ManufacturerUser = require('../manufacturer-user/model')
 const crud = require('../../services/crud')(ManufacturerUser, 'manufacturer_user', { isAdmin: false })
 const query = require('querymen').middleware
 const { timestamps } = require('../../services/validation')
+const Manufacturer = require('../manufacturer/model')
+const http = require('../../services/http')
 
 exports.read = [
   isFabricantAdmin,
@@ -21,7 +23,7 @@ exports.readof = [
     next()
   },
   queryAdmin,
-  crud.read
+  readUsers
 ]
 
 exports.create = [
@@ -51,3 +53,27 @@ function queryAdmin (req, res, next) {
   req.querymen.query.isAdmin = false
   next()
 }
+
+async function readUsers ({ params, querymen: { query, select, cursor } }, res, next) {
+  try {
+    const manufacturer = await Manufacturer.findById(params.id)
+    if (!manufacturer) {
+      return http.notFound(res, {
+        error: true,
+        msg: 'Manufacturer not found'
+      })
+    }
+    manufacturer.admins = await ManufacturerUser.find(query, select, cursor)
+    const count = await ManufacturerUser.countDocuments(query)
+    res.json({
+      manufacturer,
+      count
+    })
+    next()
+  } catch (error) {
+    res.json(error)
+    next(error)
+  }
+}
+
+exports.readUsers = readUsers

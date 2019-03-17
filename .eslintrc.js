@@ -14,6 +14,6 @@ module.exports = {
   },
   'rules': {
     eqeqeq: "off",
-    //curly: "multi"
+    // curly: "off"
   }
 }
