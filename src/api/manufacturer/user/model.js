@@ -50,9 +50,13 @@ schema.methods.toJSON = function () {
     email: this.email,
     id: this.id,
     manufacturer: this.manufacturer,
+    firstName: this.firstName,
+    lastName: this.lastName,
     isAdmin: this.isAdmin || false,
     token: this.token,
-    type: this.type
+    type: this.type,
+    address: this.address,
+    phone: this.phone
   }
 }
 schema.virtual('type').get(() => utils.USER_TYPE.FABRICANT)

@@ -1,17 +1,17 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
-const { isAlphanumeric, blacklist } = require('validator')
+// const { isAlphanumeric, blacklist } = require('validator')
 const ManufacturerUser = require('./user/model')
 const schema = new Schema({
   _id: {
     type: String
   },
-  marque: {
+  brand: {
     type: String,
     required: true,
     unique: true,
     trim: true,
-    validate: (value) => isAlphanumeric(blacklist(value, ' '))
+    min: 1
   },
   logo: {
     type: String,
@@ -33,15 +33,14 @@ schema.methods.toJSON = function () {
   }
 }
 schema.pre('save', function (next) {
-  this._id = this.marque.replace(/ /g, '-')
-  console.log(this)
+  this._id = this.brand.replace(/ /g, '-').replace(/\//g, '_')
   next()
 })
 schema.pre('deleteOne', async (next) => {
   await ManufacturerUser.deleteMany({ manufacturer: this.id })
 })
 
-schema.plugin(require('mongoose-keywords'), { paths: ['marque'] })
+schema.plugin(require('mongoose-keywords'), { paths: ['brand'] })
 
 const model = mongoose.model('fabricant', schema)
 module.exports = model

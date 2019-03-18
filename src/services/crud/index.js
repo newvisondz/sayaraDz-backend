@@ -7,11 +7,11 @@ module.exports = (Model, name, filter) => ({
       delete query.password
       const result = await Model.find(query, select, cursor)
       const count = await Model.countDocuments(query)
-      res.json({
+      console.log(query)
+      await http.ok(res, {
         [name + 's']: result,
         count
       })
-      next()
     } catch (error) {
       res.json(error)
       next(error)

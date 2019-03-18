@@ -3,14 +3,19 @@ const { isAdmin, isAutomobiliste, authenticated, isFabricantAdmin } = require('.
 const Manufacturer = require('./model')
 const fs = require('fs-extra')
 const formidable = require('formidable')
-const crud = require('../../services/crud')(Manufacturer, 'fabricant')
+const crud = require('../../services/crud')(Manufacturer, 'manufacturer')
 const { timestamps } = require('../../services/validation')
 
 exports.read = [
   isAdmin,
   isAutomobiliste,
   authenticated,
-  query({ ...timestamps }),
+  query({
+    ...timestamps,
+    brand: {
+      type: String
+    }
+  }),
   crud.read
 ]
 

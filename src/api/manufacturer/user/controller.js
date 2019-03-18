@@ -10,14 +10,28 @@ exports.read = [
   authenticated,
   query({ ...timestamps }),
   middleware,
-  crud.read
+  async ({ querymen: { query, select, cursor }, manufacturer }, res, next) => {
+    try {
+      delete query.password
+      const result = await ManufacturerUser.find(query, select, cursor)
+      const count = await ManufacturerUser.countDocuments(query)
+      manufacturer.users = result
+      http.ok(res, {
+        manufacturer,
+        count
+      })
+    } catch (error) {
+      res.json(error)
+      next(error)
+    }
+  }
 ]
 
 exports.create = [
   isFabricantAdmin,
   authenticated,
   middleware,
-  crud.create
+  crud.findAndUpdate
 ]
 
 exports.update = [
@@ -47,9 +61,9 @@ exports.deleteOne = [
 ]
 
 function middleware (req, res, next) {
-  const { manufacturer, user } = req
-  if (manufacturer != user.manufacturer) {
-    return http.notFound(res, {
+  const { id: manufacturer } = req.manufacturer
+  if (manufacturer != req.user.manufacturer) {
+    return http.unauthorized(res, {
       error: true,
       msg: 'permission denied'
     })

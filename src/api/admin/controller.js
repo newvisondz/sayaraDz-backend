@@ -1,7 +1,7 @@
 const { isAdmin, authenticated } = require('../../services/acl')
 const Admin = require('./model')
 const crud = require('../../services/crud')(Admin)
-
+const { ok } = require('../../services/http')
 exports.update = [
   isAdmin,
   authenticated,
@@ -10,4 +10,13 @@ exports.update = [
     next()
   },
   crud.findAndUpdate
+]
+
+exports.me = [
+  isAdmin,
+  authenticated,
+  ({ user }, res, next) => {
+    console.log({ user: user })
+    ok(res, user)
+  }
 ]

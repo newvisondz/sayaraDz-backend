@@ -3,13 +3,27 @@ const ManufacturerUser = require('../user/model')
 const query = require('querymen').middleware
 const { timestamps } = require('../../../services/validation')
 const crud = require('../../../services/crud')(ManufacturerUser, 'manufacturer_amdin', { isAdmin: true })
-
+const http = require('../../../services/http')
 exports.read = [
   isAdmin,
   authenticated,
   query({ ...timestamps }),
   middleware,
-  crud.read
+  async ({ querymen: { query, select, cursor }, manufacturer }, res, next) => {
+    try {
+      delete query.password
+      const result = await ManufacturerUser.find(query, select, cursor)
+      const count = await ManufacturerUser.countDocuments(query)
+      manufacturer.admins = result
+      http.ok(res, {
+        manufacturer,
+        count
+      })
+    } catch (error) {
+      res.json(error)
+      next(error)
+    }
+  }
 ]
 
 exports.create = [
@@ -30,12 +44,12 @@ exports.update = [
   isAdmin,
   authenticated,
   middleware,
-  crud.update
+  crud.findAndUpdate
 ]
 
 function middleware (req, res, next) {
-  const { manufacturer } = req
-  console.log({ manufacturer })
+  const { id: manufacturer } = req.manufacturer
+
   if (req.querymen) {
     req.querymen.query.manufacturer = manufacturer
     req.querymen.query.isAdmin = true

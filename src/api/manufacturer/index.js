@@ -12,8 +12,8 @@ router.delete('/logout', logout)
 
 router.use(['/:manufacturer/admins', '/:manufacturer/users'], async (req, res, next) => {
   const { manufacturer: id } = req.params
-  req.manufacturer = id
   const manufacturer = await Manufacturer.findById(id)
+  req.manufacturer = manufacturer
   if (manufacturer)next()
   else {
     http.notFound(res, {
@@ -24,7 +24,6 @@ router.use(['/:manufacturer/admins', '/:manufacturer/users'], async (req, res, n
 })
 router.use('/:manufacturer/admins', admin)
 router.use('/:manufacturer/users', user)
-
 router.get('/', read)
 router.post('/', create)
 router.post('/withlogo', createWithLogo)
