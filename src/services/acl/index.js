@@ -66,3 +66,11 @@ exports.authenticated = ({ user }, res, next) => {
     })
   }
 }
+
+exports.isUser = [
+  this.isAdmin,
+  this.isAutomobiliste,
+  this.isFabricant,
+  this.isFabricantAdmin,
+  this.authenticated
+]

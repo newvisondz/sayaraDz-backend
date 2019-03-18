@@ -3,7 +3,7 @@ const Schema = mongoose.Schema
 const validator = require('validator')
 const utils = require('../../utils')
 
-const ManufacturerUserSchema = new Schema({
+const schema = new Schema({
   email: {
     type: String,
     index: true,
@@ -39,24 +39,25 @@ const ManufacturerUserSchema = new Schema({
   timestamps: true
 })
 
-ManufacturerUserSchema.pre('save', utils.preSaveUser)
+schema.pre('save', utils.preSaveUser)
 
-ManufacturerUserSchema.methods.isValidPasswd = utils.isValidPasswd
+schema.methods.isValidPasswd = utils.isValidPasswd
 
-ManufacturerUserSchema.methods.sign = utils.sign
+schema.methods.sign = utils.sign
 
-ManufacturerUserSchema.methods.toJSON = function () {
+schema.methods.toJSON = function () {
   return {
     email: this.email,
     id: this.id,
     manufacturer: this.manufacturer,
     isAdmin: this.isAdmin || false,
-    token: this.token
+    token: this.token,
+    type: this.type
   }
 }
-ManufacturerUserSchema.virtual('type').get(() => utils.USER_TYPE.FABRICANT)
-ManufacturerUserSchema.statics.type = () => utils.USER_TYPE.FABRICANT
+schema.virtual('type').get(() => utils.USER_TYPE.FABRICANT)
+schema.statics.type = () => utils.USER_TYPE.FABRICANT
 
-const ManufacturerUser = mongoose.model('Manufacturer-user', ManufacturerUserSchema)
+const ManufacturerUser = mongoose.model('Manufacturer-user', schema)
 
 module.exports = ManufacturerUser

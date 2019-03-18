@@ -3,6 +3,7 @@ const ManufacturerUser = require('./model')
 const crud = require('../../../services/crud')(ManufacturerUser, 'manufacturer_user', { isAdmin: false })
 const query = require('querymen').middleware
 const { timestamps } = require('../../../services/validation')
+const http = require('../../../services/http')
 
 exports.read = [
   isFabricantAdmin,
@@ -25,6 +26,19 @@ exports.update = [
   middleware,
   crud.update
 ]
+
+exports.updateMe = [
+  isFabricantAdmin,
+  authenticated,
+  middleware,
+  (req, res, next) => {
+    delete req.body.isAdmin
+    req.params.id = req.user.id
+    next()
+  },
+  crud.update
+]
+
 exports.deleteOne = [
   isFabricantAdmin,
   authenticated,
@@ -33,8 +47,13 @@ exports.deleteOne = [
 ]
 
 function middleware (req, res, next) {
-  const { manufacturer } = req
-  console.log({ manufacturer })
+  const { manufacturer, user } = req
+  if (manufacturer != user.manufacturer) {
+    return http.notFound(res, {
+      error: true,
+      msg: 'permission denied'
+    })
+  }
   if (req.querymen) {
     req.querymen.query.manufacturer = manufacturer
     req.querymen.query.isAdmin = false

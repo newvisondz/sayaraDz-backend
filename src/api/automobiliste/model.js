@@ -57,12 +57,12 @@ AutoMobilisteSchema.methods.sign = utils.sign
 AutoMobilisteSchema.virtual('type').get(() => utils.USER_TYPE.AUTOMOBILISTE)
 
 AutoMobilisteSchema.methods.toJSON = function () {
-  const { email, id, token, providers, firstName, lastName } = this
+  const { type, email, id, token, providers, firstName, lastName } = this
   let prs = []
   for (let p of providers) {
     prs.push({ id: p.id, name: p.name })
   }
-  return { email, id, token, firstName, lastName, providers: prs }
+  return { type, email, id, token, firstName, lastName, providers: prs }
 }
 
 AutoMobilisteSchema.statics.type = () => utils.USER_TYPE.AUTOMOBILISTE

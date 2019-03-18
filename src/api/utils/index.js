@@ -30,6 +30,7 @@ function isValidPasswd (password, cb) {
 
 function preSaveUser (next) {
   const user = this
+  console.log({ modified: user.isModified })
   if (!user.isModified('password')) {
     return next()
   }

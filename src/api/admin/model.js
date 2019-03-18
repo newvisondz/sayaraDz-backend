@@ -26,6 +26,7 @@ const AdminSchema = new Schema({
 })
 
 AdminSchema.pre('save', preSaveUser)
+AdminSchema.pre('update', preSaveUser)
 
 AdminSchema.methods.isValidPasswd = isValidPasswd
 
@@ -37,7 +38,8 @@ AdminSchema.methods.toJSON = function () {
   return {
     email: this.email,
     id: this.id,
-    token: this.token
+    token: this.token,
+    type: this.type
   }
 }
 

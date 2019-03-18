@@ -81,6 +81,48 @@ module.exports = (Model, name, filter) => ({
       res.json(error)
       next(error)
     }
+  },
+
+  findAndUpdate: async ({ body, params }, res, next) => {
+    const { id } = params
+    delete body.id
+    delete body._id
+    try {
+      const newFilter = {
+        _id: id,
+        ...filter
+      }
+      let result = await Model.findOne(newFilter)
+      if (!result) {
+        http.notFound(res, {
+          error: true,
+          msg: `${name} not found`
+        })
+      }
+      result = Object.assign(result, body)
+      await result.save()
+      http.ok(res, {
+        n: 1,
+        ok: 1,
+        nModified: 1
+      })
+      next()
+    } catch (error) {
+      if (error.code == 11000) {
+        return res.json({
+          errors: {
+            duplicated: {
+              code: 11000,
+              errmsg: error.errmsg,
+              kind: 'duplicated'
+            }
+          }
+        })
+      }
+      res.json(error)
+      next(error)
+    }
+    next()
   }
 
 })
