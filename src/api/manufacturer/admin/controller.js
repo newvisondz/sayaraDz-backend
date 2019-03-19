@@ -4,6 +4,7 @@ const query = require('querymen').middleware
 const { timestamps } = require('../../../services/validation')
 const crud = require('../../../services/crud')(ManufacturerUser, 'manufacturer_amdin', { isAdmin: true })
 const http = require('../../../services/http')
+
 exports.read = [
   isAdmin,
   authenticated,

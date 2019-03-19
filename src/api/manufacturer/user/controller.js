@@ -31,14 +31,14 @@ exports.create = [
   isFabricantAdmin,
   authenticated,
   middleware,
-  crud.findAndUpdate
+  crud.create
 ]
 
 exports.update = [
   isFabricantAdmin,
   authenticated,
   middleware,
-  crud.update
+  crud.findAndUpdate
 ]
 
 exports.updateMe = [
