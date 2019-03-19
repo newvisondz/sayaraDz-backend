@@ -63,10 +63,7 @@ exports.checkAuth = checkAuth
 exports.authenticated = ({ user }, res, next) => {
   if (user) next()
   else {
-    http.unauthorized(res, {
-      error: true,
-      msg: 'permission denied'
-    })
+    http.unauthorized(res)
   }
 }
 

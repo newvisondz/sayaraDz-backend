@@ -11,8 +11,11 @@ exports.deleted = (res, data) => {
 exports.badRequest = (res, data) => {
   return res.status(400).json(data)
 }
-exports.unauthorized = (res, data) => {
-  return res.status(401).json(data)
+exports.unauthorized = (res) => {
+  return res.status(401).json({
+    error: true,
+    msg: 'permission denied'
+  })
 }
 exports.notFound = (res, data) => {
   return res.status(404).json(data)

@@ -5,7 +5,8 @@ const fs = require('fs-extra')
 const formidable = require('formidable')
 const crud = require('../../services/crud')(Manufacturer, 'manufacturer')
 const { timestamps } = require('../../services/validation')
-
+const http = require('../../services/http')
+const { USER_TYPE: { ADMIN } } = require('../utils')
 exports.read = [
   isAdmin,
   isAutomobiliste,
@@ -29,6 +30,11 @@ exports.update = [
   isAdmin,
   isFabricantAdmin,
   authenticated,
+  (req, res, next) => {
+    if (req.user.type == ADMIN) return next()
+    if (req.params.id == req.user.manufacturer) return next()
+    http.unauthorized(res)
+  },
   crud.update
 ]
 
