@@ -24,7 +24,7 @@ const schema = new Schema({
 schema.methods.toJSON = function () {
   return {
     id: this.id,
-    marque: this.marque,
+    brand: this.brand,
     logo: this.logo,
     createdAt: this.createdAt,
     updatedAt: this.updatedAt,
