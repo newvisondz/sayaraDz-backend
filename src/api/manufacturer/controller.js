@@ -31,6 +31,7 @@ exports.update = [
   isFabricantAdmin,
   authenticated,
   (req, res, next) => {
+    delete req.body.logo
     if (req.user.type == ADMIN) return next()
     if (req.params.id == req.user.manufacturer) return next()
     http.unauthorized(res)
