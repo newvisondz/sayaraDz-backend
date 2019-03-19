@@ -61,6 +61,7 @@ schema.methods.toJSON = function () {
 }
 schema.virtual('type').get(() => utils.USER_TYPE.FABRICANT)
 schema.statics.type = () => utils.USER_TYPE.FABRICANT
+schema.plugin(require('mongoose-keywords'), { paths: ['email', 'firstName', 'lastName', 'phone'] })
 
 const ManufacturerUser = mongoose.model('Manufacturer-user', schema)
 
