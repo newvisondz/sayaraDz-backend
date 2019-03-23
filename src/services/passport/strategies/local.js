@@ -8,7 +8,6 @@ const options = {
 module.exports = (Model) => {
   let validatePasswd = (done, user) => {
     return (err, isValid) => {
-      console.log({ isValid })
       if (err) return done(null, false)
       if (isValid) return done(null, user)
       done(null, false)

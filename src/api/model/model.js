@@ -16,7 +16,7 @@ const schema = new Schema({
   colors: [color]
 })
 
-schema.metho.toJSON = function (next) {
+schema.methods.toJSON = function (next) {
   return {
     id: this.id,
     name: this.name,

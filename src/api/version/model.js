@@ -9,13 +9,13 @@ const schema = new Schema({
   },
   colors: [
     {
-      type: mongoose.Types.ObjectId,
+      type: mongoose.Schema.Types.ObjectId,
       ref: 'Color'
     }
   ],
   options: [
     {
-      type: mongoose.Types.ObjectId,
+      type: mongoose.Schema.Types.ObjectId,
       ref: 'Option'
     }
   ]

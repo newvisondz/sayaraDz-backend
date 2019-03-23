@@ -6,11 +6,9 @@ const user = require('./user')
 const Manufacturer = require('./model')
 const http = require('../../services/http')
 const { login, logout } = require('../../services/auth')
+const model = require('../model')
 
-router.post('/login', login('local-manufacturer'))
-router.delete('/logout', logout)
-
-router.use(['/:manufacturer/admins', '/:manufacturer/users'], async (req, res, next) => {
+async function findManufacturer (req, res, next) {
   const { manufacturer: id } = req.params
   const manufacturer = await Manufacturer.findById(id)
   req.manufacturer = manufacturer
@@ -21,9 +19,16 @@ router.use(['/:manufacturer/admins', '/:manufacturer/users'], async (req, res, n
       msg: 'manufacturer not found'
     })
   }
-})
+}
+
+router.use(['/:manufacturer/*'], findManufacturer)
 router.use('/:manufacturer/admins', admin)
 router.use('/:manufacturer/users', user)
+router.use('/:manufacturer/models', model)
+
+router.post('/login', login('local-manufacturer'))
+router.delete('/logout', logout)
+
 router.get('/', read)
 router.post('/', create)
 router.post('/withlogo', createWithLogo)

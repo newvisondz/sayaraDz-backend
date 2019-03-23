@@ -52,7 +52,7 @@ exports.createWithLogo = [
     let form = formidable.IncomingForm()
     form.maxFileSize = 20 * 1024 ** 2
     form.keepExtensions = true
-    form.on('error', console.log)
+    // form.on('error', console.log)
     form.parse(req, async (err, fields, files) => {
       if (err) res.json(err)
       if (!fields.marque) {

@@ -5,7 +5,6 @@ const http = require('../http')
 const checkFabricantAdminAuth = (req, res, next) => passport.authenticate(
   'jwt-manufacturer',
   (err, user, info) => {
-    console.log('fabricant admin')
     if (err) {
       return next(err)
     }

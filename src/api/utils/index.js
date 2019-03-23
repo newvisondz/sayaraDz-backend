@@ -20,9 +20,6 @@ function sign () {
 function isValidPasswd (password, cb) {
   bcrypt.compare(password, this.password)
     .then(isValid => {
-      console.log({
-        isValid
-      })
       cb(null, isValid)
     })
     .catch(err => cb(err))
@@ -30,7 +27,6 @@ function isValidPasswd (password, cb) {
 
 function preSaveUser (next) {
   const user = this
-  console.log({ modified: user.isModified })
   if (!user.isModified('password')) {
     return next()
   }

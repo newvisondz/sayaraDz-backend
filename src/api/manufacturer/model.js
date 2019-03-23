@@ -1,6 +1,6 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
-// const { isAlphanumeric, blacklist } = require('validator')
+const Model = require('../model/model')
 const ManufacturerUser = require('./user/model')
 const schema = new Schema({
   _id: {
@@ -13,6 +13,10 @@ const schema = new Schema({
     trim: true,
     min: 1
   },
+  models: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Model'
+  }],
   logo: {
     type: String,
     default: '/public/images/logo.png'
@@ -26,6 +30,7 @@ schema.methods.toJSON = function () {
     id: this.id,
     brand: this.brand,
     logo: this.logo,
+    models: this.models,
     createdAt: this.createdAt,
     updatedAt: this.updatedAt,
     admins: this.admins,

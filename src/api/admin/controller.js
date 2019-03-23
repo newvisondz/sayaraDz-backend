@@ -16,7 +16,6 @@ exports.me = [
   isAdmin,
   authenticated,
   ({ user }, res, next) => {
-    console.log({ user: user })
     ok(res, user)
   }
 ]

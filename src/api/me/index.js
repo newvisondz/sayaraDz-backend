@@ -24,12 +24,8 @@ const update = [
   },
   crud.findAndUpdate
 ]
-router.use((req, res, next) => {
-  console.log({ user: req.user })
-  next()
-})
+
 router.get('/', me)
 router.put('/', update)
 
 module.exports = router
-console.log(this)

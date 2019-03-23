@@ -30,9 +30,7 @@ exports.connect = (PORT) =>
     if (err) throw err
     console.log({
       listening: true,
-      PORT
-    })
-    console.log({
+      PORT,
       mode: process.env.NODE_ENV || 'development'
     })
   })
