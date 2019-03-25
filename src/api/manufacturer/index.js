@@ -10,7 +10,7 @@ const model = require('../model')
 
 async function findManufacturer (req, res, next) {
   const { manufacturer: id } = req.params
-  const manufacturer = await Manufacturer.findById(id)
+  const manufacturer = await Manufacturer.findById(id).exec()
   req.manufacturer = manufacturer
   if (manufacturer)next()
   else {

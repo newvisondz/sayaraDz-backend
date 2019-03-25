@@ -14,8 +14,13 @@ exports.read = [
       type: String
     }
   }),
-  async ({ manufacturer }, res, next) => {
-    await manufacturer.populate('models').execPopulate()
+  async ({ manufacturer, querymen: { query, select, cursor: options } }, res, next) => {
+    await manufacturer.populate({
+      path: 'models',
+      match: query,
+      select,
+      options
+    }).execPopulate()
     res.json({ manufacturer })
   }
 ]
@@ -48,7 +53,7 @@ exports.deleteOne = [
   isFabricantAdmin,
   checkModel,
   crud.deleteOne,
-  async ({ manufacturer, modelIndex, params: { id } }, res, next) => {
+  async ({ manufacturer, params: { id } }, res, next) => {
     manufacturer.models.remove(id)
     await manufacturer.save()
     next()
@@ -57,7 +62,6 @@ exports.deleteOne = [
 
 function checkUser (req, res, next) {
   const { id: manufacturer } = req.manufacturer
-  console.error(req.user)
   if (manufacturer != req.user.manufacturer) {
     return http.unauthorized(res)
   }
@@ -68,9 +72,10 @@ function checkModel (req, res, next) {
   const { manufacturer: { models }, params: { id } } = req
   const index = models.indexOf(id)
   if (index !== -1) return next()
-  req.modelIndex = index
   http.notFound(res, {
     error: true,
     msg: 'model not found'
   })
 }
+
+exports.checkModel = checkModel

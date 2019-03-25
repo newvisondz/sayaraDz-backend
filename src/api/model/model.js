@@ -26,6 +26,7 @@ schema.methods.toJSON = function (next) {
   }
 }
 
+schema.plugin(require('mongoose-keywords'), { paths: ['name'] })
 const model = mongoose.model('Model', schema)
 
 module.exports = model
