@@ -1,6 +1,7 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 const ManufacturerUser = require('./user/model')
+
 const schema = new Schema({
   _id: {
     type: String

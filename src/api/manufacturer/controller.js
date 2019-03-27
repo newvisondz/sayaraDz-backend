@@ -7,6 +7,7 @@ const crud = require('../../services/crud')(Manufacturer, 'manufacturer')
 const { timestamps } = require('../../services/validation')
 const http = require('../../services/http')
 const { USER_TYPE: { ADMIN } } = require('../utils')
+
 exports.read = [
   isAdmin,
   isAutomobiliste,
@@ -83,3 +84,16 @@ exports.createWithLogo = [
     })
   }
 ]
+
+exports.findManufacturer = async (req, res, next) => {
+  const { manufacturer: id } = req.params
+  const manufacturer = await Manufacturer.findById(id).exec()
+  req.manufacturer = manufacturer
+  if (manufacturer)next()
+  else {
+    http.notFound(res, {
+      error: true,
+      msg: 'manufacturer not found'
+    })
+  }
+}

@@ -1,13 +1,14 @@
-const { isFabricant, isFabricantAdmin, authenticated } = require('../../services/acl')
+const { isFabricant, isFabricantAdmin, authenticated, isAutomobiliste } = require('../../services/acl')
 const http = require('../../services/http')
 
 const permissions = [
   isFabricant,
-  isFabricantAdmin,
-  authenticated
+  isFabricantAdmin
 ]
 exports.read = [
+  isAutomobiliste,
   ...permissions,
+  authenticated,
   async ({ model }, res, next) => {
     http.ok(res, model.versions)
   }
@@ -15,6 +16,7 @@ exports.read = [
 
 exports.create = [
   ...permissions,
+  authenticated,
   async ({ model, body }, res, next) => {
     const newVersion = model.versions.create(body)
     try {
@@ -22,14 +24,14 @@ exports.create = [
       await model.save()
       http.ok(res, newVersion)
     } catch (error) {
-      http.internalError(res, error)
+      http.badRequest(res, error)
     }
   }
 ]
 
 exports.update = [
   ...permissions,
-  checkVersion,
+  authenticated,
   async ({ body, model, params: { id } }, res, next) => {
     const version = model.versions.id(id)
     version.set(body)
@@ -41,14 +43,14 @@ exports.update = [
         nModified: 1
       })
     } catch (error) {
-      http.internalError(res, error)
+      http.badRequest(res, error)
     }
   }
 ]
 
 exports.deleteOne = [
   ...permissions,
-  checkVersion,
+  authenticated,
   async ({ model, params: { id } }, res, next) => {
     const version = model.versions.id(id)
     version.remove()
@@ -64,13 +66,3 @@ exports.deleteOne = [
     }
   }
 ]
-
-function checkVersion (req, res, next) {
-  const { model: { versions }, params: { id } } = req
-  const version = versions.id(id)
-  if (version) return next()
-  http.notFound(res, {
-    error: true,
-    msg: 'version not found'
-  })
-}

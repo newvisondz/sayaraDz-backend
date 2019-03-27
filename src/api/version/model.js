@@ -7,6 +7,10 @@ const schema = new Schema({
     required: true,
     trim: true
   },
+  vehicles: [{
+    type: Schema.Types.ObjectId,
+    ref: 'Vehicle'
+  }],
   colors: [
     {
       type: mongoose.Schema.Types.ObjectId,

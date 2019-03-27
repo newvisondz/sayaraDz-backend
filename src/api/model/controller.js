@@ -1,13 +1,26 @@
-const { isFabricant, isFabricantAdmin, authenticated } = require('../../services/acl')
+const { isFabricant, isFabricantAdmin, isAutomobiliste, authenticated } = require('../../services/acl')
 const Model = require('./model')
 const http = require('../../services/http')
 const crud = require('../../services/crud')(Model, 'model')
 const querymen = require('querymen').middleware
 const { timestamps } = require('../../services/validation')
+const { checkUser } = require('../../services/validation')
+
+const isFabOrAdmin = [
+  isFabricant,
+  isFabricantAdmin
+]
+const duPermissions = [
+  ...isFabOrAdmin,
+  authenticated,
+  checkUser,
+  checkModel
+]
 
 exports.read = [
-  isFabricant,
-  isFabricantAdmin,
+  ...isFabOrAdmin,
+  isAutomobiliste,
+  authenticated,
   querymen({
     ...timestamps,
     name: {
@@ -26,8 +39,7 @@ exports.read = [
 ]
 
 exports.create = [
-  isFabricant,
-  isFabricantAdmin,
+  ...isFabOrAdmin,
   authenticated,
   checkUser,
   crud.create,
@@ -42,16 +54,12 @@ exports.create = [
 ]
 
 exports.update = [
-  isFabricant,
-  isFabricantAdmin,
-  checkModel,
+  ...duPermissions,
   crud.findAndUpdate
 ]
 
 exports.deleteOne = [
-  isFabricant,
-  isFabricantAdmin,
-  checkModel,
+  ...duPermissions,
   crud.deleteOne,
   async ({ manufacturer, params: { id } }, res, next) => {
     manufacturer.models.remove(id)
@@ -59,14 +67,6 @@ exports.deleteOne = [
     next()
   }
 ]
-
-function checkUser (req, res, next) {
-  const { id: manufacturer } = req.manufacturer
-  if (manufacturer != req.user.manufacturer) {
-    return http.unauthorized(res)
-  }
-  next()
-}
 
 function checkModel (req, res, next) {
   const { manufacturer: { models }, params: { id } } = req

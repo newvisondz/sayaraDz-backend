@@ -1,10 +1,18 @@
+const http = require('../http')
+
 class Validation {
   constructor (schema) {
     if (!schema) throw new Error('not valid schema')
     this.schema = schema
     this.requiredPaths = schema.requiredPaths()
   }
-
+  static checkUser (req, res, next) {
+    const { id: manufacturer } = req.manufacturer
+    if (manufacturer != req.user.manufacturer) {
+      return http.unauthorized(res)
+    }
+    next()
+  }
   requirePaths ({ body }, res, next) {
     for (let path of this.requiredPaths) {
       if (!body[path]) {
