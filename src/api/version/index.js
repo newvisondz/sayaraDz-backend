@@ -1,6 +1,7 @@
 const router = require('express').Router()
 const { read, create, deleteOne, update } = require('./controller')
 const http = require('../../services/http')
+const vehicle = require('../vehicle')
 
 router.use('/:id', (req, res, next) => {
   const { model, params: { id } } = req
@@ -18,5 +19,5 @@ router.get('/', read)
 router.post('/', create)
 router.delete('/:id', deleteOne)
 router.put('/:id', update)
-
+router.use('/:id/vehicles', vehicle)
 module.exports = router

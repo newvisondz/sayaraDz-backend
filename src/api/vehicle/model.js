@@ -1,9 +1,14 @@
 const mongoose = require('mongoose')
+const { timestamps } = require('../../services/validation')
+
 const Schema = mongoose.Schema
 const schema = new Schema({
+  vin: {
+    type: Number,
+    required: true
+  },
   dealership: {
     type: String,
-    required: true,
     trim: true
   },
   colors: {
@@ -15,5 +20,12 @@ const schema = new Schema({
     ref: 'Option'
   }]
 }, { timestamps: true })
+schema.statics.querySchema = () => ({
+  ...timestamps,
+  vin: Number
+})
+schema.plugin(require('mongoose-keywords'), { paths: ['vin', 'dealership'] })
 
-module.exports = schema
+const model = mongoose.model('Vehicle', schema)
+
+module.exports = model

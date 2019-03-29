@@ -2,7 +2,7 @@ module.exports = {
   'env': {
     'browser': true,
     'commonjs': true,
-    'es6': true,
+    'es6': true
   },
   'extends': 'standard',
   'globals': {
@@ -13,7 +13,6 @@ module.exports = {
     'ecmaVersion': 2018
   },
   'rules': {
-    eqeqeq: "off",
-    // curly: "off"
+    eqeqeq: 'off'
   }
 }

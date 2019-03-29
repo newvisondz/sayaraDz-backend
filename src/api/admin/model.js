@@ -46,5 +46,4 @@ AdminSchema.methods.toJSON = function () {
 AdminSchema.statics.type = () => USER_TYPE.ADMIN
 
 const AdminModel = mongoose.model('Admin', AdminSchema)
-
 module.exports = AdminModel

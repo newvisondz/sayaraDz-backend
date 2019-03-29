@@ -31,7 +31,8 @@ schema.methods.toJSON = function () {
     name: this.name,
     colors: this.colors,
     model: this.model,
-    options: this.options
+    options: this.options,
+    vehicles: this.vehicles
   }
 }
 
