@@ -5,22 +5,9 @@ const crud = require('../../services/crud')(Model, 'model')
 const querymen = require('querymen').middleware
 const { timestamps } = require('../../services/validation')
 const { checkUser } = require('../../services/validation')
-
-const isFabOrAdmin = [
-  isFabricant,
-  isFabricantAdmin
-]
-const duPermissions = [
-  ...isFabOrAdmin,
-  authenticated,
-  checkUser,
-  checkModel
-]
+const { USER_TYPE: { AUTOMOBILISTE } } = require('../utils')
 
 exports.read = [
-  ...isFabOrAdmin,
-  isAutomobiliste,
-  authenticated,
   querymen({
     ...timestamps,
     name: {
@@ -39,9 +26,6 @@ exports.read = [
 ]
 
 exports.create = [
-  ...isFabOrAdmin,
-  authenticated,
-  checkUser,
   crud.create,
   async (req, res, next) => {
     req.manufacturer.models.push(req.created.id)
@@ -54,12 +38,12 @@ exports.create = [
 ]
 
 exports.update = [
-  ...duPermissions,
+  checkModel,
   crud.findAndUpdate
 ]
 
 exports.deleteOne = [
-  ...duPermissions,
+  checkModel,
   crud.deleteOne,
   async ({ manufacturer, params: { id } }, res, next) => {
     manufacturer.models.remove(id)
@@ -79,3 +63,23 @@ function checkModel (req, res, next) {
 }
 
 exports.checkModel = checkModel
+
+exports.middleware = [
+  isAutomobiliste,
+  isFabricant,
+  isFabricantAdmin,
+  (req, res, next) => {
+    console.log({ body: req.body })
+    const { user, method } = req
+    if (user && (user.type == AUTOMOBILISTE)) {
+      if (method.toLowerCase() == 'get') {
+        return authenticated(req, res, next)
+      }
+      req.user = undefined
+      return authenticated(req, res, next)
+    }
+    if (req.user) {
+      checkUser(req, res, next)
+    } else authenticated(req, res, next)
+  }
+]

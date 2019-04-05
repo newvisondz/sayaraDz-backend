@@ -1,13 +1,9 @@
-const { isAutomobiliste, isFabricant, isFabricantAdmin } = require('../../services/acl')
 const http = require('../../services/http')
 const Vehicle = require('./model')
 const crud = require('../../services/crud')(Vehicle)
 const query = require('querymen').middleware
 
 exports.read = [
-  isAutomobiliste,
-  isFabricant,
-  isFabricantAdmin,
   query(Vehicle.querySchema()),
   async ({ model, version, querymen: { query: match, select, cursor: options } }, res, next) => {
     try {
@@ -28,15 +24,11 @@ exports.read = [
   }
 ]
 exports.create = [
-  isFabricant,
-  isFabricantAdmin,
   async ({ version, model, body }, res, next) => {
     try {
       const vehicle = await new Vehicle(body).save()
       version.vehicles.push(vehicle.id)
       await model.save()
-      console.log(version)
-
       await http.ok(res, vehicle)
       next()
     } catch (error) {
@@ -46,14 +38,10 @@ exports.create = [
   }
 ]
 exports.update = [
-  isFabricant,
-  isFabricantAdmin,
   checkVehicle,
   crud.findAndUpdate
 ]
 exports.deleteOne = [
-  isFabricant,
-  isFabricantAdmin,
   checkVehicle,
   crud.deleteOne,
   async ({ version, params: { id } }, res, next) => {

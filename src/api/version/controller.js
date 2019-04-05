@@ -1,22 +1,12 @@
-const { isFabricant, isFabricantAdmin, authenticated, isAutomobiliste } = require('../../services/acl')
 const http = require('../../services/http')
 
-const permissions = [
-  isFabricant,
-  isFabricantAdmin
-]
 exports.read = [
-  isAutomobiliste,
-  ...permissions,
-  authenticated,
   async ({ model }, res, next) => {
     http.ok(res, model.versions)
   }
 ]
 
 exports.create = [
-  ...permissions,
-  authenticated,
   async ({ model, body }, res, next) => {
     const newVersion = model.versions.create(body)
     try {
@@ -30,8 +20,6 @@ exports.create = [
 ]
 
 exports.update = [
-  ...permissions,
-  authenticated,
   async ({ body, model, params: { id } }, res, next) => {
     const version = model.versions.id(id)
     version.set(body)
@@ -49,8 +37,6 @@ exports.update = [
 ]
 
 exports.deleteOne = [
-  ...permissions,
-  authenticated,
   async ({ model, params: { id } }, res, next) => {
     const version = model.versions.id(id)
     version.remove()

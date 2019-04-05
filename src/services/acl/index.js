@@ -5,16 +5,14 @@ const http = require('../http')
 const checkFabricantAdminAuth = (req, res, next) => passport.authenticate(
   'jwt-manufacturer',
   (err, user, info) => {
-    if (err) {
-      return next(err)
-    }
-    if (user && user.isAdmin) {
-      req.user = user
-    }
+    if (req.user) return next()
+    if (err) return next(err)
+    if (user && user.isAdmin) req.user = user
     next()
   })(req, res, next)
 
 const checkToken = async (req, res, next) => {
+  if (req.user) return next()
   const token = req.headers.authorization
   try {
     let newToken = await JwtToken.findOne({

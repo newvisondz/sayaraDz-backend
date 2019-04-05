@@ -1,8 +1,10 @@
 const router = require('express').Router()
-const { create, read, deleteOne, update } = require('./controller')
+const { create, read, deleteOne, update, middleware } = require('./controller')
 const versions = require('../version')
 const http = require('../../services/http')
 const Model = require('../model/model')
+
+router.use(middleware)
 
 router.use('/:id/versions', async (req, res, next) => {
   const { manufacturer: { models }, params: { id } } = req
@@ -16,6 +18,7 @@ router.use('/:id/versions', async (req, res, next) => {
     msg: 'model not found'
   })
 })
+
 router.use('/:id/versions', versions)
 router.get('/', read)
 router.post('/', create)

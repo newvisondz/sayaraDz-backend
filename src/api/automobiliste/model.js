@@ -17,14 +17,14 @@ const AutoMobilisteSchema = new Schema({
     type: String,
     minlength: 4
   },
+  birthDate: Date,
   providers: [{
     name: {
       type: String,
       enum: providers
     },
     id: {
-      type: String,
-      validate: () => {}
+      type: String
     }
   }],
   firstName: {
@@ -57,16 +57,25 @@ AutoMobilisteSchema.methods.sign = utils.sign
 AutoMobilisteSchema.virtual('type').get(() => utils.USER_TYPE.AUTOMOBILISTE)
 
 AutoMobilisteSchema.methods.toJSON = function () {
-  const { type, email, id, token, providers, firstName, lastName } = this
-  let prs = []
-  for (let p of providers) {
-    prs.push({ id: p.id, name: p.name })
+  return {
+    id: this.id,
+    email: this.email,
+    providers: this.providers,
+    firstName: this.firstName,
+    lastName: this.lastName,
+    birthDate: this.birthDate,
+    phone: this.phone,
+    address: this.address,
+    createdAt: this.createdAt,
+    updatedAt: this.updatedAt
   }
-  return { type, email, id, token, firstName, lastName, providers: prs }
 }
 
 AutoMobilisteSchema.statics.type = () => utils.USER_TYPE.AUTOMOBILISTE
 
 const Automobiliste = mongoose.model('Automobiliste', AutoMobilisteSchema)
-
+// new Automobiliste({
+//   email: 'r@root.dz',
+//   password: 'root'
+// }).save().then(user => console.log(user.sign()))
 module.exports = Automobiliste
