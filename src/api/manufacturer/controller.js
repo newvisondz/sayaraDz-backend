@@ -1,4 +1,5 @@
 const query = require('querymen').middleware
+const uuid = require('uuid/v4')
 const { isAdmin, isAutomobiliste, authenticated, isFabricantAdmin } = require('../../services/acl')
 const Manufacturer = require('./model')
 const fs = require('fs-extra')
@@ -7,6 +8,19 @@ const crud = require('../../services/crud')(Manufacturer, 'manufacturer')
 const { timestamps } = require('../../services/validation')
 const http = require('../../services/http')
 const { USER_TYPE: { ADMIN } } = require('../utils')
+const multer = require('multer')
+
+const storage = multer.diskStorage({
+  destination: (req, file, next) => {
+    next(null, './public/images/')
+  },
+  filename: (req, file, next) => {
+    const ext = file.originalname.split('.').pop()
+    const name = uuid(file.originalname) + '.' + ext
+    next(null, name)
+  }
+})
+const upload = multer({ storage })
 
 exports.read = [
   isAdmin,
@@ -49,40 +63,14 @@ exports.deleteOne = [
 exports.createWithLogo = [
   isAdmin,
   authenticated,
-  (req, res, next) => {
-    let form = formidable.IncomingForm()
-    form.maxFileSize = 20 * 1024 ** 2
-    form.keepExtensions = true
-    // form.on('error', console.log)
-    form.parse(req, async (err, fields, files) => {
-      if (err) res.json(err)
-      if (!fields.marque) {
-        return res.json({
-          error: true,
-          msg: 'field marque is required'
-        })
-      }
-
-      const fab = { marque: fields.marque }
-      try {
-        let newFab = await new Manufacturer(fab).save()
-        if (files.logo) {
-          let ext = files.logo.name.split('.').pop()
-          const logoPath = `public/images/${newFab.id}.${ext}`
-          await fs.copy(files.logo.path, logoPath)
-          newFab.logo = logoPath
-          newFab = await newFab.save()
-        }
-        res.json(newFab)
-      } catch (error) {
-        res.json({
-          error: 1,
-          msg: 'duplicate manufacturer name'
-        })
-        next(error)
-      }
+  async (req, res, next) => {
+    upload.single('logo')(req, res, async (err) => {
+      if (err) return http.badRequest(res, err)
+      req.body.logo = `public/images/${req.file.filename}`
+      next()
     })
-  }
+  },
+  crud.create
 ]
 
 exports.findManufacturer = async (req, res, next) => {
