@@ -4,7 +4,6 @@ const crud = require('../../services/crud')(Vehicle)
 const query = require('querymen').middleware
 const upload = require('../../services/upload')
 const fs = require('fs')
-
 exports.read = [
   query(Vehicle.querySchema()),
   async ({ model, version, querymen: { query: match, select, cursor: options } }, res, next) => {

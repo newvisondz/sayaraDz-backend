@@ -7,6 +7,7 @@ const { timestamps } = require('../../services/validation')
 const http = require('../../services/http')
 const { USER_TYPE: { ADMIN } } = require('../utils')
 const upload = require('../../services/upload')
+const { upload_dir, static_folder } = require('../../config')
 
 exports.read = [
   isAdmin,

@@ -1,9 +1,10 @@
 const multer = require('multer')
 const uuid = require('uuid/v4')
+const { upload_dir, static_folder } = require('../../config')
 
 const storage = multer.diskStorage({
   destination: (req, file, next) => {
-    next(null, './public/images/')
+    next(null, upload_dir)
   },
   filename: (req, file, next) => {
     const ext = file.originalname.split('.').pop()
