@@ -50,8 +50,8 @@ exports.update = [
             msg: 'manufacturer not found'
           })
         }
-        fs.unlink('./' + manufacturer.logo, async (error) => {
-          const logo = `public/images/${file.filename}`
+        fs.unlink(upload_dir + '/' + manufacturer.logo, async (error) => {
+          const logo = `public/${file.filename}`
           const result = await Manufacturer.updateOne({ _id: id }, {
             ...body,
             logo
@@ -67,7 +67,7 @@ exports.update = [
         })
       } else {
         if (req.body.logo === '') {
-          fs.unlink('./' + manufacturer.logo, async (error) => {
+          fs.unlink(upload_dir + '/' + manufacturer.logo, async (error) => {
             if (!error) next()
           })
         }
@@ -84,7 +84,7 @@ exports.deleteOne = [
   crud.deleteOne,
   ({ deleted }, res, next) => {
     if (!deleted) return next()
-    fs.unlink('./' + deleted.logo, (err) => {
+    fs.unlink(upload_dir + '/' + deleted.logo, (err) => {
       if (err) return next(err)
       next()
     })
@@ -97,7 +97,7 @@ exports.createWithLogo = [
   async (req, res, next) => {
     upload.single('logo')(req, res, async (err) => {
       if (err) return http.badRequest(res, err)
-      req.file && (req.body.logo = `public/images/${req.file.filename}`)
+      req.file && (req.body.logo = `public/${req.file.filename}`)
       next()
     })
   },

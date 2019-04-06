@@ -4,6 +4,7 @@ const crud = require('../../services/crud')(Vehicle)
 const query = require('querymen').middleware
 const upload = require('../../services/upload')
 const fs = require('fs')
+const { upload_dir } = require('../../config')
 exports.read = [
   query(Vehicle.querySchema()),
   async ({ model, version, querymen: { query: match, select, cursor: options } }, res, next) => {
@@ -54,7 +55,7 @@ exports.create = [
       const { files, body } = req
       if (error) return http.badRequest(res, error)
       body.images = files.map(
-        image => `/public/images/${image.filename}`
+        image => '/public/' + image.filename
       )
       try {
         const vehicle = await new Vehicle(body).save()
@@ -85,14 +86,14 @@ exports.update = [
         body.images = [
           ...(body.images ? body.images : vehicle.images),
           ...files.map(
-            file => `/public/images/${file.filename}`
+            file => `/public/${file.filename}`
           )
         ]
         for (let i = 0; i < vehicle.images.length; i++) {
           let image = vehicle.images[i]
           image = image.split('/').pop()
           console.log({ image })
-          fs.unlink(`./public/images/${image}`, async error => {
+          fs.unlink(`${upload_dir}/${image}`, async error => {
             if (error) return false
           })
         }

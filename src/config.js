@@ -17,6 +17,6 @@ module.exports = {
   google_app_id: '127354430664-hk6dcbqghd155soavfon2hr4ud7sqeli.apps.googleusercontent.com',
   google_app_secret: 'LNUZ8oebJ5983ksWj-fZGg4c',
   port: process.env.NODE_ENV == 'production' ? 8080 : 3000,
-  upload_dir: process.env.NODE_ENV == 'production' ? '/data/images' : './public/images',
+  upload_dir: process.env.NODE_ENV == 'production' ? '/data' : './public/',
   static_folder: process.env.NODE_ENV == 'production' ? '/data' : 'public'
 }
