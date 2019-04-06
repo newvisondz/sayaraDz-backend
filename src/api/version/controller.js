@@ -37,13 +37,16 @@ exports.read = [
 exports.create = [
   async ({ model, body }, res, next) => {
     const { options } = body
-    let id = verifyIds(options, model.options)
-    if (id) {
-      return http.badRequest(res, {
-        error: true,
-        msg: `option ${id} not found in model options`
-      })
+    if (options) {
+      let id = verifyIds(options, model.options)
+      if (id) {
+        return http.badRequest(res, {
+          error: true,
+          msg: `option ${id} not found in model options`
+        })
+      }
     }
+
     const newVersion = model.versions.create(body)
     try {
       model.versions.push(newVersion)
