@@ -5,14 +5,14 @@ const auth = require('./src/services/passport')
 const querymen = require('querymen')
 const bodymen = require('bodymen')
 const app = express()
-
+const { upload_dir, static_folder } = require('./src/config')
 const router = require('./src/api')
 const cors = require('cors')
 const http = require('./src/services/http')
 
 app.use(cors())
 // uploaded logos
-app.use('/public', express.static('public'), (req, res, next) => {
+app.use('/public', express.static(static_folder), (req, res, next) => {
   http.notFound(res)
 })
 
