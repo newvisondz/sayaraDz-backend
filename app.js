@@ -8,10 +8,13 @@ const app = express()
 
 const router = require('./src/api')
 const cors = require('cors')
+const http = require('./src/services/http')
 
 app.use(cors())
 // uploaded logos
-app.use('/public', express.static('public'))
+app.use('/public', express.static('public'), (req, res, next) => {
+  http.notFound(res)
+})
 
 app.use(cookieParser())
 app.use(bodyParser.json())

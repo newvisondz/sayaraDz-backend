@@ -19,7 +19,8 @@ const schema = new Schema({
 schema.methods.toJSON = function () {
   return {
     id: this.id,
-    name: this.name
+    name: this.name,
+    value: this.value
   }
 }
 

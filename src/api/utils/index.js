@@ -37,10 +37,58 @@ function preSaveUser (next) {
     })
     .catch(next)
 }
-
+const storedOptions = (options) => {
+  const newOptions = []
+  if (options) {
+    for (const option of options) {
+      for (const value of option.values) {
+        newOptions.push({
+          name: option.name,
+          value
+        })
+      }
+    }
+  }
+  return options ? newOptions : options
+}
+const retrievedOptions = (options = []) => {
+  let newOptions = []
+  for (let option of options) {
+    let element = newOptions.find(
+      e => e.name == option.name
+    )
+    if (element) {
+      element.values.push({
+        value: option.value,
+        id: option.id
+      })
+    } else {
+      element = {
+        name: option.name,
+        values: [{
+          value: option.value,
+          id: option.id
+        }]
+      }
+      newOptions.push(element)
+    }
+  }
+  return newOptions
+}
+const verifyIds = (ids, array) => {
+  for (let id of ids) {
+    if (array.find(
+      e => e.id == id
+    )) continue
+    else return id
+  }
+}
 module.exports = {
   USER_TYPE,
   sign,
   isValidPasswd,
-  preSaveUser
+  preSaveUser,
+  storedOptions,
+  retrievedOptions,
+  verifyIds
 }

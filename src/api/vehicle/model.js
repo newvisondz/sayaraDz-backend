@@ -11,7 +11,8 @@ const schema = new Schema({
     type: String,
     trim: true
   },
-  colors: {
+  images: [String],
+  color: {
     type: Schema.Types.ObjectId,
     ref: 'Color'
   },
@@ -25,7 +26,17 @@ schema.statics.querySchema = () => ({
   vin: Number
 })
 schema.plugin(require('mongoose-keywords'), { paths: ['vin', 'dealership'] })
-
+schema.methods.toJSON = function () {
+  return {
+    id: this.id,
+    vin: this.vin,
+    images: this.images,
+    createdAt: this.createdAt,
+    updatedAt: this.updatedAt,
+    color: this.color,
+    options: this.options
+  }
+}
 const model = mongoose.model('Vehicle', schema)
 
 module.exports = model

@@ -72,9 +72,18 @@ module.exports = (Model, name, filter) => ({
     next()
   },
 
-  deleteOne: async ({ params, body }, res, next) => {
+  deleteOne: async (req, res, next) => {
+    const { params, body } = req
     const _id = params.id
     try {
+      const deleted = await Model.findById(_id)
+      if (!deleted) {
+        return http.notFound(res, {
+          error: true,
+          msg: name + ' not found'
+        })
+      }
+      req.deleted = deleted
       const result = await Model.deleteOne({ _id, ...body })
       res.json(result)
       next()

@@ -5,7 +5,7 @@ const crud = require('../../services/crud')(Model, 'model')
 const querymen = require('querymen').middleware
 const { timestamps } = require('../../services/validation')
 const { checkUser } = require('../../services/validation')
-const { USER_TYPE: { AUTOMOBILISTE } } = require('../utils')
+const { storedOptions, USER_TYPE: { AUTOMOBILISTE } } = require('../utils')
 
 exports.read = [
   querymen({
@@ -15,17 +15,30 @@ exports.read = [
     }
   }),
   async ({ manufacturer, querymen: { query, select, cursor: options } }, res, next) => {
+    const count = manufacturer.models.length
     await manufacturer.populate({
       path: 'models',
       match: query,
       select,
       options
     }).execPopulate()
-    res.json({ manufacturer })
+    http.ok(res, {
+      models: manufacturer.models,
+      count
+    })
   }
 ]
 
 exports.create = [
+  ({ body: { options = [] }, body }, res, next) => {
+    body.options = []
+    try {
+      body.options = storedOptions(options)
+      next()
+    } catch (error) {
+      http.badRequest(res, error)
+    }
+  },
   crud.create,
   async (req, res, next) => {
     req.manufacturer.models.push(req.created.id)
@@ -39,6 +52,10 @@ exports.create = [
 
 exports.update = [
   checkModel,
+  ({ body, body: { options } }, res, next) => {
+    if (options) body.options = storedOptions(options)
+    next()
+  },
   crud.findAndUpdate
 ]
 

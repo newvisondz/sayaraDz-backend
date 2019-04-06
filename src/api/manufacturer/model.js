@@ -22,7 +22,8 @@ const schema = new Schema({
     default: '/public/images/logo.png'
   }
 }, {
-  timestamps: true
+  timestamps: true,
+  skipVersioning: { dontVersionMe: true }
 })
 
 schema.methods.toJSON = function () {
@@ -41,8 +42,9 @@ schema.pre('save', function (next) {
   this._id = this.brand.replace(/ /g, '-').replace(/\//g, '_')
   next()
 })
-schema.pre('deleteOne', async (next) => {
+schema.pre('deleteOne', async function (next) {
   await ManufacturerUser.deleteMany({ manufacturer: this.id })
+  next()
 })
 
 schema.plugin(require('mongoose-keywords'), { paths: ['brand'] })

@@ -12,6 +12,7 @@ const schema = new Schema({
     trim: true
   }
 }, {
+
   timestamps: true
 })
 
@@ -19,7 +20,9 @@ schema.methods.toJSON = function () {
   return {
     id: this.id,
     name: this.name,
-    value: this.value
+    value: this.value,
+    createdAt: this.createdAt,
+    updatedAt: this.updatedAt
   }
 }
 
