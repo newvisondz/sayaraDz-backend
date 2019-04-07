@@ -105,13 +105,13 @@ exports.update = [
               file => `/public/${file.filename}`
             )
           ]
-          for (let i = 0; i < vehicle.images.length; i++) {
-            let image = vehicle.images[i]
-            image = image.split('/').pop()
-            fs.unlink(`${upload_dir}/${image}`, async error => {
-              if (error) return false
-            })
-          }
+          // for (let i = 0; i < vehicle.images.length; i++) {
+          //   let image = vehicle.images[i]
+          //   image = image.split('/').pop()
+          //   fs.unlink(`${upload_dir}/${image}`, async error => {
+          //     if (error) return false
+          //   })
+          // }
 
           vehicle.set(body)
           await vehicle.save()
@@ -125,7 +125,17 @@ exports.update = [
           console.log(error)
           http.badRequest(res, error)
         }
-      } else next()
+      } else {
+        try {
+          body.images = body.images && JSON.parse(body.images)
+          next()
+        } catch (error) {
+          http.badRequest(res, {
+            error: 1,
+            msg: 'images field is not valid json string'
+          })
+        }
+      }
     })
   },
   crud.findAndUpdate
