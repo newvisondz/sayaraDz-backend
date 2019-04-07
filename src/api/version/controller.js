@@ -9,12 +9,15 @@ exports.show = [
       )
     )
     options = retrievedOptions(options)
+
     http.ok(res, {
       ...version.toJSON(),
-      options
+      options,
+      vehicles: undefined
     })
   }
 ]
+
 exports.read = [
   async ({ model }, res, next) => {
     http.ok(res, model.versions.map(
@@ -27,7 +30,8 @@ exports.read = [
         options = retrievedOptions(options)
         return ({
           ...v.toJSON(),
-          options
+          options,
+          vehicles: undefined
         })
       }
     ))

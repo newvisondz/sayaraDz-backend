@@ -1,5 +1,5 @@
 const router = require('express').Router()
-const { create, read, deleteOne, update, middleware } = require('./controller')
+const { create, read, show, deleteOne, update, middleware } = require('./controller')
 const versions = require('../version')
 const http = require('../../services/http')
 const Model = require('../model/model')
@@ -21,6 +21,7 @@ router.use('/:id/versions', async (req, res, next) => {
 
 router.use('/:id/versions', versions)
 router.get('/', read)
+router.get('/:id', show)
 router.post('/', create)
 router.delete('/:id', deleteOne)
 router.put('/:id', update)

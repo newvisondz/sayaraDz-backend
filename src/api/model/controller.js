@@ -19,13 +19,21 @@ exports.read = [
     await manufacturer.populate({
       path: 'models',
       match: query,
-      select,
+      select: '-versions ',
       options
     }).execPopulate()
     http.ok(res, {
       models: manufacturer.models,
       count
     })
+  }
+]
+
+exports.show = [
+  checkModel,
+  async ({ params: { id } }, res, next) => {
+    const model = await Model.findById(id).select('-versions')
+    http.ok(res, model)
   }
 ]
 
