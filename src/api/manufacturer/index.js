@@ -15,7 +15,7 @@ router.post('/login', login('local-manufacturer'))
 router.delete('/logout', logout)
 
 router.get('/', read)
-router.post('/', create)
+router.post('/', createWithLogo)
 router.post('/withlogo', createWithLogo)
 router.put('/:id', update)
 router.delete('/:id', deleteOne)
