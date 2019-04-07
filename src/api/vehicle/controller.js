@@ -1,15 +1,18 @@
 const http = require('../../services/http')
 const Vehicle = require('./model')
-const crud = require('../../services/crud')(Vehicle)
+const crud = require('../../services/crud')(Vehicle, 'vehicle')
 const query = require('querymen').middleware
 const upload = require('../../services/upload')
 const fs = require('fs')
 const { upload_dir } = require('../../config')
+const { findById, retrievedOptions, filterById } = require('../utils')
+
 exports.read = [
   query(Vehicle.querySchema()),
   async ({ model, version, querymen: { query: match, select, cursor: options } }, res, next) => {
     try {
       delete options.sort
+      const count = version.vehicles.length
       await model.populate({
         path: 'versions.vehicles',
         match,
@@ -17,8 +20,14 @@ exports.read = [
         options
       }).execPopulate()
       await http.ok(res, {
-        vehicles: version.vehicles,
-        count: version.vehicles.length
+        vehicles: version.vehicles.map(
+          v => ({
+            ...v.toJSON(),
+            color: findById(v.color, model.colors),
+            options: retrievedOptions(filterById(v.options, model.options))
+          })
+        ),
+        count
       })
       next()
     } catch (error) {
@@ -29,7 +38,7 @@ exports.read = [
 ]
 exports.show = [
   query(Vehicle.querySchema()),
-  async ({ params: { id }, querymen: { select } }, res, next) => {
+  async ({ model, params: { id }, querymen: { select } }, res, next) => {
     try {
       const vehicle = await Vehicle.findById(id).select(select)
       if (!vehicle) {
@@ -39,7 +48,11 @@ exports.show = [
           code: 404
         })
       }
-      http.ok(res, vehicle)
+      http.ok(res, {
+        ...vehicle.toJSON(),
+        color: findById(vehicle.color, model.colors),
+        options: retrievedOptions(filterById(vehicle.options, model.options))
+      })
     } catch (error) {
       http.internalError(res, error)
     }
@@ -70,6 +83,7 @@ exports.create = [
     })
   }
 ]
+
 exports.update = [
   checkVehicle,
   (req, res, next) => {
@@ -82,22 +96,23 @@ exports.update = [
       const { files, body } = req
       const vehicle = await Vehicle.findById(req.params.id)
       if (files.length) {
-        body.images = JSON.parse(body.images)
-        body.images = [
-          ...(body.images ? body.images : vehicle.images),
-          ...files.map(
-            file => `/public/${file.filename}`
-          )
-        ]
-        for (let i = 0; i < vehicle.images.length; i++) {
-          let image = vehicle.images[i]
-          image = image.split('/').pop()
-          console.log({ image })
-          fs.unlink(`${upload_dir}/${image}`, async error => {
-            if (error) return false
-          })
-        }
         try {
+          body.images = body.images && JSON.parse(body.images)
+          console.log({ images: body.images })
+          body.images = [
+            ...(body.images ? body.images : vehicle.images),
+            ...files.map(
+              file => `/public/${file.filename}`
+            )
+          ]
+          for (let i = 0; i < vehicle.images.length; i++) {
+            let image = vehicle.images[i]
+            image = image.split('/').pop()
+            fs.unlink(`${upload_dir}/${image}`, async error => {
+              if (error) return false
+            })
+          }
+
           vehicle.set(body)
           await vehicle.save()
           await http.ok(res, {
@@ -107,6 +122,7 @@ exports.update = [
             images: body.images
           })
         } catch (error) {
+          console.log(error)
           http.badRequest(res, error)
         }
       } else next()
@@ -117,10 +133,14 @@ exports.update = [
 exports.deleteOne = [
   checkVehicle,
   crud.deleteOne,
-  async ({ version, params: { id } }, res, next) => {
+  async ({ deleted, model, version, params: { id } }, res, next) => {
     try {
+      for (let image of deleted.images) {
+        const path = upload_dir + '/' + image.split('/').pop()
+        fs.unlink(path, (err) => {})
+      }
       version.vehicles.remove(id)
-      await version.save()
+      await model.save()
       next()
     } catch (error) {
       next(error)
@@ -140,7 +160,6 @@ async function checkVehicle ({ version, params: { id } }, res, next) {
 }
 
 function verify (array1, array2) {
-  console.log({ array1, array2 })
   for (let item1 of array1) {
     if (array2.find(
       i => i == item1
@@ -151,7 +170,6 @@ function verify (array1, array2) {
 }
 
 function verifyOptionColors (res, color, colors, newOptions, options) {
-  console.log({ arguments })
   if (color) {
     if (verify([color], colors)) {
       http.badRequest(res, {

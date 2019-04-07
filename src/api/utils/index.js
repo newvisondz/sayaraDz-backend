@@ -83,6 +83,18 @@ const verifyIds = (ids, array) => {
     else return id
   }
 }
+
+const findById = (id, array) => array.find(
+  e => e.id == id
+)
+const filterById = (ids, array) => {
+  return array.filter(
+    e => ids.find(
+      id => e.id == id
+    )
+  )
+}
+
 module.exports = {
   USER_TYPE,
   sign,
@@ -90,5 +102,7 @@ module.exports = {
   preSaveUser,
   storedOptions,
   retrievedOptions,
-  verifyIds
+  verifyIds,
+  findById,
+  filterById
 }

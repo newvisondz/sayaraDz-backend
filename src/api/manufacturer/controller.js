@@ -61,7 +61,6 @@ exports.update = [
             logo
           })
           if (error) {
-            console.log({ error })
             next(err)
           }
         })
@@ -105,11 +104,9 @@ exports.createWithLogo = [
 ]
 
 exports.findManufacturer = async (req, res, next) => {
-  console.log({ params: req.params })
   const { manufacturer: id } = req.params
   const manufacturer = await Manufacturer.findById(id).exec()
   req.manufacturer = manufacturer
-  console.log({ manufacturer })
   if (manufacturer)next()
   else {
     http.notFound(res, {

@@ -86,7 +86,6 @@ exports.middleware = [
   isFabricant,
   isFabricantAdmin,
   (req, res, next) => {
-    console.log({ body: req.body })
     const { user, method } = req
     if (user && (user.type == AUTOMOBILISTE)) {
       if (method.toLowerCase() == 'get') {
