@@ -18,8 +18,7 @@ const schema = new Schema({
     ref: 'Model'
   }],
   logo: {
-    type: String,
-    default: '/public/images/logo.png'
+    type: String
   }
 }, {
   timestamps: true,
