@@ -14,6 +14,8 @@ module.exports = {
 
   fb_app_id: '320960728554804',
   fb_app_secret: '09dd09c8baad300ad2a064e7258973a2',
+  // google_app_id: '127354430664-hk6dcbqghd155soavfon2hr4ud7sqeli.apps.googleusercontent.com',
+  // google_app_secret: 'LNUZ8oebJ5983ksWj-fZGg4c',
   google_app_id: '127354430664-hk6dcbqghd155soavfon2hr4ud7sqeli.apps.googleusercontent.com',
   google_app_secret: 'LNUZ8oebJ5983ksWj-fZGg4c',
   port: process.env.NODE_ENV == 'production' ? 8080 : 3000,
