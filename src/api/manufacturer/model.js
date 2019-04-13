@@ -30,7 +30,6 @@ schema.methods.toJSON = function () {
     id: this.id,
     brand: this.brand,
     logo: this.logo,
-    models: this.models,
     createdAt: this.createdAt,
     updatedAt: this.updatedAt,
     admins: this.admins,

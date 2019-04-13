@@ -94,6 +94,11 @@ const filterById = (ids, array) => {
     )
   )
 }
+const without = (array1, array2) => array1.filter(
+  img => !array2.find(
+    bodyImage => bodyImage == img
+  )
+)
 
 module.exports = {
   USER_TYPE,
@@ -104,5 +109,6 @@ module.exports = {
   retrievedOptions,
   verifyIds,
   findById,
-  filterById
+  filterById,
+  without
 }

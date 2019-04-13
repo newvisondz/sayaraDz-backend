@@ -2,10 +2,10 @@ const http = require('../../services/http')
 const Vehicle = require('./model')
 const crud = require('../../services/crud')(Vehicle, 'vehicle')
 const query = require('querymen').middleware
-const upload = require('../../services/upload')
+const { upload, deleteImages, mergeImageBody } = require('../../services/upload')
 const fs = require('fs')
 const { upload_dir } = require('../../config')
-const { findById, retrievedOptions, filterById } = require('../utils')
+const { findById, retrievedOptions, filterById, without } = require('../utils')
 
 exports.read = [
   query(Vehicle.querySchema()),
@@ -38,16 +38,10 @@ exports.read = [
 ]
 exports.show = [
   query(Vehicle.querySchema()),
+  checkVehicle,
   async ({ model, params: { id }, querymen: { select } }, res, next) => {
     try {
       const vehicle = await Vehicle.findById(id).select(select)
-      if (!vehicle) {
-        return http.notFound(res, {
-          error: true,
-          msg: 'vehicle not found',
-          code: 404
-        })
-      }
       http.ok(res, {
         ...vehicle.toJSON(),
         color: findById(vehicle.color, model.colors),
@@ -61,12 +55,12 @@ exports.show = [
 exports.create = [
   async (req, res, next) => {
     upload.array('images')(req, res, async (error) => {
+      if (error) return http.internalError(res, error)
       const { version, model, body: { color, options: newOptions } } = req
       if (verifyOptionColors(res, color || undefined, version.colors, newOptions, version.options)) {
         return
       }
       const { files, body } = req
-      if (error) return http.badRequest(res, error)
       body.images = files.map(
         image => '/public/' + image.filename
       )
@@ -88,31 +82,17 @@ exports.update = [
   checkVehicle,
   (req, res, next) => {
     upload.array('newImages')(req, res, async error => {
+      if (error) return http.internalError(res, error)
       const { version, body: { color, options: newOptions } } = req
       if (verifyOptionColors(res, color || undefined, version.colors, newOptions, version.options)) {
         return
       }
-      if (error) return http.internalError(res, error)
       const { files, body } = req
-      const vehicle = await Vehicle.findById(req.params.id)
       if (files.length) {
         try {
-          body.images = body.images && JSON.parse(body.images)
-          console.log({ images: body.images })
-          body.images = [
-            ...(body.images ? body.images : vehicle.images),
-            ...files.map(
-              file => `/public/${file.filename}`
-            )
-          ]
-          // for (let i = 0; i < vehicle.images.length; i++) {
-          //   let image = vehicle.images[i]
-          //   image = image.split('/').pop()
-          //   fs.unlink(`${upload_dir}/${image}`, async error => {
-          //     if (error) return false
-          //   })
-          // }
-
+          const vehicle = await Vehicle.findById(req.params.id)
+          body.images = mergeImageBody(files, body.images, vehicle.images)
+          await deleteImages(without(vehicle.images, body.images))
           vehicle.set(body)
           await vehicle.save()
           await http.ok(res, {
@@ -122,7 +102,6 @@ exports.update = [
             images: body.images
           })
         } catch (error) {
-          console.log(error)
           http.badRequest(res, error)
         }
       } else {
@@ -145,10 +124,7 @@ exports.deleteOne = [
   crud.deleteOne,
   async ({ deleted, model, version, params: { id } }, res, next) => {
     try {
-      for (let image of deleted.images) {
-        const path = upload_dir + '/' + image.split('/').pop()
-        fs.unlink(path, (err) => {})
-      }
+      await deleteImages(deleted.images)
       version.vehicles.remove(id)
       await model.save()
       next()
@@ -165,7 +141,7 @@ async function checkVehicle ({ version, params: { id } }, res, next) {
   if (includes) return next()
   http.notFound(res, {
     error: true,
-    msg: 'vehicle not foundf'
+    msg: 'vehicle not found'
   })
 }
 
