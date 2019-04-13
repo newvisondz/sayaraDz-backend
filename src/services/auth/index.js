@@ -23,7 +23,7 @@ const generateToken = (req, res, next) => {
   next()
 }
 
-exports.logout = (req, res) => {
+exports.logout = async (req, res) => {
   let token = req.headers.authorization
   if (!token) {
     return res.json({
@@ -35,7 +35,7 @@ exports.logout = (req, res) => {
     token
   })
   try {
-    token.save()
+    await token.save()
     res.json({
       logout: true
     })

@@ -1,19 +1,24 @@
 const express = require('express')
 const router = express.Router()
 const passport = require('passport')
+const facebook = require('../../services/passport/strategies/facebook')
+const outhCallback = require('../../services/passport/strategies/oauth.callback')
+const http = require('../../services/http')
 
-router.get('/facebook', passport.authenticate('facebook', {
-  scope: ['email']
-}))
-
-router.get('/facebook/callback', (req, res, next) =>
-  passport.authenticate('facebook', (err, user, info) => {
-    if (err) {
-      return res.json(err)
+router.get('/facebook', async (req, res, next) => {
+  const accessToken = req.query.access_token
+  try {
+    const profile = await facebook(accessToken)
+    outhCallback(accessToken, null, profile, (err, user) => {
+      if (err) return http.internalError(res, err)
+      user.token = user.sign()
+      http.ok(res, user)
     }
-    user.token = user.sign()
-    res.json(user)
-  })(req, res, next)
+    )
+  } catch (error) {
+    http.badRequest(res, error.error.error)
+  }
+}
 )
 
 router.get('/google', passport.authenticate('google', {
