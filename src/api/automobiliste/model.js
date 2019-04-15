@@ -67,7 +67,8 @@ AutoMobilisteSchema.methods.toJSON = function () {
     phone: this.phone,
     address: this.address,
     createdAt: this.createdAt,
-    updatedAt: this.updatedAt
+    updatedAt: this.updatedAt,
+    token: this.token
   }
 }
 
