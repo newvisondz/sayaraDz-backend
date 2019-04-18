@@ -88,7 +88,7 @@ exports.update = [
         return
       }
       const { files, body } = req
-      if (files.length) {
+      if (files && files.length) {
         try {
           const vehicle = await Vehicle.findById(req.params.id)
           body.images = mergeImageBody(files, body.images, vehicle.images)
