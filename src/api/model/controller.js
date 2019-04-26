@@ -6,6 +6,7 @@ const querymen = require('querymen').middleware
 const { timestamps } = require('../../services/validation')
 const { checkUser } = require('../../services/validation')
 const { storedOptions, USER_TYPE: { AUTOMOBILISTE } } = require('../utils')
+const { createImages, updateImages, deleteImages } = require('../../services/upload')
 
 exports.read = [
   querymen({
@@ -38,12 +39,28 @@ exports.show = [
 ]
 
 exports.create = [
-  ({ body: { options = [] }, body }, res, next) => {
+  (req, res, next) => {
+    createImages(req, res)
+      .then(images => {
+        req.body.images = images
+        next()
+      })
+      .catch((error) => {
+        console.log(error)
+        http.internalError(res, {
+          error,
+          msg: 'upload failed'
+        })
+      })
+  },
+  async ({ body: { options = '[]', colors = '[]' }, body }, res, next) => {
     body.options = []
     try {
-      body.options = storedOptions(options)
+      body.options = storedOptions(JSON.parse(options))
+      body.colors = await JSON.parse(colors)
       next()
     } catch (error) {
+      console.log(error)
       http.badRequest(res, error)
     }
   },
@@ -60,18 +77,44 @@ exports.create = [
 
 exports.update = [
   checkModel,
-  ({ body, body: { options } }, res, next) => {
-    if (options) body.options = storedOptions(options)
-    next()
-  },
-  crud.findAndUpdate
+  async (req, res, next) => {
+    let { params: { id } } = req
+    let model = await Model.findById(id)
+    if (!model) {
+      return http.notFound(res, {
+        error: true,
+        msg: 'model not found'
+      })
+    }
+    updateImages(req, res, model.images || [])
+      .then(async images => {
+        let { body, body: { options, colors } } = req
+        if (options) options = JSON.parse(options)
+        if (colors) body.colors = JSON.parse(colors)
+        if (images) body.images = images || []
+        if (options) body.options = storedOptions(options)
+        model.set(body)
+        await model.save()
+        http.ok(res, {
+          images,
+          ok: true,
+          nModified: 1,
+          n: 1
+        })
+      })
+      .catch((error) => {
+        console.log(error)
+        http.internalError(res, { error, msg: 'internal error' })
+      })
+  }
 ]
 
 exports.deleteOne = [
   checkModel,
   crud.deleteOne,
-  async ({ manufacturer, params: { id } }, res, next) => {
+  async ({ deleted, manufacturer, params: { id } }, res, next) => {
     manufacturer.models.remove(id)
+    await deleteImages(deleted.images)
     await manufacturer.save()
     next()
   }

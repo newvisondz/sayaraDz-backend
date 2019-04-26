@@ -17,7 +17,6 @@ const upload = multer({ storage })
 module.exports.upload = upload
 
 const deleteImages = (images) => new Promise((resolve, reject) => {
-  console.log({ images })
   if (!images.length) resolve()
   let rejected = 0
   for (let image of images) {
@@ -30,6 +29,7 @@ const deleteImages = (images) => new Promise((resolve, reject) => {
   }
 })
 module.exports.deleteImages = deleteImages
+
 const mergeImageBody = (files, bodyImages, images) => {
   bodyImages = bodyImages && JSON.parse(bodyImages)
   return [
@@ -43,7 +43,7 @@ module.exports.mergeImageBody = mergeImageBody
 
 module.exports.createImages = (req, res) => new Promise(
   (resolve, reject) => {
-    upload.array('images')(res, res,
+    upload.array('images')(req, res,
       async (error) => {
         if (error) return reject(error)
         const { files } = req
@@ -64,7 +64,7 @@ module.exports.updateImages = (req, res, originalImages) => new Promise(
         const { files, body } = req
         if (!files || !files.length) {
           return resolve(
-            body.images || JSON.parse(body.images)
+            body.images && JSON.parse(body.images)
           )
         }
         let images = mergeImageBody(files, body.images, originalImages)

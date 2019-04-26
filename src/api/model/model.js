@@ -13,7 +13,8 @@ const schema = new Schema({
   },
   options: [option],
   versions: [version],
-  colors: [color]
+  colors: [color],
+  images: [String]
 })
 
 schema.methods.toJSON = function (next) {
@@ -22,7 +23,8 @@ schema.methods.toJSON = function (next) {
     name: this.name,
     colors: this.colors,
     options: retrievedOptions(this.options),
-    versions: this.versions
+    versions: this.versions,
+    images: this.images
   }
 }
 
