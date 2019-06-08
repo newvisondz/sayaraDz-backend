@@ -12,7 +12,7 @@ module.exports = (cb) => {
     .then(
       () => {
         console.log('database connected')
-        if (cb) cb(false)
+        if (cb) cb(null)
       },
       (err) => {
         if (cb) cb(err)

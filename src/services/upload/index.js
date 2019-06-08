@@ -74,3 +74,13 @@ module.exports.updateImages = (req, res, originalImages) => new Promise(
     )
   }
 )
+
+// const deleteImages = (images) => Promise.all(images.map(
+//   img => new Promise((resolve, reject) => {
+//     const path = upload_dir + '/' + img.split('/').pop()
+//     fs.unlink(path, (err) => {
+//       if (err) return reject(err)
+//       resolve()
+//     })
+//   })
+// ))

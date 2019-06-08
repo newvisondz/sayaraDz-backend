@@ -57,7 +57,7 @@ exports.create = [
     body.options = []
     try {
       body.options = storedOptions(JSON.parse(options))
-      body.colors = await JSON.parse(colors)
+      body.colors = JSON.parse(colors)
       next()
     } catch (error) {
       console.log(error)

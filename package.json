@@ -17,7 +17,7 @@
     "adm-zip": "^0.4.13",
     "archiver": "^3.0.0",
     "assert": "^1.4.1",
-    "axios": "^0.18.0",
+    "axios": "^0.19.0",
     "bcrypt": "^3.0.6",
     "bluebird": "^3.5.3",
     "body-parser": "^1.18.3",
@@ -29,7 +29,7 @@
     "express-session": "^1.15.6",
     "fs-extra": "^7.0.1",
     "jsonwebtoken": "^8.4.0",
-    "mocha": "^6.0.2",
+    "mocha": "^6.1.4",
     "mongoose": "^5.4.11",
     "mongoose-keywords": "^0.4.0",
     "multer": "^1.4.1",
@@ -60,7 +60,6 @@
     "eslint-plugin-promise": "^4.0.1",
     "eslint-plugin-standard": "^4.0.0",
     "mochawesome": "^3.1.1",
-    "mockgoose": "^8.0.1",
-    "mongodb-memory-server": "^3.1.2"
+    "mockgoose": "^8.0.2"
   }
 }
