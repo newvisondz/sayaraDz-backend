@@ -1,8 +1,10 @@
 const express = require('express')
 const router = express.Router()
-const { create, get } = require('./controller')
+const { create, show, update, deleteOne} = require('./controller')
 
-router.post('/commande', create)
-router.get('/commande', get)
+router.post('/', create)
+router.get('/:id', show)
+router.put('/:id', update)
+router.delete('/:id', deleteOne)
 
 module.exports = router

@@ -6,15 +6,19 @@ const CommandeSchema = new Schema({
   montant: Number,
   automobiliste: {
     type: Schema.Types.ObjectId,
-    ref: 'Automobiliste'
+    ref: 'Automobiliste',
+    required : true
   },
   vehicule: {
-    type: Schema.Types.ObjectId,
-    ref: 'Vehicle'
+    type: Schema.Types.ObjectId ,
+    ref: 'Vehicle',
+    required : true
   }
 }, {
   timestamps: true
 })
+
+CommandeSchema.index({ "automobiliste": 1, "vehicule": 1}, { "unique": true });
 
 CommandeSchema.methods.toJSON = function () {
   return {
