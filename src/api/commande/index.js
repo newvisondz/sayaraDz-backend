@@ -1,9 +1,10 @@
 const express = require('express')
 const router = express.Router()
-const { create, show, update, deleteOne} = require('./controller')
+const { list, create, show, update, deleteOne } = require('./controller')
 
-router.post('/', create)
+router.get('/', list)
 router.get('/:id', show)
+router.post('/', create)
 router.put('/:id', update)
 router.delete('/:id', deleteOne)
 

@@ -1,48 +1,82 @@
 const Commande = require('./model')
 const { isAutomobiliste, authenticated } = require('../../services/acl')
+const { ok, badRequest, notFound, internalError } = require('../../services/http')
 
-exports.create =[
+// all routes secured with automobiliste authorization, we will add user, admin manufacturer authorization when working on command accept and reject
+
+exports.list = [
   isAutomobiliste,
   authenticated,
-  (req, res) => {
-    const body = req.body
-    console.log(body.montant)
-    let commande = new Commande({
-        montant: body.montant,
-        date: body.date,
-        automobiliste: body.automobiliste,
-        vehicule: body.vehicule
-      }
-    );
-    commande.save((err, commande)=>{
-      if (err) res.send("erreur lors de la création de la commande : " + err);
-      res.send(commande);
-    })
+  async ({ user: { id: automobiliste } }, res) => {
+    // TODO pagination
+    try {
+      const commands = await Commande.find({ automobiliste })
+      ok(res, commands)
+    } catch (error) {
+      internalError(res, error)
+    }
   }
-] 
+]
 
+exports.create = [
+  isAutomobiliste,
+  authenticated,
+  async ({ body, user: { id: automobiliste } }, res) => {
+    try {
+      const command = await new Commande({ ...body, automobiliste }).save()
+      // TODO --> verify vehicle exists esle send notfound
+      ok(res, command)
+    } catch (error) {
+      badRequest(res, error)
+    }
+  }
+]
 
+exports.show = [
+  isAutomobiliste,
+  authenticated,
+  async ({ params: { id: _id }, user: { id: automobiliste } }, res) => {
+    try {
+      const command = await Commande.findOne({ _id, automobiliste })
+      if (!command) {
+        return notFound(res, createError('command', _id))
+      }
+      ok(res, command)
+    } catch (error) {
+      internalError(res, error)
+    }
+  }]
 
-exports.show = (req, res) => {
-  Commande.findById(req.params.id,(err, commande) => {
-    if (err) res.send("erreur lors du show de la commande : " + err);
-    res.send(commande);
-  })
-};
+exports.update = [
+  isAutomobiliste,
+  authenticated,
+  async ({ params: { id: _id }, body, user: { id: automobiliste } }, res) => {
+    try {
+      const result = await Commande.updateOne({ _id, automobiliste }, body)
+      if (result.ok && result.n) {
+        ok(res, result)
+      } else notFound(res, createError('command', _id))
+    } catch (error) {
+      internalError(res, error)
+    }
+  }]
 
-exports.update = function (req, res) {
-  let updatedCommande = req.body;
-  Commande.findOneAndUpdate(req.params.id, updatedCommande, { "new": true}, (err, commande) => {
-        if (err) res.send("erreur lors du update de la commande : " + err);
-        res.send(commande);
-  });
-};
+exports.deleteOne = [
+  isAutomobiliste,
+  authenticated,
+  async ({ params: { id: _id }, user: { id: automobiliste } }, res) => {
+    try {
+      const result = await Commande.deleteOne({ _id, automobiliste })
+      if (result.ok && result.n) {
+        ok(res, result)
+      } else notFound(res, createError('command', _id))
+    } catch (error) {
+      internalError(res, error)
+    }
+  }
+]
 
-exports.deleteOne = function (req, res) {
-  Commande.findOneAndDelete(req.params.id,(err) => {
-        if (err) res.send("erreur lors du delete de la commande : " + err);
-        res.send("Commande supprimée avec succès");
-  });
-};
-
-
+const createError = (model, id) => ({
+  error: true,
+  msg: `${model}<${id}> not found`
+})
