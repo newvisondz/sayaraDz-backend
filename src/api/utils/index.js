@@ -100,6 +100,16 @@ const without = (array1, array2) => array1.filter(
   )
 )
 
+const verifyResult = (result) => {
+  if (result.ok && result.n) {
+    return true
+  } else return false
+}
+
+const createNotFoundError = (model, id) => ({
+  error: true,
+  msg: `${model}<${id}> not found`
+})
 module.exports = {
   USER_TYPE,
   sign,
@@ -110,5 +120,7 @@ module.exports = {
   verifyIds,
   findById,
   filterById,
-  without
+  without,
+  verifyResult,
+  createNotFoundError
 }
