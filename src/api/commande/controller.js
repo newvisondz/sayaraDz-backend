@@ -2,6 +2,7 @@ const Commande = require('./model')
 const { isAutomobiliste, authenticated } = require('../../services/acl')
 const { ok, badRequest, notFound, internalError } = require('../../services/http')
 const querymen = require('querymen')
+const Vehicle = require('../vehicle/model')
 // all routes secured with automobiliste authorization, we will add user, admin manufacturer authorization when working on command accept and reject
 
 exports.list = [
@@ -24,9 +25,12 @@ exports.create = [
   authenticated,
   async ({ body, user: { id: automobiliste } }, res) => {
     try {
+      const exists = await !!Vehicle.findOne({ _id: body.vehicule }).select({ _id: 1 }).lean()
+      if (!exists) return notFound(res, createNotFoundError('vehicle', body.vehicule))
       const command = await new Commande({ ...body, automobiliste }).save()
       ok(res, command)
     } catch (error) {
+      console.error(error)
       badRequest(res, error)
     }
   }
@@ -78,5 +82,6 @@ exports.deleteOne = [
 
 const createNotFoundError = (model, id) => ({
   error: true,
+  code: 404,
   msg: `${model}<${id}> not found`
 })
