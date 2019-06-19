@@ -4,18 +4,25 @@ const { ok, badRequest, notFound, internalError } = require('../../services/http
 
 // all routes secured with automobiliste authorization, we will add user, admin manufacturer authorization when working on command accept and reject
 
+
 exports.list = [
   isAutomobiliste,
   authenticated,
-  async ({ user: { id: automobiliste } }, res) => {
-    // TODO pagination
+  async({ params: { page: _page }, user: { id: automobiliste } }, res) => {
+    var perPage = 2
+    var page = _page || 1
     try {
-      const commands = await Commande.find({ automobiliste })
-      ok(res, commands)
+      const commandes = await Commande
+        .find({automobiliste})
+        .skip((perPage * page) - perPage)
+        .limit(perPage)
+        if (!commandes) ok(res, "Aucune commande")
+        else            ok(res, commandes)
     } catch (error) {
-      internalError(res, error)
+      badRequest(res, error)
     }
-  }
+    
+}
 ]
 
 exports.create = [
@@ -23,8 +30,13 @@ exports.create = [
   authenticated,
   async ({ body, user: { id: automobiliste } }, res) => {
     try {
+      let vehicule = body.vehicule;
+      const fetchTest = await Commande.findOne({vehicule, automobiliste})
+      if (fetchTest) badRequest(res, {
+        error: true,
+        msg: `commande <${fetchTest.id}> exist`
+      })
       const command = await new Commande({ ...body, automobiliste }).save()
-      // TODO --> verify vehicle exists esle send notfound
       ok(res, command)
     } catch (error) {
       badRequest(res, error)
@@ -39,7 +51,7 @@ exports.show = [
     try {
       const command = await Commande.findOne({ _id, automobiliste })
       if (!command) {
-        return notFound(res, createError('command', _id))
+        return notFound(res, createNotFoundError('commande ', _id))
       }
       ok(res, command)
     } catch (error) {
@@ -55,7 +67,7 @@ exports.update = [
       const result = await Commande.updateOne({ _id, automobiliste }, body)
       if (result.ok && result.n) {
         ok(res, result)
-      } else notFound(res, createError('command', _id))
+      } else notFound(res, createNotFoundError('commande ', _id))
     } catch (error) {
       internalError(res, error)
     }
@@ -69,14 +81,14 @@ exports.deleteOne = [
       const result = await Commande.deleteOne({ _id, automobiliste })
       if (result.ok && result.n) {
         ok(res, result)
-      } else notFound(res, createError('command', _id))
+      } else notFound(res, createNotFoundError('commande ', _id))
     } catch (error) {
       internalError(res, error)
     }
   }
 ]
 
-const createError = (model, id) => ({
+const createNotFoundError = (model, id) => ({
   error: true,
   msg: `${model}<${id}> not found`
 })
