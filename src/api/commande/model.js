@@ -21,7 +21,7 @@ CommandeSchema.index({ 'automobiliste': 1, 'vehicule': 1 }, { 'unique': true })
 
 CommandeSchema.methods.toJSON = function () {
   return {
-    id: this.id,
+    id: this._id,
     createdAt: this.createdAt,
     montant: this.montant,
     automobiliste: this.automobiliste,

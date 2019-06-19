@@ -1,28 +1,22 @@
 const Commande = require('./model')
 const { isAutomobiliste, authenticated } = require('../../services/acl')
 const { ok, badRequest, notFound, internalError } = require('../../services/http')
-
+const querymen = require('querymen')
 // all routes secured with automobiliste authorization, we will add user, admin manufacturer authorization when working on command accept and reject
-
 
 exports.list = [
   isAutomobiliste,
   authenticated,
-  async({ params: { page: _page }, user: { id: automobiliste } }, res) => {
-    var perPage = 2
-    var page = _page || 1
+  querymen.middleware({}), // check docs: https://www.npmjs.com/package/querymen
+  async ({ user: { id: automobiliste }, querymen: { query, select, cursor } }, res) => {
     try {
-      const commandes = await Commande
-        .find({automobiliste})
-        .skip((perPage * page) - perPage)
-        .limit(perPage)
-        if (!commandes) ok(res, "Aucune commande")
-        else            ok(res, commandes)
+      const commandes = await Commande.find({ ...query, automobiliste }, select, cursor)
+      const count = await Commande.countDocuments({ ...query, automobiliste })
+      ok(res, { commandes, count })
     } catch (error) {
       badRequest(res, error)
     }
-    
-}
+  }
 ]
 
 exports.create = [
@@ -30,12 +24,6 @@ exports.create = [
   authenticated,
   async ({ body, user: { id: automobiliste } }, res) => {
     try {
-      let vehicule = body.vehicule;
-      const fetchTest = await Commande.findOne({vehicule, automobiliste})
-      if (fetchTest) badRequest(res, {
-        error: true,
-        msg: `commande <${fetchTest.id}> exist`
-      })
       const command = await new Commande({ ...body, automobiliste }).save()
       ok(res, command)
     } catch (error) {
