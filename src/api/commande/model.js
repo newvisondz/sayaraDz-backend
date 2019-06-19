@@ -28,6 +28,5 @@ CommandeSchema.methods.toJSON = function () {
     vehicule: this.vehicule
   }
 }
-
 const Commande = mongoose.model('Commande', CommandeSchema)
 module.exports = Commande

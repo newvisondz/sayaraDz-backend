@@ -89,10 +89,12 @@ exports.update = [
     updateImages(req, res, model.images || [])
       .then(async images => {
         let { body, body: { options, colors } } = req
-        if (options) options = JSON.parse(options)
         if (colors) body.colors = JSON.parse(colors)
         if (images) body.images = images || []
-        if (options) body.options = storedOptions(options)
+        if (options) {
+          options = JSON.parse(options)
+          body.options = storedOptions(options)
+        }
         model.set(body)
         await model.save()
         http.ok(res, {

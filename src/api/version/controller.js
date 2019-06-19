@@ -1,5 +1,6 @@
 const http = require('../../services/http')
 const { verifyIds, retrievedOptions } = require('../utils')
+const { filterById } = require('../utils')
 
 exports.show = [
   ({ model, version }, res, next) => {
@@ -13,6 +14,7 @@ exports.show = [
     http.ok(res, {
       ...version.toJSON(),
       options,
+      colors: filterById(version.colors, model.colors),
       vehicles: undefined
     })
   }
@@ -64,9 +66,7 @@ exports.create = [
 
 exports.update = [
   async ({ body, model, params: { id } }, res, next) => {
-    console.log('updating ...')
     const { options } = body
-    console.log({ optioshoh: options })
     let notFoundOption = verifyIds(options, model.options)
     if (notFoundOption) {
       return http.badRequest(res, {
