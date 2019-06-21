@@ -3,6 +3,7 @@ const { create, read, show, deleteOne, update, middleware } = require('./control
 const versions = require('../version')
 const http = require('../../services/http')
 const Model = require('../model/model')
+const tarifsRouter = require('../tarifs')
 
 router.use(middleware)
 
@@ -18,6 +19,7 @@ router.use('/:id/versions', async (req, res, next) => {
     msg: 'model not found'
   })
 })
+router.use('/:id/tarifs', tarifsRouter)
 
 router.use('/:id/versions', versions)
 router.get('/', read)
