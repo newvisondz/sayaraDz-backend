@@ -3,8 +3,8 @@ const Vehicle = require('./model')
 const crud = require('../../services/crud')(Vehicle, 'vehicle')
 const query = require('querymen').middleware
 const { upload, deleteImages, mergeImageBody } = require('../../services/upload')
-const fs = require('fs')
-const { upload_dir } = require('../../config')
+const { getTotalPrice } = require('../tarifs/resolvers')
+
 const { findById, retrievedOptions, filterById, without } = require('../utils')
 
 exports.read = [
@@ -179,5 +179,10 @@ function verifyOptionColors (res, color, colors, newOptions, options) {
 exports.check = async ({ query: { options } }, res) => {
   console.log({ options })
   const vehicles = await Vehicle.find({ options }, '_id')
-  res.json(vehicles.map(v => v.id))
+  res.json(
+    {
+      vehicles: vehicles.map(v => v.id),
+      tarif: await getTotalPrice(...options)
+    }
+  )
 }
