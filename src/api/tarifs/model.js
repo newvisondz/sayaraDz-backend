@@ -24,7 +24,8 @@ const schema = new Schema(
     },
     amount: {
       type: Number,
-      min: 0
+      min: 0,
+      required: true
     }
   },
   {
