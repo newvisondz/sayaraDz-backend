@@ -1,4 +1,4 @@
-const dotenv = require('dotenv').config()
+require('dotenv').config()
 const express = require('express')
 const bodyParser = require('body-parser')
 const cookieParser = require('cookie-parser')
@@ -6,14 +6,14 @@ const auth = require('./src/services/passport')
 const querymen = require('querymen')
 const bodymen = require('bodymen')
 const app = express()
-const { upload_dir, static_folder } = process.env
+const { static_folder: staticFolder } = process.env
 const router = require('./src/api')
 const cors = require('cors')
 const http = require('./src/services/http')
 
 app.use(cors())
 // uploaded logos
-app.use('/public', express.static(static_folder), (req, res, next) => {
+app.use('/public', express.static(staticFolder), (req, res, next) => {
   http.notFound(res)
 })
 

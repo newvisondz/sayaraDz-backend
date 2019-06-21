@@ -7,7 +7,7 @@ const { timestamps } = require('../../services/validation')
 const http = require('../../services/http')
 const { USER_TYPE: { ADMIN } } = require('../utils')
 const { upload } = require('../../services/upload')
-const { upload_dir, static_folder } = process.env
+const { upload_dir: uploadDir } = process.env
 
 exports.read = [
   isAdmin,
@@ -50,7 +50,7 @@ exports.update = [
             msg: 'manufacturer not found'
           })
         }
-        fs.unlink(upload_dir + '/' + manufacturer.logo, async (error) => {
+        fs.unlink(uploadDir + '/' + manufacturer.logo, async (error) => {
           const logo = `public/${file.filename}`
           const result = await Manufacturer.updateOne({ _id: id }, {
             ...body,
@@ -66,7 +66,7 @@ exports.update = [
         })
       } else {
         if (req.body.logo === '') {
-          fs.unlink(upload_dir + '/' + manufacturer.logo, async (error) => {
+          fs.unlink(uploadDir + '/' + manufacturer.logo, async (error) => {
             if (!error) next()
           })
         }
@@ -83,7 +83,7 @@ exports.deleteOne = [
   crud.deleteOne,
   ({ deleted }, res, next) => {
     if (!deleted) return next()
-    fs.unlink(upload_dir + '/' + deleted.logo, (err) => {
+    fs.unlink(uploadDir + '/' + deleted.logo, (err) => {
       if (err) return next(err)
       next()
     })

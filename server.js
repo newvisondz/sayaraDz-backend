@@ -1,9 +1,9 @@
 const server = require('./app')
 const connect = require('./src/services/database')
-const { port } = process.env
+const { PORT } = process.env
 
 connect((err) => {
   if (!err) {
-    server.connect(port)
+    server.connect(PORT)
   } else throw err
 })
