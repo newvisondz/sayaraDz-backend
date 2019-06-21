@@ -33,6 +33,7 @@ exports.read = [
         return ({
           ...v.toJSON(),
           options,
+          colors: filterById(v.colors, model.colors),
           vehicles: undefined
         })
       }

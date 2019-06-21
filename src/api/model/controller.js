@@ -7,7 +7,6 @@ const { timestamps } = require('../../services/validation')
 const { checkUser } = require('../../services/validation')
 const { storedOptions, USER_TYPE: { AUTOMOBILISTE } } = require('../utils')
 const { createImages, updateImages, deleteImages } = require('../../services/upload')
-
 exports.read = [
   querymen({
     ...timestamps,
@@ -139,6 +138,7 @@ exports.middleware = [
   isFabricant,
   isFabricantAdmin,
   (req, res, next) => {
+    console.log('middle ware ....')
     const { user, method } = req
     if (user && (user.type == AUTOMOBILISTE)) {
       if (method.toLowerCase() == 'get') {
