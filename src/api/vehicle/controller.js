@@ -175,3 +175,9 @@ function verifyOptionColors (res, color, colors, newOptions, options) {
     }
   }
 }
+
+exports.check = async ({ query: { options } }, res) => {
+  console.log({ options })
+  const vehicles = await Vehicle.find({ options }, '_id')
+  res.json(vehicles.map(v => v.id))
+}
