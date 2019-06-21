@@ -10,7 +10,11 @@ const querymen = require('querymen')
 const { zip, unzip } = require('../services/archiver')
 const { upload_dir: uploadDir } = require('../config')
 const { upload } = require('../services/upload')
+const login = require('./login')
+
 const fs = require('fs').promises
+
+router.use('/', login)
 router.use('/admins', admin)
 router.use('/autom', automobiliste)
 router.use('/commande', commande)

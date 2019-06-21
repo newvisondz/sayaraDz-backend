@@ -1,8 +1,10 @@
 const JwtToken = require('../../api/auth/jwt.model')
 const { checkAuth } = require('../acl')
 
-exports.login = (strategy) => [
-  checkAuth(strategy, 'invalid credentials'),
+exports.login = (...strategies) => [
+  strategies.map(
+    s => checkAuth(s, 'invalid credentials')
+  ),
   (req, res, next) => {
     if (req.user) next()
     else {
@@ -26,7 +28,7 @@ const generateToken = (req, res, next) => {
 exports.logout = async (req, res) => {
   let token = req.headers.authorization
   if (!token) {
-    return res.json({
+    return res.status(400).json({
       error: true,
       msg: 'token validation failed: token is required.'
     })
