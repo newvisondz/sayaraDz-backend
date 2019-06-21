@@ -2,8 +2,10 @@ module.exports = {
   'env': {
     'browser': true,
     'commonjs': true,
-    'es6': true
+    'es6': true,
+    'mocha': true
   },
+  'plugins': ['mocha'],
   'extends': 'standard',
   'globals': {
     'Atomics': 'readonly',
@@ -13,6 +15,8 @@ module.exports = {
     'ecmaVersion': 2018
   },
   'rules': {
-    eqeqeq: 'off'
+    eqeqeq: 'off',
+    "mocha/no-exclusive-tests": "error"
+
   }
 }
