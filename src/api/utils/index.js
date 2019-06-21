@@ -1,6 +1,5 @@
 const jsonwebtoken = require('jsonwebtoken')
 const bcrypt = require('bcrypt')
-const keys = require('../../config')
 
 const USER_TYPE = {
   ADMIN: 'ADMIN',
@@ -12,7 +11,7 @@ function sign () {
   return 'bearer ' + jsonwebtoken.sign({
     id: this.id,
     type: this.type
-  }, keys.jwt_key, {
+  }, process.env.jwt_key, {
     expiresIn: '99d'
   })
 }

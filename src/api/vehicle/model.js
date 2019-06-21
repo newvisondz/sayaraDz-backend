@@ -1,8 +1,7 @@
 const mongoose = require('mongoose')
 const { timestamps } = require('../../services/validation')
-const fs = require('fs')
 const Schema = mongoose.Schema
-const { upload_dir } = require('../../config')
+
 const schema = new Schema({
   vin: {
     type: Number,

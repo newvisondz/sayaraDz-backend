@@ -1,6 +1,6 @@
 const multer = require('multer')
 const uuid = require('uuid/v4')
-const { upload_dir } = require('../../config')
+const { upload_dir } = process.env
 const fs = require('fs')
 const { without } = require('../../api/utils')
 const storage = multer.diskStorage({

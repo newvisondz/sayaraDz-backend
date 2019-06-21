@@ -1,6 +1,6 @@
 const Jwtstrategy = require('passport-jwt').Strategy
 const extractJwt = require('passport-jwt').ExtractJwt
-const secretOrKey = require('../../../config').jwt_key
+const secretOrKey = process.env.jwt_key
 const options = {
   secretOrKey
 }

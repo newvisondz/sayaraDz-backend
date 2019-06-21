@@ -1,5 +1,5 @@
 const GoogleStrategy = require('@passport-next/passport-google-oauth2').Strategy
-const keys = require('../../../config')
+const keys = process.env
 const callback = require('./oauth.callback')
 
 module.exports = new GoogleStrategy({

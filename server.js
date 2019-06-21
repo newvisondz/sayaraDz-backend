@@ -1,6 +1,6 @@
 const server = require('./app')
 const connect = require('./src/services/database')
-const { port } = require('./src/config')
+const { port } = process.env
 
 connect((err) => {
   if (!err) {

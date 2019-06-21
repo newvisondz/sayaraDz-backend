@@ -8,7 +8,7 @@ const me = require('./me')
 const router = new Router()
 const querymen = require('querymen')
 const { zip, unzip } = require('../services/archiver')
-const { upload_dir: uploadDir } = require('../config')
+const { upload_dir: uploadDir } = process.env
 const { upload } = require('../services/upload')
 const login = require('./login')
 

@@ -1,3 +1,4 @@
+const dotenv = require('dotenv').config()
 const express = require('express')
 const bodyParser = require('body-parser')
 const cookieParser = require('cookie-parser')
@@ -5,7 +6,7 @@ const auth = require('./src/services/passport')
 const querymen = require('querymen')
 const bodymen = require('bodymen')
 const app = express()
-const { upload_dir, static_folder } = require('./src/config')
+const { upload_dir, static_folder } = process.env
 const router = require('./src/api')
 const cors = require('cors')
 const http = require('./src/services/http')

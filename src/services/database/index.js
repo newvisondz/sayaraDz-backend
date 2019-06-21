@@ -1,5 +1,5 @@
 const mongoose = require('mongoose')
-const keys = require('../../config')
+const keys = process.env
 
 module.exports = (cb) => {
   mongoose.set('useNewUrlParser', true)
