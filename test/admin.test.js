@@ -1,8 +1,6 @@
 const {
-  assert,
   expect
 } = require('chai')
-const server = require('../server')
 const axios = require('axios')
 
 let token
@@ -10,20 +8,23 @@ module.exports = {
   authenticate: () => describe('Authentication', () => {
     before((done) => {
       axios
-        .post('http://localhost:3000/admin/login', {
-          email: 'akram@esi.dz',
+        .post('http://localhost:3000/login', {
+          email: 'sayara@esi.dz',
           password: 'root'
         })
-        .then(response => {
-          token = response.data.token
-          done()
-        })
+        .then(
+          response => {
+            token = response.data.token
+            console.log(token)
+            done()
+          })
+        .catch(console.error)
     })
 
     it('should return a token', (done) => {
       axios
-        .post('http://localhost:3000/admin/login', {
-          email: 'akram@esi.dz',
+        .post('http://localhost:3000/login', {
+          email: 'sayara@esi.dz',
           password: 'root'
         })
         .then(response => {
@@ -32,7 +33,7 @@ module.exports = {
             token
           } = response.data
           expect(error).to.be.undefined
-          expect(token).not.be.undefined
+          expect(token).be.exist
           done()
         })
         .catch((err, response) => {
@@ -41,26 +42,20 @@ module.exports = {
     })
     it('should return error with invalid credentials', (done) => {
       axios
-        .post('http://localhost:3000/admin/login', {
+        .post('http://localhost:3000/login', {
           email: 'gmial',
           password: 'root'
         })
         .then(response => {
-          const {
-            error,
-            msg
-          } = response.data
-          expect(error).to.be.exist
-          expect(msg).to.equal('invalid credentials')
-          done()
+          done(new Error('should not login'))
         })
-        .catch((err, response) => {
-          done(err)
+        .catch((err) => {
+          done()
         })
     })
     it('should logout', (done) => {
       axios
-        .delete('http://localhost:3000/admin/logout', {
+        .delete('http://localhost:3000/logout', {
           headers: {
             Authorization: token
           }
