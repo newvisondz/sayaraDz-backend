@@ -64,7 +64,6 @@ module.exports = _ => {
             const { error, id, msg } = json
             expect(error).to.be.undefined
             expect(msg).to.be.undefined
-            console.log({ json })
             ids.push(id)
           })
       }

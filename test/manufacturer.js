@@ -66,7 +66,6 @@ module.exports = (token) => {
             const { error, id, msg } = json
             expect(error).to.be.undefined
             expect(msg).to.be.undefined
-            console.log({ json })
             ids.push(id)
           })
       }
@@ -89,7 +88,6 @@ module.exports = (token) => {
             const { error, id, msg } = json
             expect(error).to.be.undefined
             expect(msg).to.be.undefined
-            console.log({ json })
             ids.push(id)
           })
       }

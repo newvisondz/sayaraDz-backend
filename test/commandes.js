@@ -15,17 +15,16 @@ module.exports = _ => {
           method: 'GET'
         }, token)
           .then(res => {
-            console.log({ res })
             expect(res.ok).to.be.true
             expect(res.status).to.eq(200)
             return res.json()
           })
           .then(json => {
-            let { commands, count } = json
-            expect(commands).to.be.array()
-            expect(commands).to.be.sorted((prev, next) => prev.createdAt < next.createdAt)
+            let { commandes, count } = json
+            expect(commandes).to.be.array()
+            expect(commandes).to.be.sorted((prev, next) => prev.createdAt < next.createdAt)
             expect(count).to.exist
-            expect(count).to.be.gte(commands.length)
+            expect(count).to.be.gte(commandes.length)
           })
       }
     )
@@ -51,36 +50,31 @@ module.exports = _ => {
             return res.json()
           })
           .then(json => {
-            let { manufacturer: { admins }, count } = json
-            expect(admins).to.be.array()
-            expect(admins).to.be.ofSize(0)
-            expect(admins).to.be.sorted((prev, next) => prev.createdAt < next.createdAt)
+            let { commandes, count } = json
+            expect(commandes).to.be.array()
+            expect(commandes).to.be.ofSize(0)
+            expect(commandes).to.be.sorted((prev, next) => prev.createdAt < next.createdAt)
             expect(count).to.exist
             expect(count).to.eq(0)
           })
       }
     )
-    // it('should create a manufacturer admin',
-    //   () => {
-    //     return fetch('manufacturers/Toyota/admins', {
-    //       method: 'POST',
-    //       body: JSON.stringify({
-    //         email: uuid.v4() + '@admin.dz',
-    //         password: ''
-    //       }),
-    //       headers: {
-    //         'Content-Type': 'Application/json'
-    //       }
-    //     })
-    //       .then(res => res.json())
-    //       .then(json => {
-    //         const { error, id, msg } = json
-    //         expect(error).to.be.undefined
-    //         expect(msg).to.be.undefined
-    //         console.log({ json })
-    //         ids.push(id)
-    //       })
-    //   }
-    // )
+
+    it('should get bad request vehicule field undefined',
+      () => {
+        return fetch('commande', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'Application/json'
+          }
+        }, token)
+          .then(res => {
+            console.log(res)
+            expect(res.ok).to.be.false
+            expect(res.status).to.eq(400)
+            return res.json()
+          })
+      }
+    )
   })
 }
