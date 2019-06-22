@@ -5,8 +5,8 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "dev": "nodemon server.js",
-    "test": "mocha --timeout=5000 --reporter mochawesome --reporter-options reportDir=./test/report"
+    "dev": "nodemon --ignore *.test.js server.js",
+    "test": "mocha --timeout=50000 --reporter mochawesome --reporter-options reportDir=../test/report"
   },
   "author": "",
   "license": "ISC",
@@ -51,18 +51,22 @@
     "session-file-store": "^1.2.0",
     "superagent": "^4.1.0",
     "underscore": "^1.9.1",
-    "uuid": "^3.3.2",
     "validator": "^10.11.0"
   },
   "devDependencies": {
+    "chai-arrays": "^2.0.0",
     "eslint": "^5.15.3",
     "eslint-config-standard": "^12.0.0",
+    "eslint-plugin-chai-expect": "^2.0.1",
     "eslint-plugin-import": "^2.16.0",
     "eslint-plugin-mocha": "^5.3.0",
     "eslint-plugin-node": "^8.0.1",
     "eslint-plugin-promise": "^4.0.1",
     "eslint-plugin-standard": "^4.0.0",
+    "form-data": "^2.4.0",
     "mochawesome": "^3.1.1",
-    "mockgoose": "^8.0.2"
+    "mockgoose": "^8.0.2",
+    "node-fetch": "^2.6.0",
+    "uuid": "^3.3.2"
   }
 }

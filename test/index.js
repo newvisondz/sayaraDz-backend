@@ -1,36 +1,37 @@
-const {
-  assert,
-  expect
-} = require('chai')
-const server = require('../server')
 const axios = require('axios')
 const testAdmin = require('./admin.test')
-const mongoose = require('mongoose')
-const testFab = require('./fabricant.test')
-// const MongoMemoryServer = require("mongodb-memory-server").MongoMemoryServer
-// const mongod = new MongoMemoryServer();
-// mongoose.set('useNewUrlParser', true);
-// mongoose.set('useFindAndModify', false);
-// mongoose.set('useCreateIndex', true);
+const manufacturer = require('./manufacturer')
+const manufacturerAdmins = require('./manufacturerAdmins')
+const commandes = require('./commandes')
+
 describe('SayaraDZ', () => {
-  before(done => {
-    // (async function hi() {
-    //     const uri = await mongod.getConnectionString();
-    //     mongoose.connect(uri, (err) => {
-    //         done(err)
-    //     })
-    // })()
-    done()
+  before((done) => {
+    axios
+      .post('http://localhost:3000/login', {
+        email: 'sayara@esi.dz',
+        password: 'root'
+      })
+      .then(
+        response => {
+          // token = response.data.token
+          console.log({ token: exports.token })
+          done()
+        })
+      .catch(console.error)
   })
+
   describe('Admin', () => {
     testAdmin.authenticate()
   })
-  describe('Fabricants', () => {
-    testFab.list()
-    testFab.create()
+  describe('Manufacturers', () => {
+    manufacturer()
+  })
+  describe('Manufacturers Admins', () => {
+    manufacturerAdmins()
+  })
+  describe('Commandes', () => {
+    commandes()
   })
   after(() => {
-    // mongod.stop()
-    // mongoose.connection.close()
   })
 })

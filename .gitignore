@@ -1,7 +1,6 @@
 test/report
 test/report/*
-test
-test/*
+
 /images
 /public/images
 public/images/*

@@ -5,7 +5,7 @@ module.exports = {
     'es6': true,
     'mocha': true
   },
-  'plugins': ['mocha'],
+  'plugins': ['mocha', "chai-expect"],
   'extends': 'standard',
   'globals': {
     'Atomics': 'readonly',

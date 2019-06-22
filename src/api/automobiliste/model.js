@@ -76,7 +76,7 @@ AutoMobilisteSchema.statics.type = () => utils.USER_TYPE.AUTOMOBILISTE
 
 const Automobiliste = mongoose.model('Automobiliste', AutoMobilisteSchema)
 // new Automobiliste({
-//   email: 'r@root.dz',
+//   email: 'r@rootfads.dz',
 //   password: 'root'
 // }).save().then(user => console.log(user.sign()))
 module.exports = Automobiliste

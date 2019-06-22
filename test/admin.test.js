@@ -2,7 +2,7 @@ const {
   expect
 } = require('chai')
 const axios = require('axios')
-
+// automobilisteToken =
 let token
 module.exports = {
   authenticate: () => describe('Authentication', () => {
@@ -46,12 +46,10 @@ module.exports = {
           email: 'gmial',
           password: 'root'
         })
-        .then(response => {
+        .then(_ => {
           done(new Error('should not login'))
         })
-        .catch((err) => {
-          done()
-        })
+        .catch(_ => done())
     })
     it('should logout', (done) => {
       axios

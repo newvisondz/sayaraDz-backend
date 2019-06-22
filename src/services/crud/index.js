@@ -52,7 +52,13 @@ module.exports = (Model, name, filter) => ({
         ...filter
       }
       const result = await Model.updateOne(newFilter, body, { runValidators: true })
-      res.json(result)
+      if (result.n) {
+        res.json(result)
+      } else {
+        res.status(404).json({
+          error: 'true'
+        })
+      }
       next()
     } catch (error) {
       if (error.code == 11000) {
