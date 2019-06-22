@@ -1,19 +1,21 @@
 const Commande = require('./model')
 const { isAutomobiliste, authenticated } = require('../../services/acl')
 const { ok, badRequest, notFound, internalError } = require('../../services/http')
-
+const querymen = require('querymen')
+const Vehicle = require('../vehicle/model')
 // all routes secured with automobiliste authorization, we will add user, admin manufacturer authorization when working on command accept and reject
 
 exports.list = [
   isAutomobiliste,
   authenticated,
-  async ({ user: { id: automobiliste } }, res) => {
-    // TODO pagination
+  querymen.middleware({}), // check docs: https://www.npmjs.com/package/querymen
+  async ({ user: { id: automobiliste }, querymen: { query, select, cursor } }, res) => {
     try {
-      const commands = await Commande.find({ automobiliste })
-      ok(res, commands)
+      const commandes = await Commande.find({ ...query, automobiliste }, select, cursor)
+      const count = await Commande.countDocuments({ ...query, automobiliste })
+      ok(res, { commandes, count })
     } catch (error) {
-      internalError(res, error)
+      badRequest(res, error)
     }
   }
 ]
@@ -23,10 +25,12 @@ exports.create = [
   authenticated,
   async ({ body, user: { id: automobiliste } }, res) => {
     try {
+      const exists = await !!Vehicle.findOne({ _id: body.vehicule }).select({ _id: 1 }).lean()
+      if (!exists) return notFound(res, createNotFoundError('vehicle', body.vehicule))
       const command = await new Commande({ ...body, automobiliste }).save()
-      // TODO --> verify vehicle exists esle send notfound
       ok(res, command)
     } catch (error) {
+      console.error(error)
       badRequest(res, error)
     }
   }
@@ -39,7 +43,7 @@ exports.show = [
     try {
       const command = await Commande.findOne({ _id, automobiliste })
       if (!command) {
-        return notFound(res, createError('command', _id))
+        return notFound(res, createNotFoundError('commande ', _id))
       }
       ok(res, command)
     } catch (error) {
@@ -55,7 +59,7 @@ exports.update = [
       const result = await Commande.updateOne({ _id, automobiliste }, body)
       if (result.ok && result.n) {
         ok(res, result)
-      } else notFound(res, createError('command', _id))
+      } else notFound(res, createNotFoundError('commande ', _id))
     } catch (error) {
       internalError(res, error)
     }
@@ -69,14 +73,15 @@ exports.deleteOne = [
       const result = await Commande.deleteOne({ _id, automobiliste })
       if (result.ok && result.n) {
         ok(res, result)
-      } else notFound(res, createError('command', _id))
+      } else notFound(res, createNotFoundError('commande ', _id))
     } catch (error) {
       internalError(res, error)
     }
   }
 ]
 
-const createError = (model, id) => ({
+const createNotFoundError = (model, id) => ({
   error: true,
+  code: 404,
   msg: `${model}<${id}> not found`
 })

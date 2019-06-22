@@ -80,3 +80,6 @@ const Automobiliste = mongoose.model('Automobiliste', AutoMobilisteSchema)
 //   password: 'root'
 // }).save().then(user => console.log(user.sign()))
 module.exports = Automobiliste
+
+//current Token on Automobilist
+// eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVkMDkyYTQxNzBjYjllMmFhOGNlMWQzMCIsInR5cGUiOiJBVVRPTU9CSUxJU1RFIiwiaWF0IjoxNTYwODgxNzMyLCJleHAiOjE1Njk0MzUzMzJ9.nhqvZP1-tC5XQe3zx20FoURmedgpo6wtAelbwJqr0yc
