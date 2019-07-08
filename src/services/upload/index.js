@@ -31,16 +31,34 @@ const upload = multer({ storage })
 module.exports.upload = upload
 
 const deleteImages = (images) => new Promise((resolve, reject) => {
-  if (!images.length) resolve()
-  let rejected = 0
-  for (let image of images) {
-    const path = upload_dir + '/' + image.split('/').pop()
-    fs.unlink(path, (err) => {
-      if (err) return reject(err)
-      rejected++
-      if (rejected == images.length) resolve()
-    })
-  }
+  let Grid = require('gridfs-stream')
+  Grid.mongo = mongoose.mongo
+  let conn = mongoose.connection
+  let gfs = Grid(conn.db)
+  images = images.map(i => i.split('/').pop())
+  gfs.files.find({ filename: { $in: images } }).toArray((err, files) => {
+    if (err) return reject(err)
+    if (!files || files.length === 0) {
+      reject(new Error('no files'))
+    }
+    console.log({ files })
+    resolve()
+    console.log({ images })
+    images.forEach(
+      filename => gfs.remove({ filename }, console.error)
+    )
+  })
+
+  // if (!images.length) resolve()
+  // let rejected = 0
+  // for (let image of images) {
+  //   const path = upload_dir + '/' + image.split('/').pop()
+  //   fs.unlink(path, (err) => {
+  //     if (err) return reject(err)
+  //     rejected++
+  //     if (rejected == images.length) resolve()
+  //   })
+  // }
 })
 module.exports.deleteImages = deleteImages
 

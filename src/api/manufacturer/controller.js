@@ -6,7 +6,7 @@ const crud = require('../../services/crud')(Manufacturer, 'manufacturer')
 const { timestamps } = require('../../services/validation')
 const http = require('../../services/http')
 const { USER_TYPE: { ADMIN } } = require('../utils')
-const { upload } = require('../../services/upload')
+const { upload, deleteImages } = require('../../services/upload')
 const { upload_dir: uploadDir } = process.env
 
 exports.read = [
@@ -83,10 +83,11 @@ exports.deleteOne = [
   crud.deleteOne,
   ({ deleted }, res, next) => {
     if (!deleted) return next()
-    fs.unlink(uploadDir + '/' + deleted.logo, (err) => {
-      if (err) return next(err)
-      next()
-    })
+    // fs.unlink(uploadDir + '/' + deleted.logo, (err) => {
+    //   if (err) return next(err)
+    //   next()
+    // })
+    deleteImages([deleted.logo])
   }
 ]
 
