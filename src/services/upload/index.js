@@ -3,7 +3,11 @@ const uuid = require('uuid/v4')
 const { upload_dir } = process.env
 const fs = require('fs')
 const { without } = require('../../api/utils')
-const storage = multer.diskStorage({
+const mongoose = require('mongoose')
+
+const storage = require('multer-gridfs-storage')({
+  url: process.env.mongoUrl,
+  // db: mongoose.connection,
   destination: (req, file, next) => {
     next(null, upload_dir)
   },
@@ -13,6 +17,16 @@ const storage = multer.diskStorage({
     next(null, name)
   }
 })
+// const storage = multer.diskStorage({
+//   destination: (req, file, next) => {
+//     next(null, upload_dir)
+//   },
+//   filename: (req, file, next) => {
+//     const ext = file.originalname.split('.').pop()
+//     const name = uuid(file.originalname) + '.' + ext
+//     next(null, name)
+//   }
+// })
 const upload = multer({ storage })
 module.exports.upload = upload
 

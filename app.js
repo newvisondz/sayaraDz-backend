@@ -13,9 +13,9 @@ const http = require('./src/services/http')
 
 app.use(cors())
 // uploaded logos
-app.use('/public', express.static(staticFolder), (req, res, next) => {
-  http.notFound(res)
-})
+// app.use('/public', express.static(staticFolder), (req, res, next) => {
+//   http.notFound(res)
+// })
 
 app.use(cookieParser())
 app.use(bodyParser.json())

@@ -11,7 +11,7 @@ const { zip, unzip } = require('../services/archiver')
 const { upload_dir: uploadDir } = process.env
 const { upload } = require('../services/upload')
 const login = require('./login')
-
+const public = require('./public')
 const fs = require('fs').promises
 
 router.use('/', login)
@@ -22,6 +22,7 @@ router.use('/manufacturers', manufacturer)
 router.use('/auth', oauth)
 router.use('/me', me)
 router.use(querymen.errorHandler())
+router.use('/public', public)
 
 router.get('/uploaded', (req, res) => {
   zip(uploadDir, '/tmp/upload.zip')
