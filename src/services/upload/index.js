@@ -1,32 +1,18 @@
 const multer = require('multer')
 const uuid = require('uuid/v4')
-const { upload_dir } = process.env
-const fs = require('fs')
 const { without } = require('../../api/utils')
 const mongoose = require('mongoose')
 
 const storage = require('multer-gridfs-storage')({
   url: process.env.mongoUrl,
-  // db: mongoose.connection,
-  destination: (req, file, next) => {
-    next(null, upload_dir)
-  },
+
   filename: (req, file, next) => {
     const ext = file.originalname.split('.').pop()
     const name = uuid(file.originalname) + '.' + ext
     next(null, name)
   }
 })
-// const storage = multer.diskStorage({
-//   destination: (req, file, next) => {
-//     next(null, upload_dir)
-//   },
-//   filename: (req, file, next) => {
-//     const ext = file.originalname.split('.').pop()
-//     const name = uuid(file.originalname) + '.' + ext
-//     next(null, name)
-//   }
-// })
+
 const upload = multer({ storage })
 module.exports.upload = upload
 
@@ -41,24 +27,11 @@ const deleteImages = (images) => new Promise((resolve, reject) => {
     if (!files || files.length === 0) {
       reject(new Error('no files'))
     }
-    console.log({ files })
     resolve()
-    console.log({ images })
     images.forEach(
       filename => gfs.remove({ filename }, console.error)
     )
   })
-
-  // if (!images.length) resolve()
-  // let rejected = 0
-  // for (let image of images) {
-  //   const path = upload_dir + '/' + image.split('/').pop()
-  //   fs.unlink(path, (err) => {
-  //     if (err) return reject(err)
-  //     rejected++
-  //     if (rejected == images.length) resolve()
-  //   })
-  // }
 })
 module.exports.deleteImages = deleteImages
 
@@ -106,13 +79,3 @@ module.exports.updateImages = (req, res, originalImages) => new Promise(
     )
   }
 )
-
-// const deleteImages = (images) => Promise.all(images.map(
-//   img => new Promise((resolve, reject) => {
-//     const path = upload_dir + '/' + img.split('/').pop()
-//     fs.unlink(path, (err) => {
-//       if (err) return reject(err)
-//       resolve()
-//     })
-//   })
-// ))

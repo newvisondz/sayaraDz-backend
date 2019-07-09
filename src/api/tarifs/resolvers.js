@@ -15,6 +15,6 @@ exports.getTotalPrice = async (...documents) => {
   const tarifs = await Promise.all(documents.map(d => this.getPrice(d)))
   console.log({ documents })
   return tarifs.reduce(
-    (previous, current) => previous + current
+    (previous, current) => previous + current, 0
   )
 }
