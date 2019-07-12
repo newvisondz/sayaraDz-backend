@@ -1,14 +1,14 @@
 const Commande = require('./model')
-const { isAutomobiliste, authenticated } = require('../../services/acl')
+const { isAutomobiliste, isUser, authenticated } = require('../../services/acl')
 const { ok, badRequest, notFound, internalError } = require('../../services/http')
 const querymen = require('querymen')
 const Vehicle = require('../vehicle/model')
-// all routes secured with automobiliste authorization, we will add user, admin manufacturer authorization when working on command accept and reject
+const { validateCreateBody, validateUpdateBody } = require('./validation')
 
 exports.list = [
   isAutomobiliste,
   authenticated,
-  querymen.middleware({}), // check docs: https://www.npmjs.com/package/querymen
+  querymen.middleware({}),
   async ({ user: { id: automobiliste }, querymen: { query, select, cursor } }, res) => {
     try {
       const commandes = await Commande.find({ ...query, automobiliste }, select, cursor)
@@ -23,10 +23,11 @@ exports.list = [
 exports.create = [
   isAutomobiliste,
   authenticated,
+  validateCreateBody,
   async ({ body, user: { id: automobiliste } }, res) => {
     try {
-      const exists = await !!Vehicle.findOne({ _id: body.vehicule }).select({ _id: 1 }).lean()
-      if (!exists) return notFound(res, createNotFoundError('vehicle', body.vehicule))
+      const exists = await !!Vehicle.findOne({ _id: body.vehicle }).select({ _id: 1 }).lean()
+      if (!exists) return notFound(res, createNotFoundError('vehicle', body.vehicle))
       const command = await new Commande({ ...body, automobiliste }).save()
       ok(res, command)
     } catch (error) {
@@ -37,7 +38,7 @@ exports.create = [
 ]
 
 exports.show = [
-  isAutomobiliste,
+  isUser,
   authenticated,
   async ({ params: { id: _id }, user: { id: automobiliste } }, res) => {
     try {
@@ -51,9 +52,11 @@ exports.show = [
     }
   }]
 
+// can not be updated by automobiliste
 exports.update = [
-  isAutomobiliste,
+  isUser,
   authenticated,
+  validateUpdateBody,
   async ({ params: { id: _id }, body, user: { id: automobiliste } }, res) => {
     try {
       const result = await Commande.updateOne({ _id, automobiliste }, body)
@@ -63,7 +66,8 @@ exports.update = [
     } catch (error) {
       internalError(res, error)
     }
-  }]
+  }
+]
 
 exports.deleteOne = [
   isAutomobiliste,

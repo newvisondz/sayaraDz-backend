@@ -1,5 +1,6 @@
+const _ = require('underscore')
 const query = require('querymen').middleware
-const { isAdmin, isAutomobiliste, authenticated, isFabricantAdmin } = require('../../services/acl')
+const { isAdmin, isUser, isAutomobiliste, authenticated, isFabricantAdmin } = require('../../services/acl')
 const Manufacturer = require('./model')
 const fs = require('fs-extra')
 const crud = require('../../services/crud')(Manufacturer, 'manufacturer')
@@ -106,7 +107,7 @@ exports.createWithLogo = [
 
 exports.findManufacturer = async (req, res, next) => {
   const { manufacturer: id } = req.params
-  const manufacturer = await Manufacturer.findById(id).exec()
+  const manufacturer = await Manufacturer.findById(id)
   req.manufacturer = manufacturer
   if (manufacturer)next()
   else {

@@ -16,6 +16,10 @@ const schema = new Schema({
     type: Schema.Types.ObjectId,
     ref: 'Color'
   },
+  manufacturer: {
+    type: Schema.Types.ObjectId,
+    ref: 'Fabricant'
+  },
   options: [{
     type: Schema.Types.ObjectId,
     ref: 'Option'

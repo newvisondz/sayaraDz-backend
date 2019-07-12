@@ -1,6 +1,6 @@
 const joi = require('@hapi/joi')
 const moment = require('moment')
-const { badRequest } = require('../../services/http')
+const { validate } = require('../utils/validation')
 
 exports.start = date => true
 
@@ -20,14 +20,5 @@ const updateBodySchema = joi.object().keys({
   end: joi.date().min(moment().format('MM-DD-YYYY'))
 })
 
-const validate = (schema) => async ({ body }, res, next) => {
-  try {
-    await joi.validate(body, schema)
-    next()
-  } catch (error) {
-    console.error(error)
-    badRequest(res, error)
-  }
-}
 exports.validateCreateBody = validate(createBodySchema)
 exports.validateUpdateBody = validate(updateBodySchema)

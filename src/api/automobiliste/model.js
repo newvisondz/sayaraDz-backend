@@ -2,6 +2,7 @@ const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 const validator = require('validator')
 const utils = require('../utils')
+const Command = require('../command/model')
 
 const providers = ['google', 'facebook']
 
@@ -68,18 +69,19 @@ AutoMobilisteSchema.methods.toJSON = function () {
     address: this.address,
     createdAt: this.createdAt,
     updatedAt: this.updatedAt,
-    token: this.token
+    token: this.token,
+    commands: this.commands
   }
 }
 
 AutoMobilisteSchema.statics.type = () => utils.USER_TYPE.AUTOMOBILISTE
-
+AutoMobilisteSchema.methods.findCommands = async function () {
+  this.commands = await Command.find({ automobiliste: this.id })
+}
 const Automobiliste = mongoose.model('Automobiliste', AutoMobilisteSchema)
 // new Automobiliste({
 //   email: 'r@root.dz',
 //   password: 'root'
 // }).save().then(user => console.log(user.sign()))
+// Automobiliste.find({}).then(docs => docs[5].sign()).then(console.log)
 module.exports = Automobiliste
-
-//current Token on Automobilist
-// eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVkMDkyYTQxNzBjYjllMmFhOGNlMWQzMCIsInR5cGUiOiJBVVRPTU9CSUxJU1RFIiwiaWF0IjoxNTYwODgxNzMyLCJleHAiOjE1Njk0MzUzMzJ9.nhqvZP1-tC5XQe3zx20FoURmedgpo6wtAelbwJqr0yc

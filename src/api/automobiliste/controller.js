@@ -5,7 +5,8 @@ const crud = require('../../services/crud')(Automobiliste, 'automobiliste')
 exports.readMe = [
   isAutomobiliste,
   authenticated,
-  (req, res) => {
+  async (req, res) => {
+    await req.user.findCommands()
     res.json(req.user)
   }
 ]
