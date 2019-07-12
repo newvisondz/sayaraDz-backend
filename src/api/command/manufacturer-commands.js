@@ -5,6 +5,8 @@ const { validate } = require('../utils/validation')
 const { createNotFoundError } = require('../utils')
 const { Router } = require('express')
 const { isUser, authenticated } = require('../../services/acl')
+const { notify } = require('../../services/fcm')
+const Automobiliste = require('../automobiliste/model')
 
 const list = [
   isUser,
@@ -33,9 +35,9 @@ const update = [
       const command = commands.find(
         c => c.id == id
       )
-      if (!command || (command && command.processed)) {
-        return notFound(res, createNotFoundError('command', id))
-      }
+      // if (!command || (command && command.processed)) {
+      //   return notFound(res, createNotFoundError('command', id))
+      // }
 
       command.set({
         ...body,
@@ -43,7 +45,23 @@ const update = [
       })
       await command.save()
       res.json(command)
+
+      const autom = await Automobiliste.findById(command.automobiliste)
+      console.log(command)
+
+      notify({
+        data: {
+          module: 'command',
+          id,
+          accepted: body.accepted
+        },
+        notification: {
+          title: 'Command ' + ((!command.accepted) ? 'Rejected' : 'Accepted '),
+          body: 'id: ' + id
+        }
+      }, autom.tokens)
     } catch (error) {
+      console.error(error)
       internalError(res, error)
       throw error
     }

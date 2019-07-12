@@ -14,6 +14,9 @@ const AutoMobilisteSchema = new Schema({
     validate: validator.isEmail,
     trim: true
   },
+  tokens: {
+    type: [String]
+  },
   password: {
     type: String,
     minlength: 4
@@ -71,6 +74,7 @@ AutoMobilisteSchema.methods.toJSON = function () {
     updatedAt: this.updatedAt,
     token: this.token,
     commands: this.commands
+    // tokens: thi  s.tokens
   }
 }
 
@@ -83,5 +87,5 @@ const Automobiliste = mongoose.model('Automobiliste', AutoMobilisteSchema)
 //   email: 'r@root.dz',
 //   password: 'root'
 // }).save().then(user => console.log(user.sign()))
-// Automobiliste.find({}).then(docs => docs[5].sign()).then(console.log)
+// Automobiliste.find({}).then(docs => docs[0].sign()).then(console.log)
 module.exports = Automobiliste

@@ -1,6 +1,5 @@
 const { isAutomobiliste, authenticated } = require('../../services/acl')
-const Automobiliste = require('./model')
-const crud = require('../../services/crud')(Automobiliste, 'automobiliste')
+const { internalError } = require('../../services/http')
 
 exports.readMe = [
   isAutomobiliste,
@@ -14,14 +13,29 @@ exports.readMe = [
 exports.update = [
   isAutomobiliste,
   authenticated,
-  (req, res, next) => {
-    delete req.body.email
-    delete req.body.providers
-    req.params.id = req.user.id
-    next()
-  },
-  crud.update
+  async ({ user, body }, res, next) => {
+    try {
+      delete body.email
+      delete body.providers
+      delete body.tokens
+      user.set(body)
+      if (body.token) {
+        const token = user.tokens.find(
+          t => body.token == t
+        )
+        if (!token) {
+          user.tokens.push(body.token)
+        }
+      }
+      await user.save()
+      res.json({
+        success: true,
+        ok: true,
+        n: 1
+      })
+      next()
+    } catch (error) {
+      internalError(res, error)
+    }
+  }
 ]
-// generate automobiliste token
-// Automobiliste.findById('5c7184d3f99c9f6b358482a2')
-//   .then(user => console.log(user.sign()))
