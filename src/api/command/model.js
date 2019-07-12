@@ -7,8 +7,9 @@ const schema = new Schema({
     type: Boolean,
     default: false
   },
-  done: {
-    type: Boolean
+  processed: {
+    type: Boolean,
+    default: false
   },
   automobiliste: {
     type: Schema.Types.ObjectId,
@@ -30,11 +31,12 @@ schema.methods.toJSON = function () {
   return {
     id: this._id,
     automobiliste: this.automobiliste,
-    createdAt: this.createdAt,
-    updatedAt: this.updatedAt,
     amount: this.amount,
     vehicle: this.vehicle,
-    accepted: this.accepted
+    accepted: this.accepted || false,
+    processed: this.processed || false,
+    createdAt: this.createdAt,
+    updatedAt: this.updatedAt
   }
 }
 

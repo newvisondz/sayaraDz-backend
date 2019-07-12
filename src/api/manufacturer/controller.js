@@ -1,6 +1,5 @@
-const _ = require('underscore')
 const query = require('querymen').middleware
-const { isAdmin, isUser, isAutomobiliste, authenticated, isFabricantAdmin } = require('../../services/acl')
+const { isAdmin, isAutomobiliste, authenticated, isFabricantAdmin } = require('../../services/acl')
 const Manufacturer = require('./model')
 const fs = require('fs-extra')
 const crud = require('../../services/crud')(Manufacturer, 'manufacturer')

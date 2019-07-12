@@ -33,10 +33,14 @@ const update = [
       const command = commands.find(
         c => c.id == id
       )
-      if (!command) {
+      if (!command || (command && command.processed)) {
         return notFound(res, createNotFoundError('command', id))
       }
-      command.set(body)
+
+      command.set({
+        ...body,
+        processed: true
+      })
       await command.save()
       res.json(command)
     } catch (error) {
