@@ -7,6 +7,9 @@ const schema = new Schema({
     type: Boolean,
     default: false
   },
+  done: {
+    type: Boolean
+  },
   automobiliste: {
     type: Schema.Types.ObjectId,
     ref: 'Automobiliste',
