@@ -9,9 +9,10 @@ router.get('/facebook', async (req, res, next) => {
   const accessToken = req.query.access_token
   try {
     const profile = await facebook(accessToken)
-    outhCallback(accessToken, null, profile, (err, user) => {
+    outhCallback(accessToken, null, profile, async (err, user) => {
       if (err) return http.internalError(res, err)
       user.token = user.sign()
+      await user.findCommands()
       http.ok(res, user)
     }
     )
@@ -26,11 +27,13 @@ router.get('/google', passport.authenticate('google', {
 }))
 
 router.get('/google/callback', (req, res, next) =>
-  passport.authenticate('google', function (err, user, info) {
+  passport.authenticate('google', async function (err, user, info) {
     if (err) {
       return res.json(err)
     }
     user.token = user.sign()
+    await user.findCommands()
+
     res.json(user)
   })(req, res, next)
 )

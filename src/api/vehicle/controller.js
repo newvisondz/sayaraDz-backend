@@ -65,6 +65,7 @@ exports.create = [
         image => '/public/' + image.filename
       )
       try {
+        body.manufacturer = req.manufacturer
         const vehicle = await new Vehicle(body).save()
         version.vehicles.push(vehicle.id)
         await model.save()

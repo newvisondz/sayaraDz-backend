@@ -6,6 +6,8 @@ const schema = new Schema(
       type: Number,
       min: 0,
       max: 2,
+      get: v => Math.round(v),
+      set: v => Math.round(v),
       required: true
     },
     document: {

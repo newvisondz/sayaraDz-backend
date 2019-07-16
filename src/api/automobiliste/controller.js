@@ -1,11 +1,13 @@
 const { isAutomobiliste, authenticated } = require('../../services/acl')
-const Automobiliste = require('./model')
-const crud = require('../../services/crud')(Automobiliste, 'automobiliste')
+const { ok, notFound, internalError, conflict } = require('../../services/http')
+const Model = require('../model/model')
+const { createNotFoundError } = require('../utils/index')
 
 exports.readMe = [
   isAutomobiliste,
   authenticated,
-  (req, res) => {
+  async (req, res) => {
+    await req.user.findCommands()
     res.json(req.user)
   }
 ]
@@ -13,14 +15,91 @@ exports.readMe = [
 exports.update = [
   isAutomobiliste,
   authenticated,
-  (req, res, next) => {
-    delete req.body.email
-    delete req.body.providers
-    req.params.id = req.user.id
-    next()
-  },
-  crud.update
+  async ({ user, body }, res, next) => {
+    try {
+      delete body.email
+      delete body.providers
+      delete body.tokens
+      user.set(body)
+      if (body.token) {
+        const token = user.tokens.find(
+          t => body.token == t
+        )
+        if (!token) {
+          user.tokens.push(body.token)
+        }
+      }
+      await user.save()
+      res.json({
+        success: true,
+        ok: true,
+        n: 1
+      })
+      next()
+    } catch (error) {
+      internalError(res, error)
+    }
+  }
 ]
-// generate automobiliste token
-// Automobiliste.findById('5c7184d3f99c9f6b358482a2')
-//   .then(user => console.log(user.sign()))
+
+exports.follow = [
+  isAutomobiliste,
+  authenticated,
+  async ({ user, params: { version } }, res, next) => {
+    try {
+      const model = await Model.findOne({
+        versions: {
+          $elemMatch: {
+            _id: version
+          }
+        }
+      })
+      if (!model) {
+        return notFound(res, createNotFoundError('version', version))
+      }
+      const isFollowing = user.followedVersions.find(
+        v => v == version
+      )
+      if (isFollowing) {
+        return conflict(res, {
+          success: false,
+          msg: `version<${version}> already followed`
+        })
+      }
+      user.followedVersions.push(version)
+      await user.save()
+      ok(res, {
+        success: true
+      })
+    } catch (error) {
+      internalError(res, error)
+    }
+  }
+]
+
+exports.unfollow = [
+  isAutomobiliste,
+  authenticated,
+  async ({ user, params: { version } }, res, next) => {
+    try {
+      const followedVersion = user.followedVersions.find(
+        v => v == version
+      )
+      if (!followedVersion) {
+        return notFound(res, createNotFoundError('followed version', version))
+      }
+      user.followedVersions = user.followedVersions.filter(
+        v => v != version
+      )
+      await user.save()
+      ok(res, {
+        success: true,
+        ok: 1,
+        n: 1
+      })
+    } catch (error) {
+      console.error(error)
+      internalError(res, error)
+    }
+  }
+]

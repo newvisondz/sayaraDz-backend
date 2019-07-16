@@ -2,6 +2,7 @@ const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 const validator = require('validator')
 const utils = require('../utils')
+const Command = require('../command/model')
 
 const providers = ['google', 'facebook']
 
@@ -12,6 +13,9 @@ const AutoMobilisteSchema = new Schema({
     unique: true,
     validate: validator.isEmail,
     trim: true
+  },
+  tokens: {
+    type: [String]
   },
   password: {
     type: String,
@@ -43,6 +47,9 @@ const AutoMobilisteSchema = new Schema({
     type: String,
     trim: true,
     validate: validator.isMobilePhone
+  },
+  followedVersions: {
+    type: [Schema.Types.ObjectId]
   }
 }, {
   timestamps: true
@@ -68,18 +75,21 @@ AutoMobilisteSchema.methods.toJSON = function () {
     address: this.address,
     createdAt: this.createdAt,
     updatedAt: this.updatedAt,
-    token: this.token
+    token: this.token,
+    commands: this.commands,
+    followedVersions: this.followedVersions
+    // tokens: thi  s.tokens
   }
 }
 
 AutoMobilisteSchema.statics.type = () => utils.USER_TYPE.AUTOMOBILISTE
-
+AutoMobilisteSchema.methods.findCommands = async function () {
+  this.commands = await Command.find({ automobiliste: this.id })
+}
 const Automobiliste = mongoose.model('Automobiliste', AutoMobilisteSchema)
 // new Automobiliste({
 //   email: 'r@rootfads.dz',
 //   password: 'root'
 // }).save().then(user => console.log(user.sign()))
+// Automobiliste.find({}).then(docs => docs[0].sign()).then(console.log)
 module.exports = Automobiliste
-
-//current Token on Automobilist
-// eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVkMDkyYTQxNzBjYjllMmFhOGNlMWQzMCIsInR5cGUiOiJBVVRPTU9CSUxJU1RFIiwiaWF0IjoxNTYwODgxNzMyLCJleHAiOjE1Njk0MzUzMzJ9.nhqvZP1-tC5XQe3zx20FoURmedgpo6wtAelbwJqr0yc

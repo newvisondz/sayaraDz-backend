@@ -3,13 +3,17 @@ const { ok, notFound, badRequest, internalError } = require('../../services/http
 const { verifyResult, createNotFoundError } = require('../utils')
 const Model = require('./model')
 const { getTotalPrice } = require('./resolvers')
+const { validateCreateBody, validateUpdateBody } = require('./validation')
 
-exports.total = async ({ query: { options } }, res) => {
-  console.log({ options })
-  const total = await getTotalPrice(...options)
-  res.json({
-    total
-  })
+exports.total = async ({ query: { options = [] } }, res) => {
+  try {
+    const total = await getTotalPrice(...options)
+    res.json({
+      total
+    })
+  } catch (error) {
+    badRequest(res, error)
+  }
 }
 
 exports.list = [
@@ -27,7 +31,6 @@ exports.list = [
   }),
   async ({ params: { id: document }, querymen: { query, select, cursor }, querymen }, res) => {
     try {
-      console.log({ tarifs: { querymen } })
       const tarifs = await Model.find({ ...query, document }, select, cursor)
       ok(res, tarifs)
     } catch (error) {
@@ -36,51 +39,57 @@ exports.list = [
   }
 ]
 
-exports.create = async ({ body, body: { code, document }, model }, res) => {
-  try {
-    // return res.json(model.options.id(document))
-    if (code == undefined || (code > 3 || code < 0)) return badRequest(res)
-
-    if (!verify(code, document, model)) {
-      return notFound(
-        res,
-        createNotFoundError(
-          ['version', 'option', 'color'][code], document
+exports.create = [
+  validateCreateBody,
+  async ({ body, body: { code, document }, model }, res) => {
+    try {
+      if (!verify(code, document, model)) {
+        return notFound(
+          res,
+          createNotFoundError(
+            ['version', 'option', 'color'][code], document
+          )
         )
-      )
+      }
+      const tarif = await new Model(body).save()
+      ok(res, tarif)
+    } catch (error) {
+      console.error(error)
+      badRequest(res, error)
     }
-    const tarif = await new Model(body).save()
-    ok(res, tarif)
-  } catch (error) {
-    console.error(error)
-    badRequest(res, error)
   }
-}
+]
 
-exports.update = async ({ params: { id: _id }, body }, res) => {
-  try {
-    const { amount, start, end } = body
-    const result = await Model.updateOne({ _id }, {
-      amount, start, end
-    })
-    if (verifyResult(result)) {
-      return notFound(res, createNotFoundError('tarif', _id))
+exports.update = [
+  validateUpdateBody,
+  async ({ params: { id: _id }, body }, res) => {
+    try {
+      const result = await Model.updateOne({ _id }, body)
+      if (!verifyResult(result)) {
+        return notFound(res, createNotFoundError('tarif', _id))
+      }
+      ok(res, result)
+    } catch (error) {
+      console.error(error)
+      res.status(500).json({
+        error: true
+      })
     }
-    ok(res, result)
-  } catch (error) {
-
   }
-}
+]
 
 exports.destroy = async ({ params: { id: _id } }, res) => {
   try {
     const result = await Model.deleteOne({ _id })
-    if (verifyResult(result)) {
+    if (!verifyResult(result)) {
       return notFound(res, createNotFoundError('tarif', _id))
     }
     ok(res, result)
   } catch (error) {
-
+    console.error(error)
+    res.status(500).json({
+      error: true
+    })
   }
 }
 

@@ -6,6 +6,7 @@ const local = require('./strategies/local')
 const jwt = require('./strategies/jwt')
 const facebook = require('./strategies/facebook')
 const google = require('./strategies/google')
+
 module.exports = (app) => {
   app.use(passport.initialize())
 
