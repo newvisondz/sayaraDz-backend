@@ -6,10 +6,14 @@ const { getTotalPrice } = require('./resolvers')
 const { validateCreateBody, validateUpdateBody } = require('./validation')
 
 exports.total = async ({ query: { options = [] } }, res) => {
-  const total = await getTotalPrice(...options)
-  res.json({
-    total
-  })
+  try {
+    const total = await getTotalPrice(...options)
+    res.json({
+      total
+    })
+  } catch (error) {
+    badRequest(res, error)
+  }
 }
 
 exports.list = [

@@ -5,6 +5,9 @@ exports.ok = (res, data) => {
 exports.created = (res, data) => {
   return res.status(201).json(data)
 }
+exports.conflict = (res, data) => {
+  return res.status(409).json(data)
+}
 exports.deleted = (res, data) => {
   return res.status(204).json(data)
 }

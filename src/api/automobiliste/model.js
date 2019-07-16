@@ -47,6 +47,9 @@ const AutoMobilisteSchema = new Schema({
     type: String,
     trim: true,
     validate: validator.isMobilePhone
+  },
+  followedVersions: {
+    type: [Schema.Types.ObjectId]
   }
 }, {
   timestamps: true
@@ -73,7 +76,8 @@ AutoMobilisteSchema.methods.toJSON = function () {
     createdAt: this.createdAt,
     updatedAt: this.updatedAt,
     token: this.token,
-    commands: this.commands
+    commands: this.commands,
+    followedVersions: this.followedVersions
     // tokens: thi  s.tokens
   }
 }

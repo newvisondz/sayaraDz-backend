@@ -1,5 +1,7 @@
 const { isAutomobiliste, authenticated } = require('../../services/acl')
-const { internalError } = require('../../services/http')
+const { ok, notFound, internalError, conflict } = require('../../services/http')
+const Model = require('../model/model')
+const { createNotFoundError } = require('../utils/index')
 
 exports.readMe = [
   isAutomobiliste,
@@ -35,6 +37,68 @@ exports.update = [
       })
       next()
     } catch (error) {
+      internalError(res, error)
+    }
+  }
+]
+
+exports.follow = [
+  isAutomobiliste,
+  authenticated,
+  async ({ user, params: { version } }, res, next) => {
+    try {
+      const model = await Model.findOne({
+        versions: {
+          $elemMatch: {
+            _id: version
+          }
+        }
+      })
+      if (!model) {
+        return notFound(res, createNotFoundError('version', version))
+      }
+      const isFollowing = user.followedVersions.find(
+        v => v == version
+      )
+      if (isFollowing) {
+        return conflict(res, {
+          success: false,
+          msg: `version<${version}> already followed`
+        })
+      }
+      user.followedVersions.push(version)
+      await user.save()
+      ok(res, {
+        success: true
+      })
+    } catch (error) {
+      internalError(res, error)
+    }
+  }
+]
+
+exports.unfollow = [
+  isAutomobiliste,
+  authenticated,
+  async ({ user, params: { version } }, res, next) => {
+    try {
+      const followedVersion = user.followedVersions.find(
+        v => v == version
+      )
+      if (!followedVersion) {
+        return notFound(res, createNotFoundError('followed version', version))
+      }
+      user.followedVersions = user.followedVersions.filter(
+        v => v != version
+      )
+      await user.save()
+      ok(res, {
+        success: true,
+        ok: 1,
+        n: 1
+      })
+    } catch (error) {
+      console.error(error)
       internalError(res, error)
     }
   }

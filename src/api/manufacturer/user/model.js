@@ -30,6 +30,7 @@ const schema = new Schema({
     type: String
   },
   isAdmin: Boolean,
+  active: Boolean,
   manufacturer: {
     type: String,
     ref: 'Fabricant',
