@@ -1,17 +1,23 @@
 const { Schema, model } = require('mongoose')
 
 const schema = new Schema({
-  owner: {
-    type: String,
+  creator: {
+    type: Schema.Types.ObjectId,
+    ref: 'Automobiliste',
     required: true
   },
   usedCar: {
-    type: String,
+    type: Schema.Types.ObjectId,
+    ref: 'UsedCar',
     required: true
   },
   price: {
     type: Number,
     required: String
+  },
+  accepted: {
+    type: Boolean,
+    default: false
   }
 }, {
   timestamps: true
@@ -21,7 +27,7 @@ schema.methods = {
   toJSON: function () {
     return {
       id: this.id,
-      owner: this.owner,
+      creator: this.creator,
       usedCar: this.usedCar,
       createdAt: this.createdAt,
       price: this.price

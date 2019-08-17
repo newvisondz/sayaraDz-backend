@@ -1,12 +1,13 @@
 const { ok, badRequest, internalError, created } = require('../../../services/http')
 const Model = require('./model')
+const query = require('querymen').middleware
 
 exports.create = [
-  async ({ usedCar, body, user: { id: owner } }, res) => {
+  async ({ usedCar, body, user: { id: creator } }, res) => {
     try {
       const newCar = await new Model({
         price: this.price,
-        owner,
+        creator,
         usedCar: usedCar
       }).save()
       created(res, newCar)
@@ -18,9 +19,11 @@ exports.create = [
 ]
 
 exports.list = [
-  async ({ usedCar, user }, res) => {
+  async ({ usedCar }, res) => {
     try {
       const bids = await Model.find({ usedCar })
+        .populate('creator', 'id firstName lastName phone address')
+
       ok(res, bids)
     } catch (error) {
       internalError(res, error)

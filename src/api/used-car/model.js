@@ -58,6 +58,6 @@ schema.methods = {
   }
 }
 
-const Model = model('user-cars', schema)
+const Model = model('UsedCar', schema)
 
 module.exports = Model
