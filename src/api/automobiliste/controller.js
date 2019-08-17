@@ -1,7 +1,8 @@
 const { isAutomobiliste, authenticated } = require('../../services/acl')
-const { ok, notFound, internalError, conflict } = require('../../services/http')
+const { ok, notFound, internalError, conflict, badRequest } = require('../../services/http')
 const { createNotFoundError } = require('../utils/index')
 const Model = require('./model')
+const { upload, deleteImages } = require('../../services/upload')
 
 exports.readMe = [
   isAutomobiliste,
@@ -55,6 +56,45 @@ exports.update = [
     } catch (error) {
       internalError(res, error)
     }
+  }
+]
+
+exports.updateProfilePicture = [
+  isAutomobiliste,
+  authenticated,
+  async (req, res) => {
+    upload.single('picture')(req, res, async (err) => {
+      if (err) return badRequest(res, err)
+      try {
+        if (req.file) {
+          if (req.user.picture) await deleteImages([req.user.picture])
+          req.user.picture = `/public/${req.file.filename}`
+          await req.user.save()
+          ok(res, {
+            ok: true,
+            picture: req.user.picture
+          })
+        } else {
+          if (req.user.picture) {
+            await deleteImages([req.user.picture])
+            req.user.picture = undefined
+            await req.user.save()
+            ok(res, {
+              ok: true,
+              message: 'uploaded file deleted'
+            })
+          } else {
+            badRequest(res, {
+              error: true,
+              message: 'no action: user picture field and request picture are nulls'
+            })
+          }
+        }
+      } catch (error) {
+        console.error(error)
+        internalError(res, error)
+      }
+    })
   }
 ]
 

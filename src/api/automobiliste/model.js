@@ -50,7 +50,8 @@ const AutoMobilisteSchema = new Schema({
   },
   followedVersions: {
     type: [Schema.Types.ObjectId]
-  }
+  },
+  picture: String
 }, {
   timestamps: true
 })
@@ -77,7 +78,8 @@ AutoMobilisteSchema.methods.toJSON = function () {
     updatedAt: this.updatedAt,
     token: this.token,
     commands: this.commands,
-    followedVersions: this.followedVersions
+    followedVersions: this.followedVersions,
+    picture: this.picture
     // tokens: thi  s.tokens
   }
 }
@@ -90,7 +92,8 @@ AutoMobilisteSchema.methods.profileView = function () {
     lastName: this.lastName,
     birthDate: this.birthDate,
     phone: this.phone,
-    address: this.address
+    address: this.address,
+    picture: this.picture
   }
 }
 
