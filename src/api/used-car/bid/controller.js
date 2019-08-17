@@ -1,6 +1,5 @@
-const { notFound, ok, badRequest, internalError, created } = require('../../../services/http')
+const { ok, badRequest, internalError, created } = require('../../../services/http')
 const Model = require('./model')
-const { createNotFoundError } = require('../../utils')
 
 exports.create = [
   async ({ usedCar, body, user: { id: owner } }, res) => {

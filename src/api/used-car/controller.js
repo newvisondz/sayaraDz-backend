@@ -2,6 +2,7 @@ const { ok, internalError, badRequest, notFound } = require('../../services/http
 const UsedVehicle = require('./model')
 const query = require('querymen').middleware
 const { upload } = require('../../services/upload')
+const { createNotFoundError } = require('../utils')
 
 exports.create = [
   async (req, res, next) => {
