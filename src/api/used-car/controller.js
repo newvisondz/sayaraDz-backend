@@ -1,5 +1,4 @@
 const { ok, internalError, badRequest, notFound } = require('../../services/http')
-const { createNotFoundError } = require('../utils')
 const UsedVehicle = require('./model')
 const query = require('querymen').middleware
 const { upload } = require('../../services/upload')
