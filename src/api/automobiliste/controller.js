@@ -1,7 +1,7 @@
 const { isAutomobiliste, authenticated } = require('../../services/acl')
 const { ok, notFound, internalError, conflict } = require('../../services/http')
-const Model = require('../model/model')
 const { createNotFoundError } = require('../utils/index')
+const Model = require('./model')
 
 exports.readMe = [
   isAutomobiliste,
@@ -9,6 +9,22 @@ exports.readMe = [
   async (req, res) => {
     await req.user.findCommands()
     res.json(req.user)
+  }
+]
+
+exports.showProfile = [
+  isAutomobiliste,
+  authenticated,
+  async ({ params: { id } }, res) => {
+    try {
+      const profile = await Model.findById(id)
+      if (!profile) {
+        return notFound(res, createNotFoundError('Profile', id))
+      }
+      ok(res, profile.profileView())
+    } catch (error) {
+      internalError(res, error)
+    }
   }
 ]
 

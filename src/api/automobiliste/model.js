@@ -82,6 +82,18 @@ AutoMobilisteSchema.methods.toJSON = function () {
   }
 }
 
+AutoMobilisteSchema.methods.profileView = function () {
+  return {
+    id: this.id,
+    email: this.email,
+    firstName: this.firstName,
+    lastName: this.lastName,
+    birthDate: this.birthDate,
+    phone: this.phone,
+    address: this.address
+  }
+}
+
 AutoMobilisteSchema.statics.type = () => utils.USER_TYPE.AUTOMOBILISTE
 AutoMobilisteSchema.methods.findCommands = async function () {
   this.commands = await Command.find({ automobiliste: this.id })
