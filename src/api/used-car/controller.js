@@ -37,7 +37,6 @@ exports.list = [
   }),
   async ({ querymen: { query, cursor, select } }, res, next) => {
     try {
-      console.log({ select, query, cursor })
       const cars = await UsedVehicle.find(query, select, cursor)
       ok(res, cars)
     } catch (error) {

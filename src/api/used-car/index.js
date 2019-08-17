@@ -15,7 +15,6 @@ router.use('/:id/bids', async (req, res, next) => {
   const { params: { id } } = req
   try {
     const usedCar = await Model.findById(id)
-    console.log(('bids middleware .. ' + id), usedCar)
     if (!usedCar) {
       return notFound(res, createNotFoundError('Used car', id))
     }
