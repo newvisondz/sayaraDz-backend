@@ -30,6 +30,7 @@ schema.statics.querySchema = () => ({
   vin: Number
 })
 schema.plugin(require('mongoose-keywords'), { paths: ['vin', 'dealership'] })
+
 schema.methods.toJSON = function () {
   return {
     id: this.id,
