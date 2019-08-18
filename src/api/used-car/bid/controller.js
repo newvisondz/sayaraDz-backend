@@ -6,7 +6,7 @@ const { createNotFoundError } = require('../../utils')
 exports.create = [
   async ({ usedCar, body, user: { id: creator } }, res) => {
     try {
-      const newCar = await new Model({
+      let newCar = await new Model({
         price: this.price,
         creator,
         usedCar: usedCar
