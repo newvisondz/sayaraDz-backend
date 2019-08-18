@@ -23,9 +23,14 @@ exports.read = [
       select,
       options
     }).execPopulate()
-
+    const models = manufacturer.models.map(
+      model => {
+        delete model.versions
+        return model
+      }
+    )
     http.ok(res, {
-      models: manufacturer.models,
+      models,
       count
     })
   }
