@@ -7,10 +7,15 @@ const Command = require('../command/model')
 const providers = ['google', 'facebook']
 
 const AutoMobilisteSchema = new Schema({
+  uid: {
+    type: String,
+    unique: true,
+    required: true
+  },
   email: {
     type: String,
     index: true,
-    unique: true,
+    // unique: true,
     validate: validator.isEmail,
     trim: true
   },
@@ -79,7 +84,8 @@ AutoMobilisteSchema.methods.toJSON = function () {
     token: this.token,
     commands: this.commands,
     followedVersions: this.followedVersions,
-    picture: this.picture
+    picture: this.picture,
+    uid: this.uid
     // tokens: thi  s.tokens
   }
 }

@@ -1,5 +1,12 @@
 const JwtToken = require('../../api/auth/jwt.model')
 const { checkAuth } = require('../acl')
+var admin = require('firebase-admin')
+
+var serviceAccount = process.env.FCM
+
+admin.initializeApp({
+  credential: admin.credential.cert(JSON.parse(serviceAccount))
+})
 
 exports.login = (...strategies) => [
   strategies.map(
@@ -52,3 +59,5 @@ exports.logout = async (req, res) => {
     })
   }
 }
+
+exports.verifyIdToken = (idToken) => admin.auth().verifyIdToken(idToken)
