@@ -120,6 +120,7 @@ exports.update = [
   },
   crud.findAndUpdate
 ]
+
 exports.deleteOne = [
   checkVehicle,
   crud.deleteOne,

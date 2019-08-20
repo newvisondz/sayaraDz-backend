@@ -29,6 +29,7 @@ exports.create = [
 
 exports.list = [
   query({
+    title: String,
     manufacturer: String,
     model: String,
     version: String,

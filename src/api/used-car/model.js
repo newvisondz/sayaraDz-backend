@@ -2,6 +2,9 @@ const mongoose = require('mongoose')
 const { Schema, model } = mongoose
 
 const schema = new Schema({
+  title: {
+    type: String
+  },
   owner: {
     type: String,
     required: true
@@ -45,6 +48,7 @@ schema.methods = {
   toJSON: function () {
     return {
       id: this.id,
+      title: this.title,
       manufacturer: this.manufacturer,
       model: this.model,
       version: this.version,
@@ -57,6 +61,8 @@ schema.methods = {
     }
   }
 }
+
+schema.plugin(require('mongoose-keywords'), { paths: ['title', 'manufacturer', 'model', 'version'] })
 
 const Model = model('UsedCar', schema)
 
