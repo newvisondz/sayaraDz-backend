@@ -7,7 +7,7 @@ exports.create = [
   async ({ usedCar, body, user: { id: creator } }, res) => {
     try {
       let newCar = await new Model({
-        price: this.price,
+        price: body.price,
         creator,
         usedCar: usedCar
       }).save()
@@ -23,8 +23,10 @@ exports.list = [
   query(),
   async ({ usedCar, querymen: { cursor, select } }, res) => {
     try {
-      const bids = !select.creator ? await Model.find({ usedCar }, select, cursor) : await Model.find({ usedCar }, select, cursor)
-        .populate('creator', 'id firstName lastName phone address')
+      const bids = !select.creator
+        ? await Model.find({ usedCar }, select, cursor)
+        : await Model.find({ usedCar }, select, cursor)
+          .populate('creator', 'id firstName lastName phone address')
 
       ok(res, bids)
     } catch (error) {

@@ -1,8 +1,9 @@
 const express = require('express')
 const router = express.Router()
-const { readMe, update, follow, unfollow, showProfile, updateProfilePicture } = require('./controller')
+const { bids, readMe, update, follow, unfollow, showProfile, updateProfilePicture } = require('./controller')
 
 router.get('/me', readMe)
+router.get('/me/bids', bids)
 router.put('/me', update)
 router.put('/me/picture', updateProfilePicture)
 router.get('/:id', showProfile)

@@ -3,6 +3,7 @@ const { ok, notFound, internalError, conflict, badRequest } = require('../../ser
 const { createNotFoundError } = require('../utils/index')
 const Model = require('./model')
 const { upload, deleteImages } = require('../../services/upload')
+const Bid = require('../used-car/bid/model')
 
 exports.readMe = [
   isAutomobiliste,
@@ -156,6 +157,20 @@ exports.unfollow = [
     } catch (error) {
       console.error(error)
       internalError(res, error)
+    }
+  }
+]
+
+exports.bids = [
+  isAutomobiliste,
+  authenticated,
+  async (req, res) => {
+    try {
+      const bids = await Bid.find({ creator: req.user.id }).populate('usedCar')
+      res.json(bids)
+    } catch (error) {
+      console.error(error)
+      res.json(error)
     }
   }
 ]
