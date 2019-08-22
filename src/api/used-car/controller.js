@@ -34,7 +34,27 @@ exports.list = [
     model: String,
     version: String,
     owner: String,
-    color: String
+    color: String,
+    minPrice: {
+      type: Number,
+      paths: ['minPrice'],
+      operator: '$gte'
+    },
+    maxPrice: {
+      type: Number,
+      paths: ['minPrice'],
+      operator: '$lte'
+    },
+    minCurrentMiles: {
+      type: Number,
+      paths: ['currentMiles'],
+      operator: '$gte'
+    },
+    maxCurrentMiles: {
+      type: Number,
+      paths: ['currentMiles'],
+      operator: '$lte'
+    }
   }),
   async ({ querymen: { query, cursor, select } }, res, next) => {
     try {

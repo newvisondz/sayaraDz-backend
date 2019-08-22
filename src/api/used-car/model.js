@@ -13,7 +13,15 @@ const schema = new Schema({
     type: String,
     required: true
   },
+  manufacturerId: {
+    type: String,
+    required: true
+  },
   model: {
+    type: String,
+    required: true
+  },
+  modelId: {
     type: String,
     required: true
   },
@@ -21,7 +29,11 @@ const schema = new Schema({
     type: String,
     required: true
   },
-  currrentMiles: {
+  versionId: {
+    type: String,
+    required: true
+  },
+  currentMiles: {
     type: Number
   },
   registrationDate: {
@@ -50,9 +62,12 @@ schema.methods = {
       id: this.id,
       title: this.title,
       manufacturer: this.manufacturer,
+      manufacturerId: this.manufacturerId,
       model: this.model,
+      modelId: this.modelId,
       version: this.version,
-      currrentMiles: this.currrentMiles,
+      versionId: this.versionId,
+      currentMiles: this.currentMiles,
       registrationDate: this.registrationDate,
       color: this.color,
       images: this.images,
