@@ -166,6 +166,7 @@ exports.bids = [
   authenticated,
   async (req, res) => {
     try {
+      console.log('bid end ...')
       const bids = await Bid.find({ creator: req.user.id }).populate('usedCar')
       res.json(bids)
     } catch (error) {

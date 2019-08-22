@@ -12,21 +12,22 @@ const checkFabricantAdminAuth = (req, res, next) => passport.authenticate(
   })(req, res, next)
 
 const checkToken = async (req, res, next) => {
-  if (req.user) return next()
-  const token = req.headers.authorization
-  try {
-    let newToken = await JwtToken.findOne({
-      token
-    })
-    if (newToken) {
-      http.unauthorized(res, {
-        error: true,
-        msg: 'permission denied'
-      })
-    } else next()
-  } catch (error) {
-    next(error)
-  }
+  return next()
+  // if (req.user) return next()
+  // const token = req.headers.authorization
+  // try {
+  //   let newToken = await JwtToken.findOne({
+  //     token
+  //   })
+  //   if (newToken) {
+  //     http.unauthorized(res, {
+  //       error: true,
+  //       msg: 'permission denied'
+  //     })
+  //   } else next()
+  // } catch (error) {
+  //   next(error)
+  // }
 }
 
 const checkAuth = (strategy) =>
