@@ -9,8 +9,12 @@ exports.readMe = [
   isAutomobiliste,
   authenticated,
   async (req, res) => {
-    await req.user.findCommands()
-    res.json(req.user)
+    try {
+      await req.user.findCommands()
+      res.json(req.user)
+    } catch (error) {
+      internalError(res, error)
+    }
   }
 ]
 
@@ -166,7 +170,6 @@ exports.bids = [
   authenticated,
   async (req, res) => {
     try {
-      console.log('bid end ...')
       const bids = await Bid.find({ creator: req.user.id }).populate('usedCar')
       res.json(bids)
     } catch (error) {

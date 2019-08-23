@@ -1,5 +1,5 @@
 const passport = require('passport')
-const JwtToken = require('../../api/auth/jwt.model')
+// const JwtToken = require('../../api/auth/jwt.model')
 const http = require('../http')
 
 const checkFabricantAdminAuth = (req, res, next) => passport.authenticate(

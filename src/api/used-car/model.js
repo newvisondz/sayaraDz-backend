@@ -72,7 +72,8 @@ schema.methods = {
       color: this.color,
       images: this.images,
       minPrice: this.minPrice,
-      owner: this.owner
+      owner: this.owner,
+      createdAt: this.createdAt
     }
   }
 }

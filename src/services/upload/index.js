@@ -14,7 +14,8 @@ const storage = require('multer-gridfs-storage')({
 })
 
 const upload = multer({ storage })
-module.exports.upload = upload
+
+exports.upload = upload
 
 const deleteImages = (images) => new Promise((resolve, reject) => {
   let Grid = require('gridfs-stream')
@@ -27,13 +28,14 @@ const deleteImages = (images) => new Promise((resolve, reject) => {
     if (!files || files.length === 0) {
       reject(new Error('no files'))
     }
-    resolve()
     images.forEach(
       filename => gfs.remove({ filename }, console.error)
     )
+    resolve()
   })
 })
-module.exports.deleteImages = deleteImages
+
+exports.deleteImages = deleteImages
 
 const mergeImageBody = (files, bodyImages, images) => {
   bodyImages = bodyImages && JSON.parse(bodyImages)
@@ -44,7 +46,7 @@ const mergeImageBody = (files, bodyImages, images) => {
     )
   ]
 }
-module.exports.mergeImageBody = mergeImageBody
+exports.mergeImageBody = mergeImageBody
 
 module.exports.createImages = (req, res) => new Promise(
   (resolve, reject) => {
@@ -61,7 +63,7 @@ module.exports.createImages = (req, res) => new Promise(
   }
 )
 
-module.exports.updateImages = (req, res, originalImages) => new Promise(
+exports.updateImages = (req, res, originalImages) => new Promise(
   (resolve, reject) => {
     upload.array('newImages')(req, res,
       async (error) => {
