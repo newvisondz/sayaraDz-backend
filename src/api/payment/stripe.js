@@ -1,23 +1,18 @@
-const { validateAccount } = require('./validation')
+const stripe = require('stripe')(process.env.stripe || 'sk_test_EQNLM3JGIF2seT3QlNjwCIEP00DX0gMD6Q')
 
-const customAccount = {
-  country: 'US',
-  email: 'akrdsaa@manufacturer.dz',
-  individual: {
-    first_name: 'akrambenrandja',
-    last_name: 'benrandja akram',
-    ssn_last_4: '8888'
-  },
-  business_profile: {
-    url: 'https://esi.dz'
-  },
-  external_account: {
-    country: 'US',
-    currency: 'USD',
-    account_number: '000123456789',
-    routing_number: '110000000'
-  }
+exports.createAccount = (account) => stripe.accounts.create(account)
 
-}
+exports.deleteAccount = (account) => stripe.accounts.del(account)
 
-validateAccount(customAccount).then(console.log)// .catch(console.error)
+exports.charge = (charge) => stripe.charges.create(charge)
+
+// stripe.charges.create({
+//   amount: 100000,
+//   currency: 'dzd',
+//   source: 'tok_visa',
+//   transfer_data: {
+//     destination: 'acct_1FB3k9EZ5SYlS2Mo'
+//   }
+// }).then(function (charge) {
+//   console.log({ charge })
+// }).catch(err => { throw err })

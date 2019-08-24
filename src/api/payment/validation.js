@@ -32,7 +32,12 @@ const schema = joi.object().keys({
 exports.validateAccount = (account) => joi
   .validate(account, schema)
   .then(
-    value => Object.assign(value, customAccount)
+    value => {
+      const a = Object.assign(value, customAccount)
+      a.external_account = value.external_account
+      a.external_account.object = 'bank_account'
+      return a
+    }
   )
 
 // stripe.accounts.create({
@@ -65,3 +70,14 @@ exports.validateAccount = (account) => joi
 //   console.log({ account })
 //   console.error(err)
 // })
+
+// stripe.charges.create({
+//   amount: 100000,
+//   currency: 'dzd',
+//   source: 'tok_visa',
+//   transfer_data: {
+//     destination: 'acct_1FB3k9EZ5SYlS2Mo'
+//   }
+// }).then(function (charge) {
+//   console.log({ charge })
+// }).catch(err => { throw err })

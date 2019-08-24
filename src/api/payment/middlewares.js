@@ -1,9 +1,9 @@
 const { badRequest } = require('../../services/http')
 const { validateAccount } = require('./validation')
 
-exports.validateAccount = async ({ body }, res, next) => {
+exports.validateAccount = async (req, res, next) => {
   try {
-    await validateAccount(body)
+    req.paymentAccount = await validateAccount(req.body)
     next()
   } catch (error) {
     badRequest(res, error)

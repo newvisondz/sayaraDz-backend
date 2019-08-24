@@ -57,7 +57,8 @@ const AutoMobilisteSchema = new Schema({
     type: [Schema.Types.ObjectId]
   },
   picture: String,
-  paymentAccount: Schema.Types.Mixed
+  paymentAccount: Schema.Types.Mixed,
+  stripeAccountId: String
 
 }, {
   timestamps: true
@@ -88,7 +89,9 @@ AutoMobilisteSchema.methods.toJSON = function () {
     followedVersions: this.followedVersions,
     picture: this.picture,
     uid: this.uid,
-    paymentAccount: this.paymentAccount
+    paymentAccount: this.paymentAccount,
+    stripeAccountId: this.stripeAccountId
+
     // tokens: thi  s.tokens
   }
 }
