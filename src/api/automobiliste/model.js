@@ -56,7 +56,9 @@ const AutoMobilisteSchema = new Schema({
   followedVersions: {
     type: [Schema.Types.ObjectId]
   },
-  picture: String
+  picture: String,
+  paymentAccount: Schema.Types.Mixed
+
 }, {
   timestamps: true
 })
@@ -85,7 +87,8 @@ AutoMobilisteSchema.methods.toJSON = function () {
     commands: this.commands,
     followedVersions: this.followedVersions,
     picture: this.picture,
-    uid: this.uid
+    uid: this.uid,
+    paymentAccount: this.paymentAccount
     // tokens: thi  s.tokens
   }
 }
