@@ -1,5 +1,6 @@
 const mongoose = require('mongoose')
 const { Schema, model } = mongoose
+const { INITIAL } = require('./states')
 
 const schema = new Schema({
   title: {
@@ -51,6 +52,14 @@ const schema = new Schema({
   minPrice: {
     type: Number,
     required: true
+  },
+  state: {
+    type: String,
+    default: INITIAL
+  },
+  sold: {
+    type: Boolean,
+    default: false
   }
 }, {
   timestamps: true
@@ -81,5 +90,10 @@ schema.methods = {
 schema.plugin(require('mongoose-keywords'), { paths: ['title', 'manufacturer', 'model', 'version'] })
 
 const Model = model('UsedCar', schema)
+
+// Model.updateMany({}, {
+//   sold: false,
+//   state: INITIAL
+// }).then(console.log)
 
 module.exports = Model

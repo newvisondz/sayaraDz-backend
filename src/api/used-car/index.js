@@ -19,6 +19,7 @@ router.use('/:id/bids', async (req, res, next) => {
       return notFound(res, createNotFoundError('Used car', id))
     }
     req.usedCar = usedCar.id
+    req.car = usedCar
     next()
   } catch (error) {
     return notFound(res, createNotFoundError('Used car', id))

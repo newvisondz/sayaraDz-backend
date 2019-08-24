@@ -56,7 +56,7 @@ exports.list = [
       operator: '$lte'
     }
   }),
-  async ({ querymen: { query, cursor, select } }, res, next) => {
+  async ({ querymen: { query, cursor, select }, user }, res, next) => {
     try {
       const cars = await UsedVehicle.find(query, select, cursor)
       ok(res, cars)
@@ -67,9 +67,9 @@ exports.list = [
 ]
 
 exports.destroy = [
-  async ({ params: { id } }, res, next) => {
+  async ({ params: { id }, user }, res, next) => {
     try {
-      const result = await UsedVehicle.deleteOne({ _id: id })
+      const result = await UsedVehicle.deleteOne({ _id: id, owner: user.id })
       if (result.ok && result.n) {
         ok(res, result)
       } else notFound(res, createNotFoundError('Used car ', id))

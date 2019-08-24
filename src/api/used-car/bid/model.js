@@ -1,4 +1,5 @@
 const { Schema, model } = require('mongoose')
+const { INITIAL } = require('../states')
 
 const schema = new Schema({
   creator: {
@@ -15,9 +16,9 @@ const schema = new Schema({
     type: Number,
     required: true
   },
-  accepted: {
-    type: Boolean,
-    default: false
+  state: {
+    type: String,
+    default: INITIAL
   }
 }, {
   timestamps: true

@@ -2,19 +2,64 @@ const { ok, badRequest, internalError, created, notFound } = require('../../../s
 const Model = require('./model')
 const query = require('querymen').middleware
 const { createNotFoundError } = require('../../utils')
+const { PENDING, INITIAL } = require('../states')
 
 exports.create = [
-  async ({ usedCar, body, user: { id: creator } }, res) => {
+  async ({ usedCar, body, user }, res) => {
     try {
       let newCar = await new Model({
         price: body.price,
-        creator,
+        creator: user.id,
         usedCar: usedCar
       }).save()
       created(res, newCar)
     } catch (error) {
       console.error(error)
       badRequest(res, error)
+    }
+  }
+]
+
+exports.accept = [
+  async ({ car, usedCar, params: { id }, user }, res) => {
+    try {
+      if ((car.owner != user.id) || car.sold || (car.state !== INITIAL)) {
+        return notFound(res, createNotFoundError('Bidd ', id))
+      }
+      const result = await Model.update({ usedCar, _id: id }, {
+        state: PENDING
+      })
+      if (result.ok && result.n) {
+        car.state = PENDING
+        await car.save()
+        ok(res, result)
+      } else {
+        notFound(res, createNotFoundError('Bid ', id))
+      }
+    } catch (error) {
+      internalError(res, error)
+    }
+  }
+]
+
+exports.reject = [
+  async ({ car, usedCar, params: { id }, user }, res) => {
+    try {
+      if ((car.owner != user.id) || car.sold || (car.state !== PENDING)) {
+        return notFound(res, createNotFoundError('Bidd ', id))
+      }
+      const result = await Model.updateOne({ usedCar, _id: id, state: PENDING }, {
+        state: INITIAL
+      })
+      if (result.ok && result.n) {
+        car.state = INITIAL
+        await car.save()
+        ok(res, result)
+      } else {
+        notFound(res, createNotFoundError('Bid ', id))
+      }
+    } catch (error) {
+      internalError(res, error)
     }
   }
 ]

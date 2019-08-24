@@ -10,7 +10,7 @@ const customAccount = {
   }
 }
 
-const schema = joi.object().keys({
+const accountSchema = joi.object().keys({
   country: joi.string().min(2).max(2).required(),
   email: joi.string().email().required(),
   individual: joi.object().keys({
@@ -30,7 +30,7 @@ const schema = joi.object().keys({
 })
 
 exports.validateAccount = (account) => joi
-  .validate(account, schema)
+  .validate(account, accountSchema)
   .then(
     value => {
       const a = Object.assign(value, customAccount)
