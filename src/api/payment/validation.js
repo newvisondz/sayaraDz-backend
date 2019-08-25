@@ -10,6 +10,13 @@ const customAccount = {
   }
 }
 
+const externalAccountSchema = joi.object().keys({
+  country: joi.string().min(2).max(2).required(),
+  currency: joi.string().min(2).max(3).required(),
+  account_number: joi.string().min(8).required(),
+  routing_number: joi.string().min(9).max(9).required()
+}).required()
+
 const accountSchema = joi.object().keys({
   country: joi.string().min(2).max(2).required(),
   email: joi.string().email().required(),
@@ -21,12 +28,7 @@ const accountSchema = joi.object().keys({
   business_profile: {
     url: joi.string().uri().required()
   },
-  external_account: joi.object().keys({
-    country: joi.string().min(2).max(2).required(),
-    currency: joi.string().min(2).max(3).required(),
-    account_number: joi.string().min(8).required(),
-    routing_number: joi.string().min(9).max(9).required()
-  }).required()
+  external_account: externalAccountSchema
 })
 
 exports.validateAccount = (account) => joi
@@ -39,6 +41,8 @@ exports.validateAccount = (account) => joi
       return a
     }
   )
+
+exports.validateExternalAccountBody = (external) => joi.validate(external, externalAccountSchema)
 
 // stripe.accounts.create({
 //   type: 'custom',

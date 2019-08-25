@@ -19,7 +19,10 @@ const schema = new Schema({
   }],
   logo: {
     type: String
-  }
+  },
+  paymentAccount: Schema.Types.Mixed,
+  stripeAccountIds: [String],
+  validStripeAccountId: String
 }, {
   timestamps: true,
   skipVersioning: { dontVersionMe: true }

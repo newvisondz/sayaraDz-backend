@@ -4,6 +4,10 @@ exports.createAccount = (account) => stripe.accounts.create(account)
 
 exports.deleteAccount = (account) => stripe.accounts.del(account)
 
+exports.deleteExternalAccount = (account, external) => stripe.accounts.deleteExternalAccount(account, external)
+
+exports.createExternalAccount = (account, external) => stripe.accounts.createExternalAccount(account, external)
+
 exports.charge = (charge) => stripe.charges.create(charge)
 
 // stripe.charges.create({
