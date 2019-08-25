@@ -54,11 +54,8 @@ const update = [
           id,
           accepted: body.accepted
         },
-        notification: {
-          title: 'Command ' + ((!command.accepted) ? 'Rejected' : 'Accepted '),
-          body: 'id: ' + id
-        }
-      }, autom.tokens)
+        topic: autom.uid
+      })
     } catch (error) {
       console.error(error)
       internalError(res, error)

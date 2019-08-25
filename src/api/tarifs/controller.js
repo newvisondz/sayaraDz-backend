@@ -4,6 +4,7 @@ const { verifyResult, createNotFoundError } = require('../utils')
 const Model = require('./model')
 const { getTotalPrice } = require('./resolvers')
 const { validateCreateBody, validateUpdateBody } = require('./validation')
+const { notify } = require('../../services/fcm')
 
 exports.total = async ({ query: { options = [] } }, res) => {
   try {
@@ -52,7 +53,20 @@ exports.create = [
         )
       }
       const tarif = await new Model(body).save()
+
       ok(res, tarif)
+
+      if (code == 0) {
+        notify({
+          topic: 'varsion_' + document,
+          data: {
+            module: 'version_tarif',
+            amount: tarif.amount,
+            start: tarif.start,
+            end: tarif.end
+          }
+        })
+      }
     } catch (error) {
       console.error(error)
       badRequest(res, error)
