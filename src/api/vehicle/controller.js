@@ -2,10 +2,10 @@ const http = require('../../services/http')
 const Vehicle = require('./model')
 const crud = require('../../services/crud')(Vehicle, 'vehicle')
 const query = require('querymen').middleware
-const { upload, deleteImages, mergeImageBody } = require('../../services/upload')
+const { upload, deleteImages } = require('../../services/upload')
 const { getTotalPrice } = require('../tarifs/resolvers')
 
-const { findById, retrievedOptions, filterById, without } = require('../utils')
+const { findById, retrievedOptions, filterById } = require('../utils')
 
 exports.read = [
   query(Vehicle.querySchema()),
@@ -56,7 +56,8 @@ exports.create = [
   async (req, res, next) => {
     upload.array('images')(req, res, async (error) => {
       if (error) return http.internalError(res, error)
-      const { version, model, body: { color, options: newOptions } } = req
+      const { version, model, body: { color } } = req
+      const newOptions = version.options
       if (verifyOptionColors(res, color || undefined, version.colors, newOptions, version.options)) {
         return
       }
@@ -79,47 +80,47 @@ exports.create = [
   }
 ]
 
-exports.update = [
-  checkVehicle,
-  (req, res, next) => {
-    upload.array('newImages')(req, res, async error => {
-      if (error) return http.internalError(res, error)
-      const { version, body: { color, options: newOptions } } = req
-      if (verifyOptionColors(res, color || undefined, version.colors, newOptions, version.options)) {
-        return
-      }
-      const { files, body } = req
-      if (files && files.length) {
-        try {
-          const vehicle = await Vehicle.findById(req.params.id)
-          body.images = mergeImageBody(files, body.images, vehicle.images)
-          await deleteImages(without(vehicle.images, body.images))
-          vehicle.set(body)
-          await vehicle.save()
-          await http.ok(res, {
-            nModified: 1,
-            ok: 1,
-            n: 1,
-            images: body.images
-          })
-        } catch (error) {
-          http.badRequest(res, error)
-        }
-      } else {
-        try {
-          body.images = body.images && JSON.parse(body.images)
-          next()
-        } catch (error) {
-          http.badRequest(res, {
-            error: 1,
-            msg: 'images field is not valid json string'
-          })
-        }
-      }
-    })
-  },
-  crud.findAndUpdate
-]
+// exports.update = [
+//   checkVehicle,
+//   (req, res, next) => {
+//     upload.array('newImages')(req, res, async error => {
+//       if (error) return http.internalError(res, error)
+//       const { version, body: { color, options: newOptions } } = req
+//       if (verifyOptionColors(res, color || undefined, version.colors, newOptions, version.options)) {
+//         return
+//       }
+//       const { files, body } = req
+//       if (files && files.length) {
+//         try {
+//           const vehicle = await Vehicle.findById(req.params.id)
+//           body.images = mergeImageBody(files, body.images, vehicle.images)
+//           await deleteImages(without(vehicle.images, body.images))
+//           vehicle.set(body)
+//           await vehicle.save()
+//           await http.ok(res, {
+//             nModified: 1,
+//             ok: 1,
+//             n: 1,
+//             images: body.images
+//           })
+//         } catch (error) {
+//           http.badRequest(res, error)
+//         }
+//       } else {
+//         try {
+//           body.images = body.images && JSON.parse(body.images)
+//           next()
+//         } catch (error) {
+//           http.badRequest(res, {
+//             error: 1,
+//             msg: 'images field is not valid json string'
+//           })
+//         }
+//       }
+//     })
+//   },
+//   crud.findAndUpdate
+// ]
 
 exports.deleteOne = [
   checkVehicle,
