@@ -30,8 +30,9 @@ schema.methods = {
       id: this.id,
       creator: this.creator,
       usedCar: this.usedCar,
-      createdAt: this.createdAt,
-      price: this.price
+      price: this.price,
+      state: this.state,
+      createdAt: this.createdAt
     }
   }
 }

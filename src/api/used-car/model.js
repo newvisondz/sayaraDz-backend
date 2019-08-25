@@ -82,6 +82,8 @@ schema.methods = {
       images: this.images,
       minPrice: this.minPrice,
       owner: this.owner,
+      sold: this.sold,
+      state: this.state,
       createdAt: this.createdAt
     }
   }

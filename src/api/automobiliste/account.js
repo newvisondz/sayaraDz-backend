@@ -14,7 +14,6 @@ exports.updatePaymentAccount = [
       }
       const account = await createAccount(paymentAccount)
       const { id: stripeAccountId } = account
-      console.log({ account })
       user.paymentAccount = body
       user.stripeAccountId = stripeAccountId
       await user.save()

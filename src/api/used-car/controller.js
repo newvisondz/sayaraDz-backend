@@ -35,6 +35,8 @@ exports.list = [
     version: String,
     owner: String,
     color: String,
+    sold: Boolean,
+    state: String,
     minPrice: {
       type: Number,
       paths: ['minPrice'],
@@ -81,3 +83,14 @@ exports.destroy = [
     }
   }
 ]
+
+// stripe.charges.create({
+//   amount: 100000,
+//   currency: 'dzd',
+//   source: 'tok_visa',
+//   transfer_data: {
+//     destination: 'acct_1FB3k9EZ5SYlS2Mo'
+//   }
+// }).then(function (charge) {
+//   console.log({ charge })
+// }).catch(err => { throw err })
