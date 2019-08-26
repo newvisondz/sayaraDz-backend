@@ -4,10 +4,9 @@ const Schema = mongoose.Schema
 const schema = new Schema({
   amount: Number,
   accepted: {
-    type: Boolean,
-    default: false
+    type: Boolean
   },
-  processed: {
+  payed: {
     type: Boolean,
     default: false
   },
@@ -33,8 +32,8 @@ schema.methods.toJSON = function () {
     automobiliste: this.automobiliste,
     amount: this.amount,
     vehicle: this.vehicle,
-    accepted: this.accepted || false,
-    processed: this.processed || false,
+    accepted: this.accepted,
+    payed: this.payed,
     createdAt: this.createdAt,
     updatedAt: this.updatedAt
   }

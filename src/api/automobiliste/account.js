@@ -1,7 +1,7 @@
 const { isAutomobiliste, authenticated } = require('../../services/acl')
 const { validateAccount, validateExternalAccount } = require('../payment/middlewares')
-const { internalError, ok, badRequest } = require('../../services/http')
-const { createAccount, deleteExternalAccount, createExternalAccount } = require('../payment/stripe')
+const { ok, badRequest } = require('../../services/http')
+const { createAccount, createExternalAccount } = require('../payment/stripe')
 
 exports.updatePaymentAccount = [
   isAutomobiliste,

@@ -3,12 +3,15 @@ const { isAutomobiliste, isUser, authenticated } = require('../../services/acl')
 const { ok, badRequest, notFound, internalError } = require('../../services/http')
 const querymen = require('querymen')
 const Vehicle = require('../vehicle/model')
-const { validateCreateBody, validateUpdateBody } = require('./validation')
+const { validateCreateBody } = require('./validation')
 
 exports.list = [
   isAutomobiliste,
   authenticated,
-  querymen.middleware({}),
+  querymen.middleware({
+    accepted: Boolean,
+    payed: Boolean
+  }),
   async ({ user: { id: automobiliste }, querymen: { query, select, cursor } }, res) => {
     try {
       const commandes = await Commande.find({ ...query, automobiliste }, select, cursor)
@@ -27,7 +30,7 @@ exports.create = [
   async ({ body, user: { id: automobiliste } }, res) => {
     try {
       const exists = await !!Vehicle.findOne({ _id: body.vehicle }).select({ _id: 1 }).lean()
-      if (!exists) return notFound(res, createNotFoundError('vehicle', body.vehicle))
+      if (!exists || exists.ordered) return notFound(res, createNotFoundError('vehicle', body.vehicle))
       const command = await new Commande({ ...body, automobiliste }).save()
       ok(res, command)
     } catch (error) {
@@ -53,36 +56,36 @@ exports.show = [
   }]
 
 // can not be updated by automobiliste
-exports.update = [
-  isUser,
-  authenticated,
-  validateUpdateBody,
-  async ({ params: { id: _id }, body, user: { id: automobiliste } }, res) => {
-    try {
-      const result = await Commande.updateOne({ _id, automobiliste }, body)
-      if (result.ok && result.n) {
-        ok(res, result)
-      } else notFound(res, createNotFoundError('commande ', _id))
-    } catch (error) {
-      internalError(res, error)
-    }
-  }
-]
+// exports.update = [
+//   isUser,
+//   authenticated,
+//   validateUpdateBody,
+//   async ({ params: { id: _id }, body, user: { id: automobiliste } }, res) => {
+//     try {
+//       const result = await Commande.updateOne({ _id, automobiliste }, body)
+//       if (result.ok && result.n) {
+//         ok(res, result)
+//       } else notFound(res, createNotFoundError('commande ', _id))
+//     } catch (error) {
+//       internalError(res, error)
+//     }
+//   }
+// ]
 
-exports.deleteOne = [
-  isAutomobiliste,
-  authenticated,
-  async ({ params: { id: _id }, user: { id: automobiliste } }, res) => {
-    try {
-      const result = await Commande.deleteOne({ _id, automobiliste })
-      if (result.ok && result.n) {
-        ok(res, result)
-      } else notFound(res, createNotFoundError('commande ', _id))
-    } catch (error) {
-      internalError(res, error)
-    }
-  }
-]
+// exports.deleteOne = [
+//   isAutomobiliste,
+//   authenticated,
+//   async ({ params: { id: _id }, user: { id: automobiliste } }, res) => {
+//     try {
+//       const result = await Commande.deleteOne({ _id, automobiliste, payed: false })
+//       if (result.ok && result.n) {
+//         ok(res, result)
+//       } else notFound(res, createNotFoundError('commande ', _id))
+//     } catch (error) {
+//       internalError(res, error)
+//     }
+//   }
+// ]
 
 const createNotFoundError = (model, id) => ({
   error: true,

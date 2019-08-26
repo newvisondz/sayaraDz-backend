@@ -20,6 +20,14 @@ const schema = new Schema({
     type: Schema.Types.ObjectId,
     ref: 'Fabricant'
   },
+  sold: {
+    type: Boolean,
+    default: false
+  },
+  ordered: {
+    type: Boolean,
+    default: false
+  },
   options: [{
     type: Schema.Types.ObjectId,
     ref: 'Option'
@@ -27,7 +35,9 @@ const schema = new Schema({
 }, { timestamps: true })
 schema.statics.querySchema = () => ({
   ...timestamps,
-  vin: Number
+  vin: Number,
+  sold: Boolean,
+  ordered: Boolean
 })
 schema.plugin(require('mongoose-keywords'), { paths: ['vin', 'dealership'] })
 
@@ -39,7 +49,9 @@ schema.methods.toJSON = function () {
     createdAt: this.createdAt,
     updatedAt: this.updatedAt,
     color: this.color,
-    options: this.options
+    options: this.options,
+    sold: this.sold,
+    commanded: this.commanded
   }
 }
 
