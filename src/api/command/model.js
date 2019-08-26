@@ -32,7 +32,7 @@ schema.methods.toJSON = function () {
     automobiliste: this.automobiliste,
     amount: this.amount,
     vehicle: this.vehicle,
-    accepted: this.accepted,
+    accepted: this.accepted || null,
     payed: this.payed,
     createdAt: this.createdAt,
     updatedAt: this.updatedAt

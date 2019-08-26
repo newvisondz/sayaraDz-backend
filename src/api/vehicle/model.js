@@ -18,7 +18,7 @@ const schema = new Schema({
   },
   manufacturer: {
     type: Schema.Types.ObjectId,
-    ref: 'Fabricant'
+    ref: 'fabricant'
   },
   sold: {
     type: Boolean,

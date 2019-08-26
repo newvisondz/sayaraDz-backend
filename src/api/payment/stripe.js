@@ -8,7 +8,14 @@ exports.deleteExternalAccount = (account, external) => stripe.accounts.deleteExt
 
 exports.createExternalAccount = (account, external) => stripe.accounts.createExternalAccount(account, external)
 
-exports.charge = (charge) => stripe.charges.create(charge)
+exports.charge = (source, amount, destination) => stripe.charges.create({
+  amount,
+  source,
+  currency: 'dzd',
+  transfer_data: {
+    destination
+  }
+})
 
 // stripe.charges.create({
 //   amount: 100000,

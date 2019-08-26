@@ -1,5 +1,5 @@
 const { internalError, notFound } = require('../../services/http')
-const { listManufacturerCommands } = require('./resolvers')
+const { listManufacturerCommands, findCommandById } = require('./resolvers')
 const joi = require('@hapi/joi')
 const { validate } = require('../utils/validation')
 const { Router } = require('express')
@@ -33,11 +33,14 @@ const update = [
   validate(updateBodySchema),
   async ({ manufacturer, body, params: { id } }, res, next) => {
     try {
-      const commands = await listManufacturerCommands(manufacturer.id)
+      // const commands = await listManufacturerCommands(manufacturer.id)
 
-      const command = commands.find(
-        c => c.id == id
-      )
+      // const command = commands.find(
+      //   c => c.id == id
+      // )
+      const command = await findCommandById(id)
+
+      console.log({ command })
       if (!command || (command && command.payed)) {
         return notFound(res, createNotFoundError('command', id))
       }
@@ -52,7 +55,9 @@ const update = [
         ordered: body.accepted
       })
       res.json(command)
+
       const autom = await Automobiliste.findById(command.automobiliste)
+
       notify({
         data: {
           module: 'command',

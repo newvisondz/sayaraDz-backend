@@ -20,3 +20,5 @@ exports.listManufacturerCommands = async (id) => {
     throw error
   }
 }
+
+exports.findCommandById = (id) => Model.findById(id)

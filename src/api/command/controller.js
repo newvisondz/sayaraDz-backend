@@ -3,8 +3,8 @@ const { isAutomobiliste, isUser, authenticated } = require('../../services/acl')
 const { ok, badRequest, notFound, internalError } = require('../../services/http')
 const querymen = require('querymen')
 const Vehicle = require('../vehicle/model')
-const { validateCreateBody } = require('./validation')
-
+const { validateCreateBody, validatePaymentBody } = require('./validation')
+const { charge } = require('../payment/stripe')
 exports.list = [
   isAutomobiliste,
   authenticated,
@@ -14,6 +14,7 @@ exports.list = [
   }),
   async ({ user: { id: automobiliste }, querymen: { query, select, cursor } }, res) => {
     try {
+      console.log({ automobiliste })
       const commandes = await Commande.find({ ...query, automobiliste }, select, cursor)
       const count = await Commande.countDocuments({ ...query, automobiliste })
       ok(res, { commandes, count })
@@ -53,7 +54,34 @@ exports.show = [
     } catch (error) {
       internalError(res, error)
     }
-  }]
+  }
+]
+
+exports.pay = [
+  isAutomobiliste,
+  authenticated,
+  validatePaymentBody,
+  async ({ params: { id }, body: { token }, user }, res) => {
+    try {
+      const command = await Commande.findById(id)
+      console.log({ command })
+      if (!command || (command && (!command.accepted || command.payed))) {
+        return notFound(res, createNotFoundError('commande ', id))
+      }
+      const vehicle = await Vehicle.findById(command.vehicle).populate('manufacturer')
+      await charge(token, command.amount, vehicle.manufacturer.validStripeAccountId)
+      command.payed = true
+      vehicle.sold = true
+      command.save()
+      await vehicle.save()
+      res.json({
+        success: true
+      })
+    } catch (error) {
+      internalError(res, error)
+    }
+  }
+]
 
 // can not be updated by automobiliste
 // exports.update = [
