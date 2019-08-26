@@ -58,8 +58,8 @@ const AutoMobilisteSchema = new Schema({
   },
   picture: String,
   paymentAccount: Schema.Types.Mixed,
-  stripeAccountId: String
-
+  stripeAccountIds: [String],
+  validStripeAccountId: String
 }, {
   timestamps: true
 })

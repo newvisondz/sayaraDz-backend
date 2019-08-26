@@ -7,7 +7,7 @@ exports.updatePaymentAccount = [
   isAdmin,
   authenticated,
   validateAccount,
-  async ({ manufacturer, body, user, paymentAccount }, res) => {
+  async ({ manufacturer, body, paymentAccount }, res) => {
     try {
       const account = await createAccount(paymentAccount)
       const { id: stripeAccountId } = account
@@ -31,7 +31,7 @@ exports.updatePaymentExternalAccount = [
   isAdmin,
   authenticated,
   validateExternalAccount,
-  async ({ manufacturer, body, user, paymentAccount }, res) => {
+  async ({ manufacturer, body }, res) => {
     try {
       const { validStripeAccountId } = manufacturer
       if (!validStripeAccountId) {
