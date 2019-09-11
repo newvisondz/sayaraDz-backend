@@ -1,10 +1,24 @@
 const express = require('express')
 const router = express.Router()
-const { bids, readMe, update, follow, unfollow, showProfile, updateProfilePicture } = require('./controller')
-const { updatePaymentAccount, updatePaymentExternalAccount } = require('./account')
+const {
+  bids,
+  readMe,
+  update,
+  follow,
+  unfollow,
+  showProfile,
+  updateProfilePicture,
+  usedCars
+} = require('./controller')
+const {
+  updatePaymentAccount,
+  updatePaymentExternalAccount
+} = require('./account')
 
 router.get('/me', readMe)
 router.get('/me/bids', bids)
+router.get('/me/usedCars', usedCars)
+
 router.put('/me', update)
 router.put('/me/payment-account', updatePaymentAccount)
 router.put('/me/external-payment-account', updatePaymentExternalAccount)

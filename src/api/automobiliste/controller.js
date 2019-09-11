@@ -1,9 +1,16 @@
 const { isAutomobiliste, authenticated } = require('../../services/acl')
-const { ok, notFound, internalError, conflict, badRequest } = require('../../services/http')
+const {
+  ok,
+  notFound,
+  internalError,
+  conflict,
+  badRequest
+} = require('../../services/http')
 const { createNotFoundError } = require('../utils/index')
 const Model = require('./model')
 const { upload, deleteImages } = require('../../services/upload')
 const Bid = require('../used-car/bid/model')
+const UsedCar = require('../used-car/model')
 
 exports.readMe = [
   isAutomobiliste,
@@ -44,9 +51,7 @@ exports.update = [
       delete body.tokens
       user.set(body)
       if (body.token) {
-        const token = user.tokens.find(
-          t => body.token == t
-        )
+        const token = user.tokens.find(t => body.token == t)
         if (!token) {
           user.tokens.push(body.token)
         }
@@ -68,7 +73,7 @@ exports.updateProfilePicture = [
   isAutomobiliste,
   authenticated,
   async (req, res) => {
-    upload.single('picture')(req, res, async (err) => {
+    upload.single('picture')(req, res, async err => {
       if (err) return badRequest(res, err)
       try {
         if (req.file) {
@@ -91,7 +96,8 @@ exports.updateProfilePicture = [
           } else {
             badRequest(res, {
               error: true,
-              message: 'no action: user picture field and request picture are nulls'
+              message:
+                'no action: user picture field and request picture are nulls'
             })
           }
         }
@@ -118,9 +124,7 @@ exports.follow = [
       if (!model) {
         return notFound(res, createNotFoundError('version', version))
       }
-      const isFollowing = user.followedVersions.find(
-        v => v == version
-      )
+      const isFollowing = user.followedVersions.find(v => v == version)
       if (isFollowing) {
         return conflict(res, {
           success: false,
@@ -143,15 +147,11 @@ exports.unfollow = [
   authenticated,
   async ({ user, params: { version } }, res, next) => {
     try {
-      const followedVersion = user.followedVersions.find(
-        v => v == version
-      )
+      const followedVersion = user.followedVersions.find(v => v == version)
       if (!followedVersion) {
         return notFound(res, createNotFoundError('followed version', version))
       }
-      user.followedVersions = user.followedVersions.filter(
-        v => v != version
-      )
+      user.followedVersions = user.followedVersions.filter(v => v != version)
       await user.save()
       ok(res, {
         success: true,
@@ -172,6 +172,21 @@ exports.bids = [
     try {
       const bids = await Bid.find({ creator: req.user.id }).populate('usedCar')
       res.json(bids)
+    } catch (error) {
+      console.error(error)
+      res.json(error)
+    }
+  }
+]
+
+exports.usedCars = [
+  isAutomobiliste,
+  authenticated,
+  async (req, res) => {
+    try {
+      // const bids = await Bid.find({ creator: req.user.id }).populate('usedCar')
+      const usedCars = await UsedCar.find({ owner: req.user.id })
+      res.json(usedCars)
     } catch (error) {
       console.error(error)
       res.json(error)
