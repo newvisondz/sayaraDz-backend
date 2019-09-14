@@ -8,6 +8,9 @@ const storage = multer.memoryStorage()
 const Vehicle = require('../vehicle/model')
 const mongoose = require('mongoose')
 const Model = require('../model/model')
+const { createBodySchema } = require('../tarifs/validation')
+const Tarif = require('../tarifs')
+const joi = require('@hapi/joi')
 
 const upload = multer({
   storage: storage,
@@ -40,20 +43,20 @@ exports.uploadStockFile = (req, res, next) => {
         })
       )
       session.startTransaction()
-      const data = await Vehicle.insertMany(stock, { session })
       const versions = [...new Set(json.map(d => d.version))]
       const result = await Model.find(
         {
           'versions._id': [...versions]
         }).lean()
+
       const vins = [...new Set(json.map(d => d.vin))]
+
       if ((result.length < versions.length) || (vins.length < json.length)) {
         // eslint-disable-next-line no-throw-literal
-        throw {
-          error: true,
-          code: 'invalid_data'
-        }
+        throw new Error()
       }
+      const data = await Vehicle.insertMany(stock, { session })
+
       for (let index = 0; index < data.length; index++) {
         const vehicle = data[index]
         if (vehicle.color) {
@@ -79,7 +82,40 @@ exports.uploadStockFile = (req, res, next) => {
     } catch (error) {
       console.error(error)
       session.abortTransaction()
-      badRequest(res, error)
+      badRequest(res, {
+        error: true,
+        code: 'invalid_data'
+      })
+    }
+  }
+  )
+}
+
+exports.uploadTarifs = (req, res, next) => {
+  upload.single('tarifs')(req, res, async (err) => {
+    if (err) return badRequest(res, err)
+    const session = await mongoose.startSession()
+
+    try {
+      const json = await csv().fromStream(streamifier.createReadStream(req.file.buffer))
+      session.startTransaction()
+      // const versions = [...new Set(json.filter(d => d.code == 0).map(d => d.version))]
+      // const options = [...new Set(json.filter(d => d.code == 1).map(d => d.option))]
+      // const colors = [...new Set(json.filter(d => d.code == 2).map(d => d.color))]
+
+      for (let doc of json) {
+        await joi.validate(doc, createBodySchema)
+      }
+      const data = await Tarif.insertMany(json, { session })
+      session.commitTransaction()
+      created(res, data)
+    } catch (error) {
+      console.error(error)
+      session.abortTransaction()
+      badRequest(res, {
+        error: true,
+        code: 'invalid_data'
+      })
     }
   }
   )

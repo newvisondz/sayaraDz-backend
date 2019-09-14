@@ -19,6 +19,6 @@ const updateBodySchema = joi.object().keys({
   start: joi.date(),
   end: joi.date().min(moment().format('MM-DD-YYYY'))
 })
-
+exports.createBodySchema = createBodySchema
 exports.validateCreateBody = validate(createBodySchema)
 exports.validateUpdateBody = validate(updateBodySchema)
