@@ -1,4 +1,4 @@
-const { internalError, notFound } = require('../../services/http')
+const { internalError, notFound, created, ok, badRequest } = require('../../services/http')
 const { findCommandById } = require('./resolvers')
 const joi = require('@hapi/joi')
 const { validate } = require('../utils/validation')
@@ -9,20 +9,29 @@ const Automobiliste = require('../automobiliste/model')
 const { createNotFoundError } = require('../utils')
 const Vehicle = require('../vehicle/model')
 const Command = require('./model')
+const querymen = require('querymen')
 
 const list = [
   isUser,
   authenticated,
-  async ({ manufacturer }, res, next) => {
+  querymen.middleware({
+    accepted: Boolean,
+    payed: Boolean
+  }),
+  async ({ manufacturer, querymen: { query, select, cursor } }, res, next) => {
     try {
-      const commands = await Command.find({ manufacturer: manufacturer.id })
-        .populate('automobiliste', 'id firstName lastName phone address')
+      const commands = await Command.find(
+        { ...query, manufacturer: manufacturer.id },
+        select,
+        cursor
+      ).populate('automobiliste', 'id firstName lastName phone address')
         .populate('vehicle', 'id images')
-      console.log(commands)
-      res.json({ commands })
+        .exec()
+      const count = await Command.count(query)
+      ok(res, { commands, count })
     } catch (error) {
       console.error(error)
-      internalError(res, error)
+      badRequest(res, error)
     }
   }
 ]
@@ -43,6 +52,7 @@ const update = [
       //   c => c.id == id
       // )
       const command = await findCommandById(id, user.manufacturer)
+
       const oldCommand = await Command.findOne({
         vehicle: command.vehicle,
         accepted: true

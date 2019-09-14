@@ -24,10 +24,11 @@ exports.list = [
     payed: Boolean
   }),
   async (
-    { user: { id: automobiliste }, querymen: { query, select, cursor } },
+    { user, querymen: { query, select, cursor } },
     res
   ) => {
     try {
+      const automobiliste = user.id
       console.log({ automobiliste })
       const commandes = await Commande.find(
         { ...query, automobiliste },
@@ -35,7 +36,7 @@ exports.list = [
         cursor
       )
       const count = await Commande.countDocuments({ ...query, automobiliste })
-      created(res, { commandes, count })
+      ok(res, { commandes, count })
     } catch (error) {
       conflict(res, error)
     }
@@ -55,7 +56,7 @@ exports.create = [
         return notFound(res, createNotFoundError('vehicle', body.vehicle))
       }
       const command = await new Commande({ ...body, automobiliste, manufacturer: vehicle.manufacturer }).save()
-      ok(res, command)
+      created(res, command)
     } catch (error) {
       console.error(error)
       conflict(res, error)
