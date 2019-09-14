@@ -4,7 +4,8 @@ const Schema = mongoose.Schema
 const schema = new Schema({
   amount: Number,
   accepted: {
-    type: Boolean
+    type: Boolean,
+    default: null
   },
   payed: {
     type: Boolean,
@@ -19,6 +20,11 @@ const schema = new Schema({
     type: Schema.Types.ObjectId,
     ref: 'Vehicle',
     required: true
+  },
+  manufacturer: {
+    type: String,
+    ref: 'fabricant',
+    required: true
   }
 }, {
   timestamps: true
@@ -32,7 +38,7 @@ schema.methods.toJSON = function () {
     automobiliste: this.automobiliste,
     amount: this.amount,
     vehicle: this.vehicle,
-    accepted: this.accepted || null,
+    accepted: this.accepted,
     payed: this.payed,
     createdAt: this.createdAt,
     updatedAt: this.updatedAt

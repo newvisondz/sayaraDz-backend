@@ -1,10 +1,21 @@
 const Commande = require('./model')
-const { isAutomobiliste, isUser, authenticated } = require('../../services/acl')
-const { ok, badRequest, notFound, internalError } = require('../../services/http')
+const {
+  isAutomobiliste,
+  isUser,
+  authenticated
+} = require('../../services/acl')
+const {
+  ok,
+  notFound,
+  internalError,
+  conflict,
+  created
+} = require('../../services/http')
 const querymen = require('querymen')
 const Vehicle = require('../vehicle/model')
 const { validateCreateBody, validatePaymentBody } = require('./validation')
 const { charge } = require('../payment/stripe')
+
 exports.list = [
   isAutomobiliste,
   authenticated,
@@ -12,14 +23,21 @@ exports.list = [
     accepted: Boolean,
     payed: Boolean
   }),
-  async ({ user: { id: automobiliste }, querymen: { query, select, cursor } }, res) => {
+  async (
+    { user: { id: automobiliste }, querymen: { query, select, cursor } },
+    res
+  ) => {
     try {
       console.log({ automobiliste })
-      const commandes = await Commande.find({ ...query, automobiliste }, select, cursor)
+      const commandes = await Commande.find(
+        { ...query, automobiliste },
+        select,
+        cursor
+      )
       const count = await Commande.countDocuments({ ...query, automobiliste })
-      ok(res, { commandes, count })
+      created(res, { commandes, count })
     } catch (error) {
-      badRequest(res, error)
+      conflict(res, error)
     }
   }
 ]
@@ -30,13 +48,17 @@ exports.create = [
   validateCreateBody,
   async ({ body, user: { id: automobiliste } }, res) => {
     try {
-      const exists = await !!Vehicle.findOne({ _id: body.vehicle }).select({ _id: 1 }).lean()
-      if (!exists || exists.ordered) return notFound(res, createNotFoundError('vehicle', body.vehicle))
-      const command = await new Commande({ ...body, automobiliste }).save()
+      const vehicle = await Vehicle.findOne({ _id: body.vehicle })
+      // .select({ _id: 1, manufacturer: 1 })
+      console.log({ vehicle })
+      if (!vehicle || vehicle.ordered || vehicle.sold) {
+        return notFound(res, createNotFoundError('vehicle', body.vehicle))
+      }
+      const command = await new Commande({ ...body, automobiliste, manufacturer: vehicle.manufacturer }).save()
       ok(res, command)
     } catch (error) {
       console.error(error)
-      badRequest(res, error)
+      conflict(res, error)
     }
   }
 ]
@@ -68,11 +90,17 @@ exports.pay = [
       if (!command || (command && (!command.accepted || command.payed))) {
         return notFound(res, createNotFoundError('commande ', id))
       }
-      const vehicle = await Vehicle.findById(command.vehicle).populate('manufacturer')
-      await charge(token, command.amount, vehicle.manufacturer.validStripeAccountId)
+      const vehicle = await Vehicle.findById(command.vehicle).populate(
+        'manufacturer'
+      )
+      await charge(
+        token,
+        command.amount,
+        vehicle.manufacturer.validStripeAccountId
+      )
       command.payed = true
       vehicle.sold = true
-      command.save()
+      await command.save()
       await vehicle.save()
       res.json({
         success: true

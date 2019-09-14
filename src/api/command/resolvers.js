@@ -21,4 +21,4 @@ exports.listManufacturerCommands = async (id) => {
   }
 }
 
-exports.findCommandById = (id) => Model.findById(id)
+exports.findCommandById = (_id, manufacturer) => Model.findOne({ _id, manufacturer, payed: false })

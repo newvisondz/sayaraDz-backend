@@ -1,5 +1,5 @@
 const { internalError, notFound } = require('../../services/http')
-const { listManufacturerCommands, findCommandById } = require('./resolvers')
+const { findCommandById } = require('./resolvers')
 const joi = require('@hapi/joi')
 const { validate } = require('../utils/validation')
 const { Router } = require('express')
@@ -8,13 +8,17 @@ const { notify } = require('../../services/fcm')
 const Automobiliste = require('../automobiliste/model')
 const { createNotFoundError } = require('../utils')
 const Vehicle = require('../vehicle/model')
+const Command = require('./model')
 
 const list = [
   isUser,
   authenticated,
   async ({ manufacturer }, res, next) => {
     try {
-      const commands = await listManufacturerCommands(manufacturer.id)
+      const commands = await Command.find({ manufacturer: manufacturer.id })
+        .populate('automobiliste', 'id firstName lastName phone address')
+        .populate('vehicle', 'id images')
+      console.log(commands)
       res.json({ commands })
     } catch (error) {
       console.error(error)
@@ -31,17 +35,20 @@ const update = [
   isUser,
   authenticated,
   validate(updateBodySchema),
-  async ({ manufacturer, body, params: { id } }, res, next) => {
+  async ({ manufacturer, body, params: { id }, user }, res, next) => {
     try {
       // const commands = await listManufacturerCommands(manufacturer.id)
 
       // const command = commands.find(
       //   c => c.id == id
       // )
-      const command = await findCommandById(id)
+      const command = await findCommandById(id, user.manufacturer)
+      const oldCommand = await Command.findOne({
+        vehicle: command.vehicle,
+        accepted: true
+      }).nin('_id', [command.id])
 
-      console.log({ command })
-      if (!command || (command && command.payed)) {
+      if (oldCommand || !command || (command && command.payed)) {
         return notFound(res, createNotFoundError('command', id))
       }
 

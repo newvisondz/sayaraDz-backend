@@ -17,7 +17,7 @@ const schema = new Schema({
     ref: 'Color'
   },
   manufacturer: {
-    type: Schema.Types.ObjectId,
+    type: String,
     ref: 'fabricant'
   },
   sold: {
