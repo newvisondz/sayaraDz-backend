@@ -1,6 +1,7 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 const ManufacturerUser = require('./user/model')
+// const MModel = require('../model/model')
 
 const schema = new Schema({
   _id: {
@@ -52,3 +53,21 @@ schema.plugin(require('mongoose-keywords'), { paths: ['brand'] })
 
 const model = mongoose.model('fabricant', schema)
 module.exports = model
+
+// model.find()
+//   .then(
+//     brands => {
+//       brands.forEach(
+//         brand => {
+//           // console.log(brand.models)
+//           MModel.update({
+//             _id: brand.models
+//           },
+//           {
+//             manufacturer: brand.id
+//           })
+//             .then(console.log)
+//         }
+//       )
+//     }
+//   )

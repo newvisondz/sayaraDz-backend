@@ -11,6 +11,10 @@ const schema = new Schema({
     required: true,
     trim: true
   },
+  manufacturer: {
+    type: String,
+    ref: 'fabricant'
+  },
   options: [option],
   versions: [version],
   colors: [color],

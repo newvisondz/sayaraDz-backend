@@ -11,6 +11,7 @@ const Model = require('../model/model')
 const { createBodySchema } = require('../tarifs/validation')
 const Tarif = require('../tarifs')
 const joi = require('@hapi/joi')
+const _ = require('underscore')
 
 const upload = multer({
   storage: storage,
@@ -38,20 +39,30 @@ exports.uploadStockFile = (req, res, next) => {
       const stock = json.map(
         doc => ({
           ...doc,
-          manufacturer: 'Suzuku',
+          manufacturer: req.user.manufacturer,
           color: (doc.color.name && doc.color.value && mongoose.Types.ObjectId()) || undefined
         })
       )
       session.startTransaction()
       const versions = [...new Set(json.map(d => d.version))]
+      console.log(req.user.manufacturer)
       const result = await Model.find(
         {
-          'versions._id': [...versions]
-        }).lean()
+          'versions._id': [...versions],
+          manufacturer: req.user.manufacturer
+        }).select('versions._id')
+      const resultVersions = _.flatten(result.map(
+        m => m.versions.map(v => v.id)
+      ))
 
+      for (let v of versions) {
+        if (!resultVersions.includes(v)) {
+          throw new Error()
+        }
+      }
       const vins = [...new Set(json.map(d => d.vin))]
 
-      if ((result.length < versions.length) || (vins.length < json.length)) {
+      if ((vins.length < json.length)) {
         // eslint-disable-next-line no-throw-literal
         throw new Error()
       }
@@ -62,7 +73,8 @@ exports.uploadStockFile = (req, res, next) => {
         if (vehicle.color) {
           await Model.updateOne(
             {
-              'versions._id': json[index].version
+              'versions._id': json[index].version,
+              manufacturer: req.user.manufacturer
             },
             {
               $push: {

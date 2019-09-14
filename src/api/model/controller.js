@@ -59,11 +59,12 @@ exports.create = [
         })
       })
   },
-  async ({ body: { options = '[]', colors = '[]' }, body }, res, next) => {
+  async ({ user, body: { options = '[]', colors = '[]' }, body }, res, next) => {
     body.options = []
     try {
       body.options = storedOptions(JSON.parse(options))
       body.colors = JSON.parse(colors)
+      body.manufacturer = user.manufacturer
       next()
     } catch (error) {
       console.log(error)

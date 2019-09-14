@@ -9,21 +9,21 @@ const extensions = ['png', 'jpg', 'jpeg', 'bmp', 'svg']
 const storage = require('multer-gridfs-storage')({
   url: process.env.mongoUrl,
   file: (req, file) => {
-    return {
-      filename: uuid(file.originalname)
-    }
-
-    // if (file.mimetype.includes('image')) {
-    //   return {
-    //     filename: uuid(file.originalname)
-    //   }
-    // } else {
-    //   // eslint-disable-next-line no-throw-literal
-    //   throw {
-    //     error: true,
-    //     msg: 'format not accepted'
-    //   }
+    // return {
+    //   filename: uuid(file.originalname)
     // }
+
+    if (file.mimetype.includes('image')) {
+      return {
+        filename: uuid(file.originalname)
+      }
+    } else {
+      // eslint-disable-next-line no-throw-literal
+      throw {
+        error: true,
+        msg: 'format not accepted'
+      }
+    }
   },
   filename: (req, file, next) => {
     const ext = file.originalname.split('.').pop()
