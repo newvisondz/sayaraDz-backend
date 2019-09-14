@@ -28,6 +28,8 @@ const upload = multer({
 exports.uploadStockFile = (req, res, next) => {
   upload.single('stock')(req, res, async (err) => {
     if (err) return badRequest(res, err)
+    const session = await mongoose.startSession()
+
     try {
       const json = await csv().fromStream(streamifier.createReadStream(req.file.buffer))
       const stock = json.map(
@@ -37,14 +39,13 @@ exports.uploadStockFile = (req, res, next) => {
           color: (doc.color.name && doc.color.value && mongoose.Types.ObjectId()) || undefined
         })
       )
-      const data = await Vehicle.insertMany(stock)
+      session.startTransaction()
+      const data = await Vehicle.insertMany(stock, { session })
       const versions = [...new Set(json.map(d => d.version))]
       const result = await Model.find(
         {
           'versions._id': [...versions]
-        })
-        .select({ _id: 1 })
-        .lean()
+        }).lean()
       const vins = [...new Set(json.map(d => d.vin))]
       if ((result.length < versions.length) || (vins.length < json.length)) {
         // eslint-disable-next-line no-throw-literal
@@ -69,12 +70,15 @@ exports.uploadStockFile = (req, res, next) => {
                 'versions.$.vehicles': vehicle.id
               }
             }
+            , { session }
           )
         }
       }
+      session.commitTransaction()
       created(res, data)
     } catch (error) {
       console.error(error)
+      session.abortTransaction()
       badRequest(res, error)
     }
   }
