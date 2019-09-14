@@ -5,7 +5,8 @@ const Schema = mongoose.Schema
 const schema = new Schema({
   vin: {
     type: Number,
-    required: true
+    required: true,
+    unique: true
   },
   dealership: {
     type: String,

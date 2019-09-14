@@ -32,6 +32,10 @@ schema.plugin(require('mongoose-keywords'), { paths: ['name'] })
 
 const model = mongoose.model('Model', schema)
 
+// model.find({
+//   'versions._id': '5d206bf96fffac001957a664'
+// }).select('versions').then(console.log).catch(console.error)
+
 module.exports = model
 
 // model.updateOne({ _id: '5c9e433f1b816d541b172ec2' }, {

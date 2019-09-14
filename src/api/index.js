@@ -11,6 +11,7 @@ const router = new Router()
 const querymen = require('querymen')
 const login = require('./login')
 const publicImages = require('./public')
+const stock = require('./stock')
 
 router.use('/', login)
 router.use('/admins', admin)
@@ -23,5 +24,6 @@ router.use('/auth', oauth)
 router.use('/me', me)
 router.use(querymen.errorHandler())
 router.use('/public', publicImages)
+router.use('/stock', stock)
 
 module.exports = router
