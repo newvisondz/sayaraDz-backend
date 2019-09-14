@@ -1,4 +1,4 @@
-const { internalError, notFound, created, ok, badRequest } = require('../../services/http')
+const { internalError, notFound, ok, badRequest } = require('../../services/http')
 const { findCommandById } = require('./resolvers')
 const joi = require('@hapi/joi')
 const { validate } = require('../utils/validation')

@@ -2,14 +2,41 @@ const multer = require('multer')
 const uuid = require('uuid/v4')
 const { without } = require('../../api/utils')
 const mongoose = require('mongoose')
+const path = require('path')
+
+const extensions = ['png', 'jpg', 'jpeg', 'bmp', 'svg']
 
 const storage = require('multer-gridfs-storage')({
   url: process.env.mongoUrl,
-
+  file: (req, file) => {
+    if (file.mimetype.includes('image')) {
+      return {
+        filename: uuid(file.originalname)
+      }
+    } else {
+      // eslint-disable-next-line no-throw-literal
+      throw {
+        error: true,
+        msg: 'format not accepted'
+      }
+    }
+  },
   filename: (req, file, next) => {
     const ext = file.originalname.split('.').pop()
     const name = uuid(file.originalname) + '.' + ext
+    console.log({ file })
     next(null, name)
+  },
+  fileFilter: (req, file, cb) => {
+    console.log(path.extname(file.originalname))
+    if (!extensions.include(path.extname(file.originalname))) {
+      // eslint-disable-next-line standard/no-callback-literal
+      return cb({
+        error: true,
+        msg: 'file not acceted'
+      })
+    }
+    cb(null, true)
   }
 })
 
