@@ -67,7 +67,6 @@ exports.create = [
           image => '/public/' + image.filename
         )
         body.version = version.id
-
         body.manufacturer = req.manufacturer.id
         delete body.sold
         delete body.ordered
@@ -141,7 +140,7 @@ exports.deleteOne = [
   }
 ]
 
-async function checkVehicle ({ version, params: { id } }, res, next) {
+async function checkVehicle({ version, params: { id } }, res, next) {
   const includes = version.vehicles.find(
     vehicle => vehicle == id
   )
@@ -152,7 +151,7 @@ async function checkVehicle ({ version, params: { id } }, res, next) {
   })
 }
 
-function verify (array1, array2) {
+function verify(array1, array2) {
   for (let item1 of array1) {
     if (array2.find(
       i => i == item1
@@ -162,7 +161,7 @@ function verify (array1, array2) {
   }
 }
 
-function verifyOptionColors (res, color, colors, newOptions, options) {
+function verifyOptionColors(res, color, colors, newOptions, options) {
   if (color) {
     if (verify([color], colors)) {
       http.badRequest(res, {
@@ -185,7 +184,8 @@ function verifyOptionColors (res, color, colors, newOptions, options) {
 
 exports.check = async ({ version, query: { options = [] } }, res) => {
   try {
-    const vehicles = await Vehicle.find({ options: { $in: version.options }, sold: false, ordered: false }, '_id')
+    console.log('options ... ', version.options)
+    const vehicles = await Vehicle.find({ version: version.id, sold: false, ordered: false }, '_id')
     console.log({ vehicles })
     res.json(
       {
