@@ -90,7 +90,9 @@ exports.uploadStockFile = (req, res, next) => {
         }
       }
       session.commitTransaction()
-      created(res, data)
+      created(res, {
+        success: true
+      })
     } catch (error) {
       console.error(error)
       session.abortTransaction()
