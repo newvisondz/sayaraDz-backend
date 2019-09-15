@@ -2,7 +2,8 @@ const joi = require('@hapi/joi')
 const { validate } = require('../utils/validation')
 
 const createBodySchema = joi.object().keys({
-  vehicle: joi.string().required()
+  vehicle: joi.string().required(),
+  amount: joi.number().min(0)
 })
 
 const updateBodySchema = joi.object().keys({

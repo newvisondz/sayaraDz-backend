@@ -15,6 +15,7 @@ const querymen = require('querymen')
 const Vehicle = require('../vehicle/model')
 const { validateCreateBody, validatePaymentBody } = require('./validation')
 const { charge } = require('../payment/stripe')
+const mongoose = require('mongoose')
 
 exports.list = [
   isAutomobiliste,
@@ -51,11 +52,21 @@ exports.create = [
     try {
       const vehicle = await Vehicle.findOne({ _id: body.vehicle })
       // .select({ _id: 1, manufacturer: 1 })
-      console.log({ vehicle })
+      // console.log({ vehicle })
       if (!vehicle || vehicle.ordered || vehicle.sold) {
         return notFound(res, createNotFoundError('vehicle', body.vehicle))
       }
-      const command = await new Commande({ ...body, automobiliste, manufacturer: vehicle.manufacturer }).save()
+      console.log({
+        ...body,
+        automobiliste,
+        manufacturer: vehicle.manufacturer
+      })
+      const command = await new Commande({
+        ...body,
+        automobiliste,
+        manufacturer: vehicle.manufacturer
+
+      }).save()
       created(res, command)
     } catch (error) {
       console.error(error)
@@ -85,7 +96,9 @@ exports.pay = [
   authenticated,
   validatePaymentBody,
   async ({ params: { id }, body: { token }, user }, res) => {
+    const session = await mongoose.startSession()
     try {
+      session.startTransaction()
       const command = await Commande.findById(id)
       console.log({ command })
       if (!command || (command && (!command.accepted || command.payed))) {
@@ -101,12 +114,15 @@ exports.pay = [
       )
       command.payed = true
       vehicle.sold = true
-      await command.save()
-      await vehicle.save()
+      await command.save({ session })
+      await vehicle.save({ session })
+      session.commitTransaction()
       res.json({
         success: true
       })
     } catch (error) {
+      session.abortTransaction()
+
       internalError(res, error)
     }
   }

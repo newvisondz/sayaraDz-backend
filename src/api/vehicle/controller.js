@@ -55,18 +55,22 @@ exports.show = [
 exports.create = [
   async (req, res, next) => {
     upload.array('images')(req, res, async (error) => {
-      if (error) return http.internalError(res, error)
-      const { version, model, body: { color } } = req
-      const newOptions = version.options
-      if (verifyOptionColors(res, color || undefined, version.colors, newOptions, version.options)) {
-        return
-      }
-      const { files, body } = req
-      body.images = files.map(
-        image => '/public/' + image.filename
-      )
       try {
+        if (error) return http.internalError(res, error)
+        const { version, model, body: { color } } = req
+        const newOptions = version.options
+        if (verifyOptionColors(res, color || undefined, version.colors, newOptions, version.options)) {
+          return
+        }
+        const { files, body } = req
+        body.images = files && files.map(
+          image => '/public/' + image.filename
+        )
+        body.version = version.id
+
         body.manufacturer = req.manufacturer.id
+        delete body.sold
+        delete body.ordered
         const vehicle = await new Vehicle(body).save()
         version.vehicles.push(vehicle.id)
         await model.save()

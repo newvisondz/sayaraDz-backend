@@ -4,6 +4,7 @@ const version = require('../version/model')
 const color = require('../color/model')
 const { retrievedOptions } = require('../utils')
 const Schema = mongoose.Schema
+// const Vehicle = require('../vehicle/model')
 
 const schema = new Schema({
   name: {
@@ -50,3 +51,19 @@ module.exports = model
 //     { name: 'rer', value: 'opo' }
 //   ]
 // }).then(console.log)
+
+// model.find().then(
+//   models => {
+//     models.forEach(
+//       model => model.versions.forEach(
+//         version => {
+//           // console.log(version.vehicles)
+//           Vehicle.updateMany({
+//             _id: version.vehicles
+//           }, {
+//             version: version.id
+//           }).then(res => console.log({ ok: res.ok, n: res.n }))
+//         }
+//       ))
+//   }
+// )

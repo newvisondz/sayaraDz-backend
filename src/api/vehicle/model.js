@@ -29,6 +29,10 @@ const schema = new Schema({
     type: Boolean,
     default: false
   },
+  version: {
+    type: Schema.Types.ObjectId,
+    ref: 'Version'
+  },
   options: [{
     type: Schema.Types.ObjectId,
     ref: 'Option'
@@ -52,7 +56,9 @@ schema.methods.toJSON = function () {
     color: this.color,
     options: this.options,
     sold: this.sold,
-    commanded: this.commanded
+    ordered: this.ordered,
+    commanded: this.commanded,
+    version: this.version
   }
 }
 
