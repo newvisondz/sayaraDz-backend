@@ -183,14 +183,14 @@ function verifyOptionColors (res, color, colors, newOptions, options) {
   }
 }
 
-exports.check = async ({ query: { options = [] } }, res) => {
+exports.check = async ({ version, query: { options = [] } }, res) => {
   try {
-    const vehicles = await Vehicle.find({ options: { $in: options }, sold: false, ordered: false }, '_id')
+    const vehicles = await Vehicle.find({ options: { $in: version.options }, sold: false, ordered: false }, '_id')
     console.log({ vehicles })
     res.json(
       {
         vehicles: vehicles.map(v => v.id),
-        tarif: await getTotalPrice(options)
+        tarif: await getTotalPrice(version.options)
       }
     )
   } catch (error) {
