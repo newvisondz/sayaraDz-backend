@@ -39,8 +39,12 @@ exports.read = [
 exports.show = [
   checkModel,
   async ({ params: { id } }, res, next) => {
-    const model = await Model.findById(id).select('-versions')
-    http.ok(res, model)
+    try {
+      const model = await Model.findById(id).select('-versions')
+      http.ok(res, model)
+    } catch (error) {
+      http.internalError(res)
+    }
   }
 ]
 
@@ -160,3 +164,44 @@ exports.middleware = [
     } else authenticated(req, res, next)
   }
 ]
+
+exports.showOptions = [
+  checkModel,
+  async ({ params: { id } }, res, next) => {
+    try {
+      const model = await Model.findById(id).select('options')
+      http.ok(res, model)
+    } catch (error) {
+      http.internalError(res)
+    }
+  }
+]
+
+exports.showColors = [
+  checkModel,
+  async ({ params: { id } }, res, next) => {
+    try {
+      const model = await Model.findById(id).select('colors')
+      model && delete model.options
+      http.ok(res, {
+        _id: model.id,
+        colors: model.colors
+      })
+    } catch (error) {
+      http.internalError(res)
+    }
+  }
+]
+
+exports.addOption = async ({ params: { id }, body }, res, next) => {
+  try {
+    const model = await Model.findById(id)
+    model.options.push(body)
+    await model.save()
+    res.json({
+      success: true
+    })
+  } catch (error) {
+    http.badRequest(res, error)
+  }
+}

@@ -74,7 +74,7 @@ exports.create = [
         const vehicle = await new Vehicle(body).save()
         version.vehicles.push(vehicle.id)
         await model.save()
-        await http.ok(res, vehicle)
+        http.ok(res, vehicle)
         next()
       } catch (error) {
         http.badRequest(res, error)
