@@ -4,6 +4,7 @@ const crud = require('../../services/crud')(Vehicle, 'vehicle')
 const query = require('querymen').middleware
 const { upload, deleteImages } = require('../../services/upload')
 const { getTotalPrice } = require('../tarifs/resolvers')
+const Command = require('../command/model')
 
 const { findById, retrievedOptions, filterById } = require('../utils')
 
@@ -140,7 +141,7 @@ exports.deleteOne = [
   }
 ]
 
-async function checkVehicle({ version, params: { id } }, res, next) {
+async function checkVehicle ({ version, params: { id } }, res, next) {
   const includes = version.vehicles.find(
     vehicle => vehicle == id
   )
@@ -151,7 +152,7 @@ async function checkVehicle({ version, params: { id } }, res, next) {
   })
 }
 
-function verify(array1, array2) {
+function verify (array1, array2) {
   for (let item1 of array1) {
     if (array2.find(
       i => i == item1
@@ -161,7 +162,7 @@ function verify(array1, array2) {
   }
 }
 
-function verifyOptionColors(res, color, colors, newOptions, options) {
+function verifyOptionColors (res, color, colors, newOptions, options) {
   if (color) {
     if (verify([color], colors)) {
       http.badRequest(res, {
@@ -182,14 +183,23 @@ function verifyOptionColors(res, color, colors, newOptions, options) {
   }
 }
 
-exports.check = async ({ version, query: { options = [] } }, res) => {
+exports.check = async ({ user, version, query: { options = [] } }, res) => {
   try {
     console.log('options ... ', version.options)
     const vehicles = await Vehicle.find({ version: version.id, sold: false, ordered: false }, '_id')
-    console.log({ vehicles })
+    const commands = await Command.find({ automobiliste: user.id })
+
+    let vIds = vehicles.map(v => v.id + '')
+    const vehiclesCmds = commands.map(c => c.vehicle)
+    vIds = vIds.filter(
+      id => !vehiclesCmds.find(
+        vcmd => vcmd == id
+      )
+    )
+    console.log({ vehicles, vIds, vehiclesCmds })
     res.json(
       {
-        vehicles: vehicles.map(v => v.id),
+        vehicles: vIds,
         tarif: await getTotalPrice(version.options)
       }
     )
