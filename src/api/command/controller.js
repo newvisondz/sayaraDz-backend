@@ -108,6 +108,7 @@ exports.pay = [
         vehicle.manufacturer.validStripeAccountId
       )
       command.payed = true
+
       vehicle.sold = true
       await command.save({ session })
       await vehicle.save({ session })
