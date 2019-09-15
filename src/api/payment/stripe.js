@@ -11,6 +11,7 @@ exports.createExternalAccount = (account, external) => stripe.accounts.createExt
 exports.charge = (source, amount, destination) => stripe.charges.create({
   amount,
   source,
+  application_fee_amount: Math.trunc(amount * 5 / 100),
   currency: 'dzd',
   transfer_data: {
     destination

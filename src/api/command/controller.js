@@ -56,16 +56,11 @@ exports.create = [
       if (!vehicle || vehicle.ordered || vehicle.sold) {
         return notFound(res, createNotFoundError('vehicle', body.vehicle))
       }
-      console.log({
-        ...body,
-        automobiliste,
-        manufacturer: vehicle.manufacturer
-      })
+      delete body.payed
       const command = await new Commande({
         ...body,
         automobiliste,
         manufacturer: vehicle.manufacturer
-
       }).save()
       created(res, command)
     } catch (error) {
@@ -127,38 +122,6 @@ exports.pay = [
     }
   }
 ]
-
-// can not be updated by automobiliste
-// exports.update = [
-//   isUser,
-//   authenticated,
-//   validateUpdateBody,
-//   async ({ params: { id: _id }, body, user: { id: automobiliste } }, res) => {
-//     try {
-//       const result = await Commande.updateOne({ _id, automobiliste }, body)
-//       if (result.ok && result.n) {
-//         ok(res, result)
-//       } else notFound(res, createNotFoundError('commande ', _id))
-//     } catch (error) {
-//       internalError(res, error)
-//     }
-//   }
-// ]
-
-// exports.deleteOne = [
-//   isAutomobiliste,
-//   authenticated,
-//   async ({ params: { id: _id }, user: { id: automobiliste } }, res) => {
-//     try {
-//       const result = await Commande.deleteOne({ _id, automobiliste, payed: false })
-//       if (result.ok && result.n) {
-//         ok(res, result)
-//       } else notFound(res, createNotFoundError('commande ', _id))
-//     } catch (error) {
-//       internalError(res, error)
-//     }
-//   }
-// ]
 
 const createNotFoundError = (model, id) => ({
   error: true,

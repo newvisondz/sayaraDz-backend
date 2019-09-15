@@ -1,4 +1,5 @@
 const { isAutomobiliste, authenticated } = require('../../services/acl')
+
 const {
   ok,
   notFound,
@@ -193,3 +194,27 @@ exports.usedCars = [
     }
   }
 ]
+
+// exports.stripeKeys = [
+//   isAutomobiliste,
+//   (req, res) => {
+//     const version = req.query.api_version
+//     if (!version) {
+//       res.status(400).json({
+//         error: true,
+//         msg: 'no api version'
+//       })
+//       return
+//     }
+//     // This function assumes that some previous middleware has determined the
+//     // correct customerId for the session and saved it on the request object.
+//     stripe.ephemeralKeys.create(
+//       { customer: req.customerId },
+//       { stripe_version: version }
+//     ).then((key) => {
+//       res.status(200).json(key)
+//     }).catch(() => {
+//       res.status(500).end()
+//     })
+//   }
+// ]

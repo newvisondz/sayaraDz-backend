@@ -9,19 +9,17 @@ const {
   showProfile,
   updateProfilePicture,
   usedCars
+  // stripeKeys
 } = require('./controller')
-const {
-  updatePaymentAccount,
-  updatePaymentExternalAccount
-} = require('./account')
 
 router.get('/me', readMe)
 router.get('/me/bids', bids)
 router.get('/me/usedCars', usedCars)
+// router.post('/me/stripe-keys', stripeKeys)
 
 router.put('/me', update)
-router.put('/me/payment-account', updatePaymentAccount)
-router.put('/me/external-payment-account', updatePaymentExternalAccount)
+// router.put('/me/payment-account', updatePaymentAccount)
+// router.put('/me/external-payment-account', updatePaymentExternalAccount)
 router.put('/me/picture', updateProfilePicture)
 router.get('/:id', showProfile)
 
