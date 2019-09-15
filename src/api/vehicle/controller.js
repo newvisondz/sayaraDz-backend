@@ -183,10 +183,16 @@ function verifyOptionColors (res, color, colors, newOptions, options) {
   }
 }
 
-exports.check = async ({ user, version, query: { options = [] } }, res) => {
+exports.check = async ({ user, version, query: { color } }, res) => {
   try {
     console.log('options ... ', version.options)
-    const vehicles = await Vehicle.find({ version: version.id, sold: false, ordered: false }, '_id')
+    const vehicles = color
+      ? await Vehicle.find({ color, version: version.id, sold: false, ordered: false }, '_id')
+      : await Vehicle.find({ version: version.id, sold: false, ordered: false }, '_id')
+
+    if (!vehicles.length) {
+      return { vehicles }
+    }
     const commands = await Command.find({ automobiliste: user.id })
 
     let vIds = vehicles.map(v => v.id + '')
@@ -200,11 +206,42 @@ exports.check = async ({ user, version, query: { options = [] } }, res) => {
     res.json(
       {
         vehicles: vIds,
-        tarif: await getTotalPrice(version.options)
+        tarif: await getTotalPrice(([...version.options, color].filter(v => !!v)))
       }
     )
   } catch (error) {
     console.log(error)
     http.badRequest(res, error)
+  }
+}
+
+exports.compose = async ({ query: { options = [], color } }, res) => {
+  try {
+    console.log({ options })
+    const vehicles = color
+      ? await Vehicle.find({
+        color,
+        options: {
+          $all: options
+        }
+      }, '_id')
+      : await Vehicle.find({
+        options: {
+          $all: options
+        }
+      }, '_id')
+    console.log({ vehicles })
+    if (!vehicles.length) {
+      return res.json({ vehicles })
+    }
+    res.json(
+      {
+        vehicles: vehicles.map(v => v.id),
+        tarif: await getTotalPrice(([...options, color].filter(v => !!v)))
+      }
+    )
+  } catch (error) {
+    console.error(error)
+    http.badRequest(res)
   }
 }
