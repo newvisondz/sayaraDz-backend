@@ -141,7 +141,7 @@ exports.deleteOne = [
   }
 ]
 
-async function checkVehicle({ version, params: { id } }, res, next) {
+async function checkVehicle ({ version, params: { id } }, res, next) {
   const includes = version.vehicles.find(
     vehicle => vehicle == id
   )
@@ -152,7 +152,7 @@ async function checkVehicle({ version, params: { id } }, res, next) {
   })
 }
 
-function verify(array1, array2) {
+function verify (array1, array2) {
   for (let item1 of array1) {
     if (array2.find(
       i => i == item1
@@ -162,7 +162,7 @@ function verify(array1, array2) {
   }
 }
 
-function verifyOptionColors(res, color, colors, newOptions, options) {
+function verifyOptionColors (res, color, colors, newOptions, options) {
   if (color) {
     if (verify([color], colors)) {
       http.badRequest(res, {
@@ -183,14 +183,18 @@ function verifyOptionColors(res, color, colors, newOptions, options) {
   }
 }
 
-exports.check = async ({ query: { options } }, res) => {
-  console.log({ options })
-  const vehicles = await Vehicle.find({ options: { $in: options }, sold: false, ordered: false }, '_id')
-  console.log({ vehicles })
-  res.json(
-    {
-      vehicles: vehicles.map(v => v.id),
-      tarif: await getTotalPrice(...options)
-    }
-  )
+exports.check = async ({ query: { options = [] } }, res) => {
+  try {
+    const vehicles = await Vehicle.find({ options: { $in: options }, sold: false, ordered: false }, '_id')
+    console.log({ vehicles })
+    res.json(
+      {
+        vehicles: vehicles.map(v => v.id),
+        tarif: await getTotalPrice(options)
+      }
+    )
+  } catch (error) {
+    console.log(error)
+    http.badRequest(res, error)
+  }
 }

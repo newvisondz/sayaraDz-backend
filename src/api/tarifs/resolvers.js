@@ -14,7 +14,7 @@ const getPrice = async document => {
   return (res[0] && res[0].amount) || 0
 }
 
-const getTotalPrice = async (...documents) => {
+const getTotalPrice = async (documents) => {
   const tarifs = await Promise.all(documents.map(d => getPrice(d)))
   console.log({ documents })
   return tarifs.reduce(
