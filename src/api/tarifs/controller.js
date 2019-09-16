@@ -56,17 +56,17 @@ exports.create = [
 
       ok(res, tarif)
 
-      if (code == 0) {
-        notify({
-          topic: 'varsion_' + document,
-          data: {
-            module: 'version_tarif',
-            amount: tarif.amount,
-            start: tarif.start,
-            end: tarif.end
-          }
-        })
-      }
+      // if (code == 0) {
+      //   notify({
+      //     topic: 'varsion_' + document,
+      //     data: {
+      //       module: 'version_tarif',
+      //       amount: tarif.amount,
+      //       start: tarif.start,
+      //       end: tarif.end
+      //     }
+      //   })
+      // }
     } catch (error) {
       console.error(error)
       badRequest(res, error)

@@ -1,4 +1,4 @@
-const { internalError, notFound, ok, badRequest } = require('../../services/http')
+const { notFound, ok, badRequest } = require('../../services/http')
 const { findCommandById } = require('./resolvers')
 const joi = require('@hapi/joi')
 const { validate } = require('../utils/validation')
@@ -52,7 +52,7 @@ const update = [
       //   c => c.id == id
       // )
       const command = await findCommandById(id, user.manufacturer)
-
+      if (!command) return notFound(res, createNotFoundError('command', id))
       const oldCommand = await Command.findOne({
         vehicle: command.vehicle,
         accepted: true
@@ -74,18 +74,16 @@ const update = [
       res.json(command)
 
       const autom = await Automobiliste.findById(command.automobiliste)
-
+      // console.log(command.automobiliste)
       notify({
-        data: {
-          module: 'command',
-          id,
-          accepted: body.accepted
+        notification: {
+          title: 'Your Command is ' + (body.accepted ? 'Accepted' : 'Rejected')
         },
         topic: autom.id
-      }).then(console.log)
+      })
     } catch (error) {
       console.error(error)
-      internalError(res, error)
+      badRequest(res, error)
       throw error
     }
   }

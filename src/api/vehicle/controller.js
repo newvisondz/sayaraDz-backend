@@ -223,13 +223,13 @@ exports.compose = async ({ query: { options = [], color } }, res) => {
       ? await Vehicle.find({
         color,
         options: {
-          $eq: options,
+          $all: options,
           '$size': options.length
         }
       }, '_id')
       : await Vehicle.find({
         options: {
-          $eq: options,
+          $all: options,
           '$size': options.length
         }
       }, '_id')
