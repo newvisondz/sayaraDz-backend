@@ -69,6 +69,7 @@ exports.create = [
         )
         body.version = version.id
         body.manufacturer = req.manufacturer.id
+        body.options = newOptions
         delete body.sold
         delete body.ordered
         const vehicle = await new Vehicle(body).save()
@@ -222,12 +223,12 @@ exports.compose = async ({ query: { options = [], color } }, res) => {
       ? await Vehicle.find({
         color,
         options: {
-          $all: options
+          $eq: options
         }
       }, '_id')
       : await Vehicle.find({
         options: {
-          $all: options
+          $eq: options
         }
       }, '_id')
     console.log({ vehicles })
@@ -245,3 +246,10 @@ exports.compose = async ({ query: { options = [], color } }, res) => {
     http.badRequest(res)
   }
 }
+
+// Vehicle.find({
+//   options: {
+//     $all: ['5d7ec5efa71e11159cde1193', '5d7ec5efa71e11159cde1192', '5d7ec5efa71e11159cde118f', '5d7ec5efa71e11159cde118e']
+//   }
+// })
+//   .then(console.log)

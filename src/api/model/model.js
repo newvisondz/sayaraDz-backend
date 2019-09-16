@@ -60,7 +60,8 @@ module.exports = model
 //           Vehicle.updateMany({
 //             _id: version.vehicles
 //           }, {
-//             version: version.id
+//             options: version.options
+
 //           }).then(res => console.log({ ok: res.ok, n: res.n }))
 //         }
 //       ))
