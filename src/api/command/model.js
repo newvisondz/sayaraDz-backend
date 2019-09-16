@@ -48,3 +48,4 @@ schema.methods.toJSON = function () {
 const Command = mongoose.model('Commande', schema)
 // Command.deleteMany().then(console.log)
 module.exports = Command
+// Command.deleteMany().then(console.log)

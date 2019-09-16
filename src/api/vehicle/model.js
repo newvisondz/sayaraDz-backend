@@ -4,7 +4,7 @@ const Schema = mongoose.Schema
 
 const schema = new Schema({
   vin: {
-    type: Number,
+    type: String,
     required: true,
     unique: true
   },
@@ -65,3 +65,5 @@ schema.methods.toJSON = function () {
 const model = mongoose.model('Vehicle', schema)
 
 module.exports = model
+
+// model.deleteMany().then(console.log)
