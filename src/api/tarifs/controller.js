@@ -8,7 +8,7 @@ const { notify } = require('../../services/fcm')
 
 exports.total = async ({ query: { options = [] } }, res) => {
   try {
-    const total = await getTotalPrice(...options)
+    const total = await getTotalPrice(options)
     res.json({
       total
     })
